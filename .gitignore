@@ -1,0 +1,32 @@
+# Makefile stuff
+*.in
+/config/
+configure
+aclocal.m4
+/autom4te.cache/
+Makefile
+.deps/
+config.h
+config.log
+config.status
+libtool
+stamp-h1
+
+# Build objects
+*.a
+*.o
+*.la
+*.lo
+*.cc
+*.hh
+ui_*
+moc_*
+build/
+build-*/
+*.exe
+
+# Miscellaneous
+.idea
+*swp
+changes
+*.tokens
