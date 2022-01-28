@@ -1,60 +1,75 @@
 #include "lineentity.h"
 
-#include <Qt3DExtras/QPhongMaterial>
-
-LineGeometry::LineGeometry(Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this)
+LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType) : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this),
+ vertexBuffer_(&geometry_), vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_)
 {
-    // TEST
-    QVector3D start(0,0,0), end(10,10,10);
+    // Set up the vertex attribute
+    vertexAttribute_.setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
+    vertexAttribute_.setVertexBaseType(Qt3DCore::QAttribute::Float);
+    vertexAttribute_.setVertexSize(3);
+    vertexAttribute_.setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
+    vertexAttribute_.setBuffer(&vertexBuffer_);
+    vertexAttribute_.setByteStride(3 * sizeof(float));
+    vertexAttribute_.setCount(0);
 
-    // position vertices (start and end)
-    QByteArray bufferBytes;
-    bufferBytes.resize(3 * 2 * sizeof(float)); // start.x, start.y, start.end + end.x, end.y, end.z
-    float *positions = reinterpret_cast<float*>(bufferBytes.data());
-    *positions++ = start.x();
-    *positions++ = start.y();
-    *positions++ = start.z();
-    *positions++ = end.x();
-    *positions++ = end.y();
-    *positions++ = end.z();
+    // Set up the index attribute
+    indexAttribute_.setVertexBaseType(Qt3DCore::QAttribute::UnsignedInt);
+    indexAttribute_.setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
+    indexAttribute_.setBuffer(&indexBuffer_);
+    indexAttribute_.setCount(0);
 
-    auto *buf = new Qt3DCore::QBuffer(&geometry_);
-    buf->setData(bufferBytes);
+    // Set up geometry and renderer
+    geometry_.addAttribute(&vertexAttribute_);
+    geometry_.addAttribute(&indexAttribute_);
 
-    auto *positionAttribute = new Qt3DCore::QAttribute(&geometry_);
-    positionAttribute->setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
-    positionAttribute->setVertexBaseType(Qt3DCore::QAttribute::Float);
-    positionAttribute->setVertexSize(3);
-    positionAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
-    positionAttribute->setBuffer(buf);
-    positionAttribute->setByteStride(3 * sizeof(float));
-    positionAttribute->setCount(2);
-    geometry_.addAttribute(positionAttribute); // We add the vertices in the geometry
-
-    // connectivity between vertices
-    QByteArray indexBytes;
-    indexBytes.resize(2 * sizeof(unsigned int)); // start to end
-    unsigned int *indices = reinterpret_cast<unsigned int*>(indexBytes.data());
-    *indices++ = 0;
-    *indices++ = 1;
-
-    auto *indexBuffer = new Qt3DCore::QBuffer(&geometry_);
-    indexBuffer->setData(indexBytes);
-
-    auto *indexAttribute = new Qt3DCore::QAttribute(&geometry_);
-    indexAttribute->setVertexBaseType(Qt3DCore::QAttribute::UnsignedInt);
-    indexAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
-    indexAttribute->setBuffer(indexBuffer);
-    indexAttribute->setCount(2);
-    geometry_.addAttribute(indexAttribute); // We add the indices linking the points in the geometry
-
-    // mesh
     geometryRenderer_.setGeometry(&geometry_);
-    geometryRenderer_.setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-    auto *material = new Qt3DExtras::QPhongMaterial(parent);
-    material->setAmbient(Qt::blue);
+    geometryRenderer_.setPrimitiveType(primitiveType);
 
-    // entity
+    // Set up entity
     addComponent(&geometryRenderer_);
-    addComponent(material);
+}
+
+/*
+ * Convenience Functions
+ */
+
+// Append vertices to cached data
+void LineEntity::addVertex(QVector3D v) { cachedVertices_.emplace_back(v); }
+void LineEntity::addVertices(const std::vector<QVector3D> &vertices)
+{
+    std::copy(vertices.begin(), vertices.end(), std::back_inserter(cachedVertices_));
+}
+
+// Append indices to cached data
+void LineEntity::addIndex(unsigned int i) { cachedIndices_.push_back(i); }
+void LineEntity::addIndices(const std::vector<unsigned int> &indices)
+{
+    std::copy(indices.begin(), indices.end(), std::back_inserter(cachedIndices_));
+}
+
+// Finalise geometry from cached data
+void LineEntity::finalise()
+{
+    // Convert vertex cache into a QByteArray
+    QByteArray vertexBytes;
+    vertexBytes.resize(cachedVertices_.size() * 3 * sizeof(float));
+    auto *vertices = reinterpret_cast<float*>(vertexBytes.data());
+    for (const auto &v : cachedVertices_) {
+        *vertices++ = v.x();
+        *vertices++ = v.y();
+        *vertices++ = v.z();
+    }
+    vertexBuffer_.setData(vertexBytes);
+    vertexAttribute_.setCount(cachedVertices_.size());
+    cachedVertices_.clear();
+
+    // Convert index data into a QByteArray
+    QByteArray indexBytes;
+    indexBytes.resize(cachedIndices_.size() * sizeof(unsigned int));
+    auto *indices = reinterpret_cast<unsigned int*>(indexBytes.data());
+    for (const auto i : cachedIndices_)
+        *indices++ = i;
+    indexBuffer_.setData(indexBytes);
+    indexAttribute_.setCount(cachedIndices_.size());
+    cachedIndices_.clear();
 }
