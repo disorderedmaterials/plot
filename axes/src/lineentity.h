@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
@@ -33,8 +35,11 @@ public:
     void addVertex(QVector3D v);
     void addVertices(const std::vector<QVector3D> &vertices);
     // Append indices to cached data
+    void setBasicIndices();
     void addIndex(unsigned int i);
     void addIndices(const std::vector<unsigned int> &indices);
     // Finalise geometry from cached data
     void finalise();
+    // Clear geometry
+    void clear();
 };

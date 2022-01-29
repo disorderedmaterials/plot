@@ -11,24 +11,21 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QOrbitCameraController>
 
+#include "axisentity.h"
 #include "lineentity.h"
 
 Qt3DCore::QEntity *createScene()
 {
     // Root entity
-    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
+    auto *rootEntity = new Qt3DCore::QEntity;
 
-    // Line
-    auto *lineEntity = new LineEntity(rootEntity);
-    lineEntity->addVertex({0,0,0});
-    lineEntity->addVertex({0,5,0});
-    lineEntity->addVertex({5,5,0});
-    lineEntity->addVertex({5,10,10});
-    lineEntity->addIndices({0, 1, 2, 3, 0});
-    lineEntity->finalise();
-    auto *material = new Qt3DExtras::QPhongMaterial(lineEntity);
-    material->setAmbient(Qt::blue);
-    lineEntity->addComponent(material);
+    // Components
+    auto *axesMaterial = new Qt3DExtras::QPhongMaterial(rootEntity);
+    axesMaterial->setAmbient(Qt::black);
+
+    // Axes
+    auto *xAxis = new AxisEntity(rootEntity);
+    xAxis->addComponentToChildren(axesMaterial);
 
     return rootEntity;
 }

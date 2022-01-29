@@ -41,6 +41,9 @@ void LineEntity::addVertices(const std::vector<QVector3D> &vertices)
 }
 
 // Append indices to cached data
+void LineEntity::setBasicIndices() { cachedIndices_.resize(cachedVertices_.size());
+std::iota(cachedIndices_.begin(), cachedIndices_.end(), 0);
+}
 void LineEntity::addIndex(unsigned int i) { cachedIndices_.push_back(i); }
 void LineEntity::addIndices(const std::vector<unsigned int> &indices)
 {
@@ -71,5 +74,14 @@ void LineEntity::finalise()
         *indices++ = i;
     indexBuffer_.setData(indexBytes);
     indexAttribute_.setCount(cachedIndices_.size());
+    cachedIndices_.clear();
+}
+
+// Clear geometry
+void LineEntity::clear()
+{
+    vertexAttribute_.setCount(0);
+    indexAttribute_.setCount(0);
+    cachedVertices_.clear();
     cachedIndices_.clear();
 }

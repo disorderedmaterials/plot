@@ -1,8 +1,10 @@
 add_library(
   main
 
+  axisentity.cpp
   lineentity.cpp
   main.cpp
+  axisentity.h
   lineentity.h
 )
 
