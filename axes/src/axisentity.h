@@ -2,7 +2,8 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
-#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DExtras/QExtrudedTextMesh>
+#include <Qt3DCore/QTransform>
 #include "lineentity.h"
 
 class AxisEntity : public Qt3DCore::QEntity
@@ -16,7 +17,7 @@ public:
      */
     private:
     // Global scaling for components
-    double axisScale_{10.0}, tickScale_{0.1};
+    double axisScale_{10.0}, tickScale_{0.1}, fontScale_{0.2};
     // Axis direction
     QVector3D direction_{1.0, 0.0, 0.0};
     // Tick direction
@@ -60,6 +61,12 @@ private:
     LineEntity axisBarEntity_;
     // Tick marks
     LineEntity ticksEntity_, subTicksEntity_;
+    // Tick labels
+    std::vector<std::tuple<Qt3DCore::QEntity *, Qt3DExtras::QExtrudedTextMesh *, Qt3DCore::QTransform *>> tickLabelMeshes_;
+
+private:
+    // Create / update tick labels at specified axis values
+    void createTickLabelEntities(std::vector<double> values);
 
 public:
     // Recreate axis

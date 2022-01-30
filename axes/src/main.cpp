@@ -1,18 +1,20 @@
 #include <QGuiApplication>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QTorusMesh>
 #include <QPropertyAnimation>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QOrbitCameraController>
 
 #include "axisentity.h"
-#include "lineentity.h"
 
 Qt3DCore::QEntity *createScene()
 {

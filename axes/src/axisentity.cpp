@@ -80,6 +80,7 @@ void AxisEntity::generateLinearTicks()
     auto count = 0;
     auto delta = tickDelta_ / (nSubTicks_ + 1);
     auto value = tickStart_;
+    std::vector<double> tickValues;
     while (value <= maximum_)
     {
         // Draw tick here, only if value >= minimum_
@@ -90,14 +91,7 @@ void AxisEntity::generateLinearTicks()
             if (count % (nSubTicks_ + 1) == 0)
             {
                 ticksEntity_.addVertices({{direction_ * x},{direction_ * x + tickDirection_ * tickScale_}});
-
-                // Get formatted label text
-//                    s = numberFormat_.format(value);
-//
-//                    labelPrimitives_.add(&fontInstance_, s, u + tickDir * tickSize_, labelAnchor(axis),
-//                                               tickDir * labelOrientation(axis).z, labelTransform,
-//                                               parentView_.labelPointSize(),
-//                                               parentView_.isFlatView() ? false : parentView_.flatLabelsIn3D());
+                tickValues.push_back(value);
 
                 count = 0;
             }
@@ -106,9 +100,12 @@ void AxisEntity::generateLinearTicks()
                 subTicksEntity_.addVertices({{direction_ * x},{direction_ * x + tickDirection_ * tickScale_*0.5}});
             }
         }
+
         value += delta;
         ++count;
     }
+
+    createTickLabelEntities(tickValues);
 }
 
 // Generate logarithmic ticks
@@ -139,20 +136,6 @@ void AxisEntity::generateLogarithmicTicks()
             // Tick mark
             if (count == 0)
                 ticksEntity_.addVertices({{direction_ * axisScale_ * u},{direction_ * axisScale_ * u + tickDirection_ * tickScale_}});
-
-//                axisPrimitives_.line(u, u + tickDir * tickSize_, colour);
-
-            // Tick label
-//                if (count == 0)
-//                {
-//                    // Get formatted value text
-//                    s = numberFormat_.format(value);
-//
-//                    labelPrimitives_.add(&fontInstance_, s, u + tickDir * tickSize_, labelAnchor(axis),
-//                                               tickDir * labelOrientation(axis).z, labelTransform,
-//                                               parentView_.labelPointSize(),
-//                                               parentView_.isFlatView() ? false : parentView_.flatLabelsIn3D());
-//                }
         }
 
         // Increase tick counter, value, and power if necessary
@@ -180,6 +163,40 @@ double AxisEntity::axisToGlobal(double axisValue) const {
  * Entities
  */
 
+// Create / update tick labels at specified axis values
+void AxisEntity::createTickLabelEntities(std::vector<double> values)
+{
+    // First, hide all existing label entities
+    for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
+        entity->setEnabled(false);
+
+    // Create any new text entities that we need
+    while (tickLabelMeshes_.size() < values.size())
+    {
+        auto *entity = new Qt3DCore::QEntity(this);
+        auto *mesh = new Qt3DExtras::QExtrudedTextMesh(this);
+        auto *transform = new Qt3DCore::QTransform(entity);
+        mesh->setFont(QFont("monospace"));
+        mesh->setDepth(0.01);
+        entity->addComponent(mesh);
+        transform->setScale(fontScale_);
+        entity->addComponent(transform);
+        tickLabelMeshes_.emplace_back(entity, mesh, transform);
+    }
+
+    // Loop over new values and create / update entities as required
+    // TODO Missing our zip operator here!
+    auto n = 0;
+    for (auto v : values)
+    {
+        auto &&[entity, mesh, transform] = tickLabelMeshes_[n];
+        entity->setEnabled(true);
+        mesh->setText(QString::number(v));
+        transform->setTranslation({axisToGlobal(v), -(fontScale_ + tickScale_ + 0.05), 0.0});
+        ++n;
+    }
+}
+
 void AxisEntity::recreate()
 {
     // Clear old primitives
@@ -192,9 +209,6 @@ void AxisEntity::recreate()
     axisBarEntity_.setBasicIndices();
     axisBarEntity_.finalise();
 
-    // Determine conversion factor from local to screen coordinates
-    auto x = (maximum_ - minimum_) / axisScale_;
-
     // Generate axis ticks
     if (logarithmic_)
         generateLogarithmicTicks();
@@ -205,15 +219,17 @@ void AxisEntity::recreate()
     ticksEntity_.finalise();
     subTicksEntity_.setBasicIndices();
     subTicksEntity_.finalise();
-
-    // Labels
-    // TODO
 }
 
 // Add component to child entities
-void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
-{
+void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp) {
     axisBarEntity_.addComponent(comp);
     ticksEntity_.addComponent(comp);
     subTicksEntity_.addComponent(comp);
+    for (auto &&[entity, mesh, transform]: tickLabelMeshes_) {
+        entity->addComponent(comp);
+        auto a = mesh->maxPoint();
+        auto b = mesh->minPoint();
+        printf("Value  : TL = (%f, %f, %f) BR = (%f, %f, %f)\n", a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
+    }
 }
