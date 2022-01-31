@@ -17,7 +17,7 @@ public:
      */
     private:
     // Global scaling for components
-    double axisScale_{10.0}, tickScale_{0.1}, fontScale_{0.2};
+    double axisScale_{100.0}, tickScale_{2.0}, fontScale_{4.0};
     // Axis direction
     QVector3D direction_{1.0, 0.0, 0.0};
     // Tick direction
@@ -47,7 +47,9 @@ private:
 
 public:
     // Set the global scale for the axis
-    void setGlobalScale(double globalScale);
+    void setAxisScale(double axisScale);
+    // Set the tick scale for the axis
+    void setTickScale(double tickScale);
     // Define direction
     void setDirection(QVector3D principal);
     // Map axis value to scaled global position

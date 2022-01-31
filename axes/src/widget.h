@@ -39,8 +39,24 @@ public:
     void resizeEvent(QResizeEvent *event) override;
 
     /*
+     * Appearance
+     */
+    public:
+    // View Types
+    enum class ViewType
+    {
+        View2D,
+        View3D
+    };
+
+    private:
+//      font
+
+
+    /*
      * SceneGraph
      */
     private:
     void createSceneGraph();
+    Qt3DCore::QTransform *viewVolumeTransform_{nullptr}, *deviceToLocalTransform_{nullptr};
 };

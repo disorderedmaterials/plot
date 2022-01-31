@@ -151,6 +151,26 @@ void AxisEntity::generateLogarithmicTicks()
     }
 }
 
+// Set the global scale for the axis
+void AxisEntity::setAxisScale(double axisScale)
+{
+    axisScale_ = axisScale;
+    recreate();
+}
+
+// Set the tick scale for the axis
+void AxisEntity::setTickScale(double tickScale)
+{
+    tickScale_ = tickScale;
+    recreate();
+}
+
+// Define direction
+void AxisEntity::setDirection(QVector3D principal)
+{
+
+}
+
 // Map axis value to scaled global position
 double AxisEntity::axisToGlobal(double axisValue) const {
     if (logarithmic_)

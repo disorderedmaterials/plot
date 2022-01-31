@@ -29,8 +29,9 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
     // Construct a camera
     camera_ = new Qt3DRender::QCamera(rootEntity_.data());
-    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera_->setPosition(QVector3D(0, 0, 40.0f));
+//    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
+    camera_->setPosition(QVector3D(0, 0, 1.0f));
     camera_->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
@@ -54,6 +55,14 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
+    if (deviceToLocalTransform_)
+    {
+//        deviceToLocalTransform_->setScale3D({float(width())/120.0, float(height()) / 120.0, 1.0});
+//        deviceToLocalTransform_->setTranslation({-100.0, -100.0, 0.0});
+        deviceToLocalTransform_->setRotationZ(45.0);
+    }
+//    if (viewVolumeTransform_) viewVolumeTransform_->setScale3D({100.0,100.0, 1.0});
+    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
     camera_->setAspectRatio(float(width()) / float(height()));
     viewContainer_->resize(this->size());
 }
@@ -64,11 +73,39 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 
 void MildredWidget::createSceneGraph()
 {
+    // Transform from device (width x height) to local view
+    deviceToLocalTransform_ = new Qt3DCore::QTransform(rootEntity_.data());
+    rootEntity_->addComponent(deviceToLocalTransform_);
+
+    /*
+     * Axes Leaf
+     */
+
     // Components
     auto *axesMaterial = new Qt3DExtras::QPhongMaterial(rootEntity_.data());
     axesMaterial->setAmbient(Qt::black);
 
     // Axes
     auto *xAxis = new AxisEntity(rootEntity_.data());
+    xAxis->setAxisScale(100.0);
+    xAxis->setTickScale(2.0);
     xAxis->addComponentToChildren(axesMaterial);
+
+    /*
+     * Data Space Leaf
+     */
+    auto *dataEntity = new Qt3DCore::QEntity(rootEntity_.data());
+    viewVolumeTransform_ = new Qt3DCore::QTransform(dataEntity);
+    dataEntity->addComponent(viewVolumeTransform_);
+
+    // Transform
+
+    // Test Scalable Central View Volume
+    auto *boxMaterial = new Qt3DExtras::QPhongMaterial(dataEntity);
+    boxMaterial->setAmbient(Qt::red);
+    auto *boxEntity = new LineEntity(dataEntity, Qt3DRender::QGeometryRenderer::LineLoop);
+    boxEntity->addVertices({{0.0,0.0,0.0},{1.0,0.0,0.0},{1.0,1.0,0.0},{0.0,1.0,0.0}});
+    boxEntity->setBasicIndices();
+    boxEntity->finalise();
+    boxEntity->addComponent(boxMaterial);
 }

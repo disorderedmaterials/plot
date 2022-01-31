@@ -12,7 +12,7 @@
 void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, QObject *surface, Qt3DRender::QCamera *camera)
 {
     /*
-     * Set up a simple forward renderer framgraph. Nodes are contructed as a single-leaf stack:
+     * Set up a simple forward renderer framegraph. Nodes are constructed as a single-leaf stack:
      *
      *        [QRenderSettings]         Parent of first framegraph node
      *               |
