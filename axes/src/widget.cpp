@@ -54,6 +54,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
+    camera_->setAspectRatio(float(width()) / float(height()));
     viewContainer_->resize(this->size());
 }
 
