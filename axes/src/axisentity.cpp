@@ -2,7 +2,7 @@
 
 AxisEntity::AxisEntity(Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines), subTicksEntity_(this, Qt3DRender::QGeometryRenderer::Lines)
 {
-    recreate();
+//    recreate();
 }
 
 /*
@@ -66,7 +66,7 @@ void AxisEntity::calculateTickDeltas()
 }
 
 // Generate linear ticks
-void AxisEntity::generateLinearTicks()
+std::vector<double> AxisEntity::generateLinearTicks()
 {
     // Calculate autoticks if requested
     if (autoTicks_)
@@ -74,7 +74,7 @@ void AxisEntity::generateLinearTicks()
 
     // Check tickDelta
     if (((maximum_ - minimum_) / tickDelta_) > 1e4)
-        return;
+        return {};
 
     // Plot tickmarks
     auto count = 0;
@@ -105,17 +105,17 @@ void AxisEntity::generateLinearTicks()
         ++count;
     }
 
-    createTickLabelEntities(tickValues);
+    return tickValues;
 }
 
 // Generate logarithmic ticks
-void AxisEntity::generateLogarithmicTicks()
+std::vector<double> AxisEntity::generateLogarithmicTicks()
 {
     // Check data range
     if (maximum_ < 0.0) {
         printf("Axis range is inappropriate for a log scale ({} < x < {}). Axis will not be drawn.\n",
                minimum_, maximum_);
-        return;
+        return {};
     }
 
     // Grab logged min/max values for convenience, enforcing sensible minimum
@@ -127,6 +127,7 @@ void AxisEntity::generateLogarithmicTicks()
     auto power = floor(min);
     auto value = pow(10, power);
     auto u = 0.0;
+    std::vector<double> tickValues;
     while (value <= maximum_)
     {
         // If the current value is in range, plot a tick
@@ -134,8 +135,11 @@ void AxisEntity::generateLogarithmicTicks()
         if (log10(value) >= min)
         {
             // Tick mark
-            if (count == 0)
-                ticksEntity_.addVertices({{direction_ * axisScale_ * u},{direction_ * axisScale_ * u + tickDirection_ * tickScale_}});
+            if (count == 0) {
+                ticksEntity_.addVertices({{direction_ * axisScale_ * u},
+                                          {direction_ * axisScale_ * u + tickDirection_ * tickScale_}});
+                tickValues.push_back(value);
+            }
         }
 
         // Increase tick counter, value, and power if necessary
@@ -149,20 +153,8 @@ void AxisEntity::generateLogarithmicTicks()
         else
             value += pow(10, power);
     }
-}
 
-// Set the global scale for the axis
-void AxisEntity::setAxisScale(double axisScale)
-{
-    axisScale_ = axisScale;
-    recreate();
-}
-
-// Set the tick scale for the axis
-void AxisEntity::setTickScale(double tickScale)
-{
-    tickScale_ = tickScale;
-    recreate();
+    return tickValues;
 }
 
 // Define direction
@@ -184,7 +176,7 @@ double AxisEntity::axisToGlobal(double axisValue) const {
  */
 
 // Create / update tick labels at specified axis values
-void AxisEntity::createTickLabelEntities(std::vector<double> values)
+void AxisEntity::createTickLabelEntities(std::vector<double> values, double surfaceXScale, double surfaceYScale)
 {
     // First, hide all existing label entities
     for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
@@ -199,7 +191,7 @@ void AxisEntity::createTickLabelEntities(std::vector<double> values)
         mesh->setFont(QFont("monospace"));
         mesh->setDepth(0.01);
         entity->addComponent(mesh);
-        transform->setScale(fontScale_);
+        transform->setScale3D({fontScale_ / surfaceXScale, fontScale_ / surfaceYScale, 1.0});
         entity->addComponent(transform);
         tickLabelMeshes_.emplace_back(entity, mesh, transform);
     }
@@ -217,7 +209,7 @@ void AxisEntity::createTickLabelEntities(std::vector<double> values)
     }
 }
 
-void AxisEntity::recreate()
+void AxisEntity::recreate(double surfaceXScale, double surfaceYScale)
 {
     // Clear old primitives
     axisBarEntity_.clear();
@@ -230,10 +222,8 @@ void AxisEntity::recreate()
     axisBarEntity_.finalise();
 
     // Generate axis ticks
-    if (logarithmic_)
-        generateLogarithmicTicks();
-    else
-        generateLinearTicks();
+    auto tickValues = logarithmic_ ? generateLogarithmicTicks() : generateLinearTicks();
+    createTickLabelEntities(tickValues, surfaceXScale, surfaceYScale);
 
     ticksEntity_.setBasicIndices();
     ticksEntity_.finalise();

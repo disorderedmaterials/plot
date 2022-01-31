@@ -39,6 +39,13 @@ public:
     void resizeEvent(QResizeEvent *event) override;
 
     /*
+     * Metrics
+     */
+    private:
+    // Scale factors converting from local to surface coordinates
+    double surfaceXScaleFactor_{1.0}, surfaceYScaleFactor_{1.0};
+
+    /*
      * Appearance
      */
     public:
@@ -58,5 +65,5 @@ public:
      */
     private:
     void createSceneGraph();
-    Qt3DCore::QTransform *viewVolumeTransform_{nullptr}, *deviceToLocalTransform_{nullptr};
+    Qt3DCore::QTransform *viewVolumeTransform_{nullptr}, *localToSurfaceTransform_{nullptr};
 };

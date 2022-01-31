@@ -55,11 +55,13 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
-    if (deviceToLocalTransform_)
+    surfaceXScaleFactor_ = float(width())/120.0f;
+    surfaceYScaleFactor_ = float(height())/120.0f;
+    if (localToSurfaceTransform_)
     {
-//        deviceToLocalTransform_->setScale3D({float(width())/120.0, float(height()) / 120.0, 1.0});
-//        deviceToLocalTransform_->setTranslation({-100.0, -100.0, 0.0});
-        deviceToLocalTransform_->setRotationZ(45.0);
+        localToSurfaceTransform_->setScale3D({surfaceXScaleFactor_, surfaceYScaleFactor_, 1.0});
+//        localToSurfaceTransform_->setTranslation({surfaceXScaleFactor_ * 10.0f, surfaceYScaleFactor_* 10.0f, 0.0f});
+//        localToSurfaceTransform_->setRotationZ(45.0);
     }
 //    if (viewVolumeTransform_) viewVolumeTransform_->setScale3D({100.0,100.0, 1.0});
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
@@ -74,21 +76,27 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 void MildredWidget::createSceneGraph()
 {
     // Transform from device (width x height) to local view
-    deviceToLocalTransform_ = new Qt3DCore::QTransform(rootEntity_.data());
-    rootEntity_->addComponent(deviceToLocalTransform_);
+    localToSurfaceTransform_ = new Qt3DCore::QTransform(rootEntity_.data());
+    rootEntity_->addComponent(localToSurfaceTransform_);
 
     /*
      * Axes Leaf
      */
 
+    auto *axesEntity = new Qt3DCore::QEntity(rootEntity_.data());
+    auto *axesTransform = new Qt3DCore::QTransform(axesEntity);
+    axesTransform->setTranslation({10.0, 10.0, 0.0});
+    axesEntity->addComponent(axesTransform);
+
     // Components
-    auto *axesMaterial = new Qt3DExtras::QPhongMaterial(rootEntity_.data());
+    auto *axesMaterial = new Qt3DExtras::QPhongMaterial(axesEntity);
     axesMaterial->setAmbient(Qt::black);
 
     // Axes
-    auto *xAxis = new AxisEntity(rootEntity_.data());
-    xAxis->setAxisScale(100.0);
-    xAxis->setTickScale(2.0);
+    auto *xAxis = new AxisEntity(axesEntity);
+    xAxis->recreate(surfaceXScaleFactor_, surfaceYScaleFactor_);
+//    xAxis->setAxisScale(100.0);
+//    xAxis->setTickScale(2.0);
     xAxis->addComponentToChildren(axesMaterial);
 
     /*

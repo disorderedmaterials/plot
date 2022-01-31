@@ -16,6 +16,8 @@ public:
      * Definition
      */
     private:
+    // Converting scale factors from local to surface coordinates at last update
+    double surfaceXScaleFactor_{1.0}, surfaceYScaleFactor_{1.0};
     // Global scaling for components
     double axisScale_{100.0}, tickScale_{2.0}, fontScale_{4.0};
     // Axis direction
@@ -41,15 +43,11 @@ private:
     // Calculate tick deltas
     void calculateTickDeltas();
     // Generate linear ticks
-    void generateLinearTicks();
+    std::vector<double> generateLinearTicks();
     // Generate logarithmic ticks
-    void generateLogarithmicTicks();
+    std::vector<double> generateLogarithmicTicks();
 
 public:
-    // Set the global scale for the axis
-    void setAxisScale(double axisScale);
-    // Set the tick scale for the axis
-    void setTickScale(double tickScale);
     // Define direction
     void setDirection(QVector3D principal);
     // Map axis value to scaled global position
@@ -68,11 +66,11 @@ private:
 
 private:
     // Create / update tick labels at specified axis values
-    void createTickLabelEntities(std::vector<double> values);
+    void createTickLabelEntities(std::vector<double> values, double surfaceXScale, double surfaceYScale);
 
 public:
     // Recreate axis
-    void recreate();
+    void recreate(double surfaceXScale, double surfaceYScale);
     // Add component to child entities
     void addComponentToChildren(Qt3DCore::QComponent *comp);
 };
