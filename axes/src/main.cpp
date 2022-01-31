@@ -6,6 +6,8 @@
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QLineWidth>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DInput/QInputAspect>
@@ -50,8 +52,14 @@ void createFrameGraph(Qt3DRender::QRenderSettings *renderSettings, QObject *surf
     auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
     cameraSelector->setCamera(camera);
 
-    // Finally, set the active framegraph of the QRenderSettings to the top node of our framegrsph
-    renderSettings->setActiveFrameGraph(surfaceSelector);
+    // Render state
+    auto *renderState = new Qt3DRender::QRenderStateSet(cameraSelector);
+    auto *lineWidth = new Qt3DRender::QLineWidth(renderState);
+    lineWidth->setValue(4.0);
+    renderState->addRenderState(lineWidth);
+
+    // Finally, set the active framegraph of the QRenderSettings to the top node of our framegraph
+    renderSettings->setActiveFrameGraph(renderState);
 }
 
 void createSceneGraph(Qt3DCore::QEntity *root)
