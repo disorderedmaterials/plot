@@ -5,21 +5,33 @@
 #include <Qt3DExtras/QExtrudedTextMesh>
 #include <Qt3DCore/QTransform>
 #include "lineentity.h"
+#include "metrics.h"
 
 class AxisEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
 public:
-    AxisEntity(Qt3DCore::QNode *parent = nullptr);
+    // Axis type
+    enum class AxisType
+            {
+        X,
+        Y,
+        AltY,
+        Z,
+        Custom
+            };
+    AxisEntity(AxisType type, Qt3DCore::QNode *parent = nullptr);
     ~AxisEntity() = default;
 
     /*
      * Definition
      */
     private:
-    // Converting scale factors from local to surface coordinates at last update
-    double surfaceXScaleFactor_{1.0}, surfaceYScaleFactor_{1.0};
+    // Axis type
+    AxisType type_;
     // Global scaling for components
-    double axisScale_{100.0}, tickScale_{2.0}, fontScale_{4.0};
+    double axisScale_{100.0};
     // Axis direction
     QVector3D direction_{1.0, 0.0, 0.0};
     // Tick direction
@@ -43,11 +55,13 @@ private:
     // Calculate tick deltas
     void calculateTickDeltas();
     // Generate linear ticks
-    std::vector<double> generateLinearTicks();
+    std::vector<std::pair<double, bool>> generateLinearTicks();
     // Generate logarithmic ticks
-    std::vector<double> generateLogarithmicTicks();
+    std::vector<std::pair<double, bool>> generateLogarithmicTicks();
 
 public:
+    // Set axis type
+    void setType(AxisType type);
     // Define direction
     void setDirection(QVector3D principal);
     // Map axis value to scaled global position
@@ -65,12 +79,12 @@ private:
     std::vector<std::tuple<Qt3DCore::QEntity *, Qt3DExtras::QExtrudedTextMesh *, Qt3DCore::QTransform *>> tickLabelMeshes_;
 
 private:
-    // Create / update tick labels at specified axis values
-    void createTickLabelEntities(std::vector<double> values, double surfaceXScale, double surfaceYScale);
+    // Create / update ticks and labels at specified axis values
+    void createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
 
 public:
     // Recreate axis
-    void recreate(double surfaceXScale, double surfaceYScale);
+    void recreate(const MildredMetrics &metrics);
     // Add component to child entities
     void addComponentToChildren(Qt3DCore::QComponent *comp);
 };

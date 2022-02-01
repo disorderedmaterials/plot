@@ -6,6 +6,7 @@ qt6_wrap_ui(main_UIS_H ${main_UIS})
 
 # Meta-Objects
 set(main_MOC_HDRS
+  axisentity.h
   mainwindow.h
   widget.h
 )
@@ -25,7 +26,6 @@ add_library(
   widget.cpp
   main.cpp
 
-  axisentity.h
   framegraph.h
   lineentity.h
 )

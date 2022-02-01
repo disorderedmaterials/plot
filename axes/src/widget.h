@@ -1,6 +1,8 @@
 #pragma once
 
 #include "framegraph.h"
+#include "axisentity.h"
+#include "metrics.h"
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DRender/QRenderSettings>
@@ -36,14 +38,26 @@ public:
      * QWidget
      */
     protected:
+    // Widget resized
     void resizeEvent(QResizeEvent *event) override;
 
     /*
      * Metrics
      */
     private:
-    // Scale factors converting from local to surface coordinates
-    double surfaceXScaleFactor_{1.0}, surfaceYScaleFactor_{1.0};
+    // Display metrics
+    MildredMetrics metrics_;
+
+    private:
+    // Update metrics for specified surface size
+    void updateMetrics(int width, int height);
+
+    /*
+     * Component Interaction
+     */
+    signals:
+    void displayVolumeBoundsChanged(double);
+
 
     /*
      * Appearance
@@ -56,14 +70,21 @@ public:
         View3D
     };
 
-    private:
-//      font
+private:
 
 
     /*
      * SceneGraph
      */
     private:
+    // Head node for scene (owned by root entity)
+    Qt3DCore::QEntity *sceneRootEntity_{nullptr};
+    // Axes
+    AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr};
+    // Transforms
+    Qt3DCore::QTransform *displayVolumeTransform_{nullptr}, *localToSurfaceTransform_{nullptr};
+
+    private:
+    // Create basis scenegraph
     void createSceneGraph();
-    Qt3DCore::QTransform *viewVolumeTransform_{nullptr}, *localToSurfaceTransform_{nullptr};
 };

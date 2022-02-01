@@ -1,8 +1,8 @@
 #include "axisentity.h"
 
-AxisEntity::AxisEntity(Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines), subTicksEntity_(this, Qt3DRender::QGeometryRenderer::Lines)
+AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), type_(type), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines), subTicksEntity_(this, Qt3DRender::QGeometryRenderer::Lines)
 {
-//    recreate();
+    setType(type_);
 }
 
 /*
@@ -66,7 +66,7 @@ void AxisEntity::calculateTickDeltas()
 }
 
 // Generate linear ticks
-std::vector<double> AxisEntity::generateLinearTicks()
+std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks()
 {
     // Calculate autoticks if requested
     if (autoTicks_)
@@ -80,7 +80,7 @@ std::vector<double> AxisEntity::generateLinearTicks()
     auto count = 0;
     auto delta = tickDelta_ / (nSubTicks_ + 1);
     auto value = tickStart_;
-    std::vector<double> tickValues;
+    std::vector<std::pair<double, bool>> ticks;
     while (value <= maximum_)
     {
         // Draw tick here, only if value >= minimum_
@@ -90,26 +90,23 @@ std::vector<double> AxisEntity::generateLinearTicks()
 
             if (count % (nSubTicks_ + 1) == 0)
             {
-                ticksEntity_.addVertices({{direction_ * x},{direction_ * x + tickDirection_ * tickScale_}});
-                tickValues.push_back(value);
+                ticks.emplace_back(value, true);
 
                 count = 0;
             }
             else
-            {
-                subTicksEntity_.addVertices({{direction_ * x},{direction_ * x + tickDirection_ * tickScale_*0.5}});
-            }
+                ticks.emplace_back(value, false);
         }
 
         value += delta;
         ++count;
     }
 
-    return tickValues;
+    return ticks;
 }
 
 // Generate logarithmic ticks
-std::vector<double> AxisEntity::generateLogarithmicTicks()
+std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks()
 {
     // Check data range
     if (maximum_ < 0.0) {
@@ -127,7 +124,7 @@ std::vector<double> AxisEntity::generateLogarithmicTicks()
     auto power = floor(min);
     auto value = pow(10, power);
     auto u = 0.0;
-    std::vector<double> tickValues;
+    std::vector<std::pair<double, bool>> ticks;
     while (value <= maximum_)
     {
         // If the current value is in range, plot a tick
@@ -136,10 +133,10 @@ std::vector<double> AxisEntity::generateLogarithmicTicks()
         {
             // Tick mark
             if (count == 0) {
-                ticksEntity_.addVertices({{direction_ * axisScale_ * u},
-                                          {direction_ * axisScale_ * u + tickDirection_ * tickScale_}});
-                tickValues.push_back(value);
+                ticks.emplace_back(value, true);
             }
+            else
+                ticks.emplace_back(value, false);
         }
 
         // Increase tick counter, value, and power if necessary
@@ -154,13 +151,41 @@ std::vector<double> AxisEntity::generateLogarithmicTicks()
             value += pow(10, power);
     }
 
-    return tickValues;
+    return ticks;
+}
+
+// Set axis type
+void AxisEntity::setType(AxisType type)
+{
+    type_ = type;
+
+    // Set default local metrics based on the axis type
+    if (type_ == AxisType::X || type_ == AxisType::Custom)
+    {
+        direction_ = QVector3D(1.0f, 0.0f, 0.0f);
+        tickDirection_ = QVector3D(0.0f, -1.0, 0.0f);
+    }
+    else if (type_ == AxisType::Y)
+    {
+        direction_ = QVector3D(0.0f, 1.0f, 0.0f);
+        tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
+    }
+    else if (type_ == AxisType::AltY)
+    {
+        direction_ = QVector3D(0.0f, 1.0f, 0.0f);
+        tickDirection_ = QVector3D(1.0f, 0.0f, 0.0f);
+    }
+    else if (type_ == AxisType::Z)
+    {
+        direction_ = QVector3D(0.0f, 0.0f, 1.0f);
+        tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
+    }
 }
 
 // Define direction
 void AxisEntity::setDirection(QVector3D principal)
 {
-
+    direction_ = principal;
 }
 
 // Map axis value to scaled global position
@@ -176,22 +201,26 @@ double AxisEntity::axisToGlobal(double axisValue) const {
  */
 
 // Create / update tick labels at specified axis values
-void AxisEntity::createTickLabelEntities(std::vector<double> values, double surfaceXScale, double surfaceYScale)
+void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks,
+                                      const MildredMetrics &metrics)
 {
     // First, hide all existing label entities
     for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
         entity->setEnabled(false);
 
+    // Determine number of labels required
+    auto nTicks = std::count_if(ticks.begin(), ticks.end(), [](const auto &t) { return t.second; });
+
     // Create any new text entities that we need
-    while (tickLabelMeshes_.size() < values.size())
+    while (tickLabelMeshes_.size() < nTicks)
     {
         auto *entity = new Qt3DCore::QEntity(this);
         auto *mesh = new Qt3DExtras::QExtrudedTextMesh(this);
         auto *transform = new Qt3DCore::QTransform(entity);
-        mesh->setFont(QFont("monospace"));
-        mesh->setDepth(0.01);
+        mesh->setFont(metrics.font);
+        mesh->setDepth(0.1);
         entity->addComponent(mesh);
-        transform->setScale3D({fontScale_ / surfaceXScale, fontScale_ / surfaceYScale, 1.0});
+        transform->setScale3D({float(metrics.font.pointSizeF()), float(metrics.font.pointSizeF()), 1.0});
         entity->addComponent(transform);
         tickLabelMeshes_.emplace_back(entity, mesh, transform);
     }
@@ -199,18 +228,36 @@ void AxisEntity::createTickLabelEntities(std::vector<double> values, double surf
     // Loop over new values and create / update entities as required
     // TODO Missing our zip operator here!
     auto n = 0;
-    for (auto v : values)
+    for (auto &&[v, label] : ticks)
     {
-        auto &&[entity, mesh, transform] = tickLabelMeshes_[n];
-        entity->setEnabled(true);
-        mesh->setText(QString::number(v));
-        transform->setTranslation({axisToGlobal(v), -(fontScale_ + tickScale_ + 0.05), 0.0});
-        ++n;
+        auto vT = float(axisToGlobal(v));
+
+        if (label)
+        {
+            // Create tick mark
+            ticksEntity_.addVertices({{direction_ * vT},{direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
+
+            // Set label details
+            auto &&[entity, mesh, transform] = tickLabelMeshes_[n];
+            entity->setEnabled(true);
+            mesh->setText(QString::number(v));
+            transform->setTranslation({vT, -(float(metrics.font.pointSizeF()) + metrics.tickPixelSize), 0.0});
+            ++n;
+        }
+        else
+            subTicksEntity_.addVertices({{direction_ * vT},{direction_ * vT + tickDirection_ * metrics.tickPixelSize*0.5}});
     }
 }
 
-void AxisEntity::recreate(double surfaceXScale, double surfaceYScale)
+void AxisEntity::recreate(const MildredMetrics &metrics)
 {
+    if (type_ == AxisType::X)
+        axisScale_ = metrics.displayVolumeExtent.x();
+    else if (type_ == AxisType::Y || type_ == AxisType::AltY)
+        axisScale_ = metrics.displayVolumeExtent.y();
+    else if (type_ == AxisType::Y)
+        axisScale_ = metrics.displayVolumeExtent.z();
+
     // Clear old primitives
     axisBarEntity_.clear();
     ticksEntity_.clear();
@@ -222,8 +269,8 @@ void AxisEntity::recreate(double surfaceXScale, double surfaceYScale)
     axisBarEntity_.finalise();
 
     // Generate axis ticks
-    auto tickValues = logarithmic_ ? generateLogarithmicTicks() : generateLinearTicks();
-    createTickLabelEntities(tickValues, surfaceXScale, surfaceYScale);
+    auto ticks = logarithmic_ ? generateLogarithmicTicks() : generateLinearTicks();
+    createTicksAndLabels(ticks, metrics);
 
     ticksEntity_.setBasicIndices();
     ticksEntity_.finalise();

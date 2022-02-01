@@ -11,6 +11,9 @@
 
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
+    // Set up a suitable monospace font
+    setFont(QFont("monospace", 10.0));
+
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
      * a container widget. Is there a Qt3DWidget which can simplify this?
@@ -55,18 +58,43 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
-    surfaceXScaleFactor_ = float(width())/120.0f;
-    surfaceYScaleFactor_ = float(height())/120.0f;
+    updateMetrics(width(), height());
     if (localToSurfaceTransform_)
-    {
-        localToSurfaceTransform_->setScale3D({surfaceXScaleFactor_, surfaceYScaleFactor_, 1.0});
-//        localToSurfaceTransform_->setTranslation({surfaceXScaleFactor_ * 10.0f, surfaceYScaleFactor_* 10.0f, 0.0f});
-//        localToSurfaceTransform_->setRotationZ(45.0);
-    }
-//    if (viewVolumeTransform_) viewVolumeTransform_->setScale3D({100.0,100.0, 1.0});
+        localToSurfaceTransform_->setTranslation(metrics_.displayVolumeOrigin);
+    if (xAxis_)
+        xAxis_->recreate(metrics_);
+    if (yAxis_)
+        yAxis_->recreate(metrics_);
+
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
     camera_->setAspectRatio(float(width()) / float(height()));
     viewContainer_->resize(this->size());
+}
+
+/*
+ * Metrics
+ */
+
+// Update metrics for specified surface size
+void MildredWidget::updateMetrics(int width, int height)
+{
+    const auto fontHeight = font().pointSizeF();
+
+    // Initialise the display volume origin to zero (pixels) and the extent to the max surface size
+    metrics_.displayVolumeOrigin = QVector3D(0, 0, 0);
+    metrics_.displayVolumeExtent = QVector3D(float(width), float(height), float(width+height)/2.0f);
+
+    // Apply margin around extreme edge of surface
+    metrics_.displayVolumeOrigin += QVector3D(metrics_.nMarginPixels, metrics_.nMarginPixels, 0.0);
+    metrics_.displayVolumeExtent -= QVector3D(2.0f*metrics_.nMarginPixels, 2.0f*metrics_.nMarginPixels, 0.0);
+
+    // Reduce display volume to accommodate axes
+    if (xAxis_)
+    {
+        auto xAxisHeight = metrics_.tickPixelSize + fontHeight + metrics_.tickLabelPixelGap;
+        metrics_.displayVolumeOrigin += QVector3D(0.0, xAxisHeight , 0.0);
+        metrics_.displayVolumeExtent -= QVector3D(0.0, xAxisHeight , 0.0);
+    }
 }
 
 /*
@@ -75,38 +103,38 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 
 void MildredWidget::createSceneGraph()
 {
-    // Transform from device (width x height) to local view
-    localToSurfaceTransform_ = new Qt3DCore::QTransform(rootEntity_.data());
-    rootEntity_->addComponent(localToSurfaceTransform_);
+    // Create the top-level scene entity which will perform our global transform matrix
+    sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_.data());
+    localToSurfaceTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
+    sceneRootEntity_->addComponent(localToSurfaceTransform_);
 
     /*
      * Axes Leaf
      */
 
-    auto *axesEntity = new Qt3DCore::QEntity(rootEntity_.data());
-    auto *axesTransform = new Qt3DCore::QTransform(axesEntity);
-    axesTransform->setTranslation({10.0, 10.0, 0.0});
-    axesEntity->addComponent(axesTransform);
+    auto *axesEntity = new Qt3DCore::QEntity(sceneRootEntity_);
+    displayVolumeTransform_ = new Qt3DCore::QTransform(axesEntity);
+    displayVolumeTransform_->setTranslation(metrics_.displayVolumeOrigin);
+    axesEntity->addComponent(displayVolumeTransform_);
 
     // Components
     auto *axesMaterial = new Qt3DExtras::QPhongMaterial(axesEntity);
     axesMaterial->setAmbient(Qt::black);
 
     // Axes
-    auto *xAxis = new AxisEntity(axesEntity);
-    xAxis->recreate(surfaceXScaleFactor_, surfaceYScaleFactor_);
-//    xAxis->setAxisScale(100.0);
-//    xAxis->setTickScale(2.0);
-    xAxis->addComponentToChildren(axesMaterial);
+    xAxis_ = new AxisEntity(AxisEntity::AxisType::X, axesEntity);
+    xAxis_->recreate(metrics_);
+    xAxis_->addComponentToChildren(axesMaterial);
+    yAxis_ = new AxisEntity(AxisEntity::AxisType::Y, axesEntity);
+    yAxis_->recreate(metrics_);
+    yAxis_->addComponentToChildren(axesMaterial);
 
     /*
      * Data Space Leaf
      */
-    auto *dataEntity = new Qt3DCore::QEntity(rootEntity_.data());
-    viewVolumeTransform_ = new Qt3DCore::QTransform(dataEntity);
-    dataEntity->addComponent(viewVolumeTransform_);
-
-    // Transform
+    auto *dataEntity = new Qt3DCore::QEntity(sceneRootEntity_);
+    displayVolumeTransform_ = new Qt3DCore::QTransform(dataEntity);
+    dataEntity->addComponent(displayVolumeTransform_);
 
     // Test Scalable Central View Volume
     auto *boxMaterial = new Qt3DExtras::QPhongMaterial(dataEntity);
