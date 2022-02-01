@@ -241,7 +241,7 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
             auto &&[entity, mesh, transform] = tickLabelMeshes_[n];
             entity->setEnabled(true);
             mesh->setText(QString::number(v));
-            transform->setTranslation({vT, -(float(metrics.font.pointSizeF()) + metrics.tickPixelSize), 0.0});
+            transform->setTranslation(direction_ * vT + tickDirection_ * (float(metrics.font.pointSizeF()) + metrics.tickPixelSize + metrics.tickLabelPixelGap));
             ++n;
         }
         else
@@ -255,7 +255,7 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
         axisScale_ = metrics.displayVolumeExtent.x();
     else if (type_ == AxisType::Y || type_ == AxisType::AltY)
         axisScale_ = metrics.displayVolumeExtent.y();
-    else if (type_ == AxisType::Y)
+    else if (type_ == AxisType::Z)
         axisScale_ = metrics.displayVolumeExtent.z();
 
     // Clear old primitives
@@ -284,4 +284,6 @@ void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
     axisBarEntity_.addComponent(comp);
     ticksEntity_.addComponent(comp);
     subTicksEntity_.addComponent(comp);
+    for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
+        entity->addComponent(comp);
 }

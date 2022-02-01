@@ -12,7 +12,7 @@
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
     // Set up a suitable monospace font
-    setFont(QFont("monospace", 10.0));
+    metrics_.font = QFont("monospace", 10.0);
 
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
@@ -59,6 +59,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
     updateMetrics(width(), height());
+
     if (localToSurfaceTransform_)
         localToSurfaceTransform_->setTranslation(metrics_.displayVolumeOrigin);
     if (xAxis_)
