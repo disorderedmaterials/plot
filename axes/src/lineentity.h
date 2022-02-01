@@ -6,8 +6,9 @@
 
 class LineEntity : public Qt3DCore::QEntity
 {
-public:
-    LineEntity(Qt3DCore::QNode *parent = nullptr, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType = Qt3DRender::QGeometryRenderer::LineStrip);
+    public:
+    LineEntity(Qt3DCore::QNode *parent = nullptr,
+               Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType = Qt3DRender::QGeometryRenderer::LineStrip);
     ~LineEntity() = default;
 
     private:

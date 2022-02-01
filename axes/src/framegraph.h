@@ -1,12 +1,12 @@
 #pragma once
 
 #include <QWidget>
-#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QRenderSettings>
 
 class MildredFrameGraph
 {
-public:
+    public:
     MildredFrameGraph() = default;
     ~MildredFrameGraph() = default;
 

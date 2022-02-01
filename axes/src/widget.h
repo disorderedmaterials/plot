@@ -1,19 +1,19 @@
 #pragma once
 
-#include "framegraph.h"
 #include "axisentity.h"
+#include "framegraph.h"
 #include "metrics.h"
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QCamera>
 #include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QRenderSettings>
 
 class MildredWidget : public QWidget
 {
     Q_OBJECT
 
-public:
+    public:
     MildredWidget(QWidget *parent = nullptr);
     ~MildredWidget() = default;
 
@@ -58,7 +58,6 @@ public:
     signals:
     void displayVolumeBoundsChanged(double);
 
-
     /*
      * Appearance
      */
@@ -70,9 +69,7 @@ public:
         View3D
     };
 
-private:
-
-
+    private:
     /*
      * SceneGraph
      */

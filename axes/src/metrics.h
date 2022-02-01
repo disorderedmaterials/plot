@@ -16,16 +16,16 @@ class MildredMetrics
     /*
      * Axis
      */
-     public:
-     // Tick size
-     float tickPixelSize{5.0};
-     // Spacing between tick marks and labels
-     float tickLabelPixelGap{4.0};
+    public:
+    // Tick size
+    float tickPixelSize{5.0};
+    // Spacing between tick marks and labels
+    float tickLabelPixelGap{4.0};
 
-     /*
-      * Display
-      */
-public:
-     // Display volume bounds
-     QVector3D displayVolumeOrigin, displayVolumeExtent;
+    /*
+     * Display
+     */
+    public:
+    // Display volume bounds
+    QVector3D displayVolumeOrigin, displayVolumeExtent;
 };

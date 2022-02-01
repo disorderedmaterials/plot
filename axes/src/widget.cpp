@@ -1,11 +1,11 @@
 #include "widget.h"
 #include "axisentity.h"
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QCamera>
+#include <QResizeEvent>
+#include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QCuboidMesh>
-#include <QResizeEvent>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QRenderSettings>
 
 #include <Qt3DExtras/QForwardRenderer>
 
@@ -32,15 +32,15 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
     // Construct a camera
     camera_ = new Qt3DRender::QCamera(rootEntity_.data());
-//    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
     camera_->setPosition(QVector3D(0, 0, 1.0f));
     camera_->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
     auto *camController = new Qt3DExtras::QOrbitCameraController(rootEntity_.data());
-    camController->setLinearSpeed( 50.0f );
-    camController->setLookSpeed( 180.0f );
+    camController->setLinearSpeed(50.0f);
+    camController->setLookSpeed(180.0f);
     camController->setCamera(camera_);
 
     // Create the framegraph
@@ -82,18 +82,18 @@ void MildredWidget::updateMetrics(int width, int height)
 
     // Initialise the display volume origin to zero (pixels) and the extent to the max surface size
     metrics_.displayVolumeOrigin = QVector3D(0, 0, 0);
-    metrics_.displayVolumeExtent = QVector3D(float(width), float(height), float(width+height)/2.0f);
+    metrics_.displayVolumeExtent = QVector3D(float(width), float(height), float(width + height) / 2.0f);
 
     // Apply margin around extreme edge of surface
     metrics_.displayVolumeOrigin += QVector3D(metrics_.nMarginPixels, metrics_.nMarginPixels, 0.0);
-    metrics_.displayVolumeExtent -= QVector3D(2.0f*metrics_.nMarginPixels, 2.0f*metrics_.nMarginPixels, 0.0);
+    metrics_.displayVolumeExtent -= QVector3D(2.0f * metrics_.nMarginPixels, 2.0f * metrics_.nMarginPixels, 0.0);
 
     // Reduce display volume to accommodate axes
     if (xAxis_)
     {
         auto xAxisHeight = metrics_.tickPixelSize + fontHeight + metrics_.tickLabelPixelGap;
-        metrics_.displayVolumeOrigin += QVector3D(0.0, xAxisHeight , 0.0);
-        metrics_.displayVolumeExtent -= QVector3D(0.0, xAxisHeight , 0.0);
+        metrics_.displayVolumeOrigin += QVector3D(0.0, xAxisHeight, 0.0);
+        metrics_.displayVolumeExtent -= QVector3D(0.0, xAxisHeight, 0.0);
     }
 }
 
@@ -140,7 +140,7 @@ void MildredWidget::createSceneGraph()
     auto *boxMaterial = new Qt3DExtras::QPhongMaterial(dataEntity);
     boxMaterial->setAmbient(Qt::red);
     auto *boxEntity = new LineEntity(dataEntity, Qt3DRender::QGeometryRenderer::LineLoop);
-    boxEntity->addVertices({{0.0,0.0,0.0},{1.0,0.0,0.0},{1.0,1.0,0.0},{0.0,1.0,0.0}});
+    boxEntity->addVertices({{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}});
     boxEntity->setBasicIndices();
     boxEntity->finalise();
     boxEntity->addComponent(boxMaterial);

@@ -1,7 +1,8 @@
 #include "lineentity.h"
 
-LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType) : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this),
- vertexBuffer_(&geometry_), vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_)
+LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
+    : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this), vertexBuffer_(&geometry_),
+      vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_)
 {
     // Set up the vertex attribute
     vertexAttribute_.setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
@@ -41,8 +42,10 @@ void LineEntity::addVertices(const std::vector<QVector3D> &vertices)
 }
 
 // Append indices to cached data
-void LineEntity::setBasicIndices() { cachedIndices_.resize(cachedVertices_.size());
-std::iota(cachedIndices_.begin(), cachedIndices_.end(), 0);
+void LineEntity::setBasicIndices()
+{
+    cachedIndices_.resize(cachedVertices_.size());
+    std::iota(cachedIndices_.begin(), cachedIndices_.end(), 0);
 }
 void LineEntity::addIndex(unsigned int i) { cachedIndices_.push_back(i); }
 void LineEntity::addIndices(const std::vector<unsigned int> &indices)
@@ -56,8 +59,9 @@ void LineEntity::finalise()
     // Convert vertex cache into a QByteArray
     QByteArray vertexBytes;
     vertexBytes.resize(cachedVertices_.size() * 3 * sizeof(float));
-    auto *vertices = reinterpret_cast<float*>(vertexBytes.data());
-    for (const auto &v : cachedVertices_) {
+    auto *vertices = reinterpret_cast<float *>(vertexBytes.data());
+    for (const auto &v : cachedVertices_)
+    {
         *vertices++ = v.x();
         *vertices++ = v.y();
         *vertices++ = v.z();
@@ -69,7 +73,7 @@ void LineEntity::finalise()
     // Convert index data into a QByteArray
     QByteArray indexBytes;
     indexBytes.resize(cachedIndices_.size() * sizeof(unsigned int));
-    auto *indices = reinterpret_cast<unsigned int*>(indexBytes.data());
+    auto *indices = reinterpret_cast<unsigned int *>(indexBytes.data());
     for (const auto i : cachedIndices_)
         *indices++ = i;
     indexBuffer_.setData(indexBytes);

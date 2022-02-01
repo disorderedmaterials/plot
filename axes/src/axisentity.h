@@ -1,26 +1,26 @@
 #pragma once
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DCore/QGeometry>
-#include <Qt3DExtras/QExtrudedTextMesh>
-#include <Qt3DCore/QTransform>
 #include "lineentity.h"
 #include "metrics.h"
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QGeometry>
+#include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QExtrudedTextMesh>
 
 class AxisEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
-public:
+    public:
     // Axis type
     enum class AxisType
-            {
+    {
         X,
         Y,
         AltY,
         Z,
         Custom
-            };
+    };
     AxisEntity(AxisType type, Qt3DCore::QNode *parent = nullptr);
     ~AxisEntity() = default;
 
@@ -51,7 +51,7 @@ public:
     // Whether to determine major ticks automatically
     bool autoTicks_{false};
 
-private:
+    private:
     // Calculate tick deltas
     void calculateTickDeltas();
     // Generate linear ticks
@@ -59,7 +59,7 @@ private:
     // Generate logarithmic ticks
     std::vector<std::pair<double, bool>> generateLogarithmicTicks();
 
-public:
+    public:
     // Set axis type
     void setType(AxisType type);
     // Define direction
@@ -70,7 +70,7 @@ public:
     /*
      * Entities
      */
-private:
+    private:
     // Axis bar
     LineEntity axisBarEntity_;
     // Tick marks
@@ -78,11 +78,11 @@ private:
     // Tick labels
     std::vector<std::tuple<Qt3DCore::QEntity *, Qt3DExtras::QExtrudedTextMesh *, Qt3DCore::QTransform *>> tickLabelMeshes_;
 
-private:
+    private:
     // Create / update ticks and labels at specified axis values
     void createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
 
-public:
+    public:
     // Recreate axis
     void recreate(const MildredMetrics &metrics);
     // Add component to child entities

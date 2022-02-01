@@ -1,6 +1,8 @@
 #include "axisentity.h"
 
-AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), type_(type), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines), subTicksEntity_(this, Qt3DRender::QGeometryRenderer::Lines)
+AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(parent), type_(type), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines),
+      subTicksEntity_(this, Qt3DRender::QGeometryRenderer::Lines)
 {
     setType(type_);
 }
@@ -16,7 +18,7 @@ void AxisEntity::calculateTickDeltas()
     auto baseValueIndex = 0, minTicks = maxTicks / 2;
     int nTicks, iteration;
     auto baseValues = std::vector<int>{1, 2, 3, 4, 5};
-    
+
     auto power = int(log10((maximum_ - minimum_) / maxTicks) - 1);
     iteration = 0;
 
@@ -109,9 +111,9 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks()
 std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks()
 {
     // Check data range
-    if (maximum_ < 0.0) {
-        printf("Axis range is inappropriate for a log scale ({} < x < {}). Axis will not be drawn.\n",
-               minimum_, maximum_);
+    if (maximum_ < 0.0)
+    {
+        printf("Axis range is inappropriate for a log scale ({} < x < {}). Axis will not be drawn.\n", minimum_, maximum_);
         return {};
     }
 
@@ -132,7 +134,8 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks()
         if (log10(value) >= min)
         {
             // Tick mark
-            if (count == 0) {
+            if (count == 0)
+            {
                 ticks.emplace_back(value, true);
             }
             else
@@ -183,17 +186,15 @@ void AxisEntity::setType(AxisType type)
 }
 
 // Define direction
-void AxisEntity::setDirection(QVector3D principal)
-{
-    direction_ = principal;
-}
+void AxisEntity::setDirection(QVector3D principal) { direction_ = principal; }
 
 // Map axis value to scaled global position
-double AxisEntity::axisToGlobal(double axisValue) const {
+double AxisEntity::axisToGlobal(double axisValue) const
+{
     if (logarithmic_)
         return ((axisValue - minimum_) / (maximum_ - minimum_)) * axisScale_;
     else
-        return ( (inverted_ ? (maximum_ - axisValue) : (axisValue - minimum_)) / (maximum_ - minimum_)) * axisScale_;
+        return ((inverted_ ? (maximum_ - axisValue) : (axisValue - minimum_)) / (maximum_ - minimum_)) * axisScale_;
 }
 
 /*
@@ -201,8 +202,7 @@ double AxisEntity::axisToGlobal(double axisValue) const {
  */
 
 // Create / update tick labels at specified axis values
-void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks,
-                                      const MildredMetrics &metrics)
+void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
 {
     // First, hide all existing label entities
     for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
@@ -235,7 +235,7 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
         if (label)
         {
             // Create tick mark
-            ticksEntity_.addVertices({{direction_ * vT},{direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
+            ticksEntity_.addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
 
             // Set label details
             auto &&[entity, mesh, transform] = tickLabelMeshes_[n];
@@ -245,7 +245,7 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
             ++n;
         }
         else
-            subTicksEntity_.addVertices({{direction_ * vT},{direction_ * vT + tickDirection_ * metrics.tickPixelSize*0.5}});
+            subTicksEntity_.addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
     }
 }
 
@@ -264,7 +264,7 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
     subTicksEntity_.clear();
 
     // Plot basic axis line
-    axisBarEntity_.addVertices({{0.0, 0.0, 0.0}, direction_*axisScale_});
+    axisBarEntity_.addVertices({{0.0, 0.0, 0.0}, direction_ * float(axisScale_)});
     axisBarEntity_.setBasicIndices();
     axisBarEntity_.finalise();
 
@@ -279,14 +279,9 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
 }
 
 // Add component to child entities
-void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp) {
+void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
+{
     axisBarEntity_.addComponent(comp);
     ticksEntity_.addComponent(comp);
     subTicksEntity_.addComponent(comp);
-    for (auto &&[entity, mesh, transform]: tickLabelMeshes_) {
-        entity->addComponent(comp);
-        auto a = mesh->maxPoint();
-        auto b = mesh->minPoint();
-        printf("Value  : TL = (%f, %f, %f) BR = (%f, %f, %f)\n", a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
-    }
 }

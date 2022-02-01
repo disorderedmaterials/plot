@@ -18,6 +18,6 @@ class MainWindow : public QMainWindow
     Ui::MainWindow ui_;
 
     protected:
-    //void closeEvent(QCloseEvent *event);
-    //void resizeEvent(QResizeEvent *event);
+    // void closeEvent(QCloseEvent *event);
+    // void resizeEvent(QResizeEvent *event);
 };

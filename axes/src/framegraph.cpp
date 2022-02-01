@@ -1,11 +1,11 @@
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QViewport>
 #include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QRenderSurfaceSelector>
-#include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QLineWidth>
+#include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QViewport>
 
 #include "framegraph.h"
 
@@ -36,7 +36,7 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, QObject *sur
     // Clear to background colour
     auto *clearBuffers = new Qt3DRender::QClearBuffers(viewport);
     clearBuffers->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
-    clearBuffers->setClearColor(QColor(255,255,255,255));
+    clearBuffers->setClearColor(QColor(255, 255, 255, 255));
 
     // Set the camera to the one which was passed in
     auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
