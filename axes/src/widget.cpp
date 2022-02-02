@@ -123,10 +123,10 @@ void MildredWidget::createSceneGraph()
     axesMaterial->setAmbient(Qt::black);
 
     // Axes
-    xAxis_ = new AxisEntity(AxisEntity::AxisType::X, axesEntity);
+    xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, axesEntity);
     xAxis_->recreate(metrics_);
     xAxis_->addComponentToChildren(axesMaterial);
-    yAxis_ = new AxisEntity(AxisEntity::AxisType::Y, axesEntity);
+    yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, axesEntity);
     yAxis_->recreate(metrics_);
     yAxis_->addComponentToChildren(axesMaterial);
 

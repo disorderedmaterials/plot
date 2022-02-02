@@ -163,22 +163,22 @@ void AxisEntity::setType(AxisType type)
     type_ = type;
 
     // Set default local metrics based on the axis type
-    if (type_ == AxisType::X || type_ == AxisType::Custom)
+    if (type_ == AxisType::Horizontal || type_ == AxisType::Custom)
     {
         direction_ = QVector3D(1.0f, 0.0f, 0.0f);
         tickDirection_ = QVector3D(0.0f, -1.0, 0.0f);
     }
-    else if (type_ == AxisType::Y)
+    else if (type_ == AxisType::Vertical)
     {
         direction_ = QVector3D(0.0f, 1.0f, 0.0f);
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
     }
-    else if (type_ == AxisType::AltY)
+    else if (type_ == AxisType::AltVertical)
     {
         direction_ = QVector3D(0.0f, 1.0f, 0.0f);
         tickDirection_ = QVector3D(1.0f, 0.0f, 0.0f);
     }
-    else if (type_ == AxisType::Z)
+    else if (type_ == AxisType::Depth)
     {
         direction_ = QVector3D(0.0f, 0.0f, 1.0f);
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
@@ -251,11 +251,11 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
 
 void AxisEntity::recreate(const MildredMetrics &metrics)
 {
-    if (type_ == AxisType::X)
+    if (type_ == AxisType::Horizontal)
         axisScale_ = metrics.displayVolumeExtent.x();
-    else if (type_ == AxisType::Y || type_ == AxisType::AltY)
+    else if (type_ == AxisType::Vertical || type_ == AxisType::AltVertical)
         axisScale_ = metrics.displayVolumeExtent.y();
-    else if (type_ == AxisType::Z)
+    else if (type_ == AxisType::Depth)
         axisScale_ = metrics.displayVolumeExtent.z();
 
     // Clear old primitives

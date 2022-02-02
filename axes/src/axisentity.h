@@ -15,10 +15,10 @@ class AxisEntity : public Qt3DCore::QEntity
     // Axis type
     enum class AxisType
     {
-        X,
-        Y,
-        AltY,
-        Z,
+        Horizontal,
+        Vertical,
+        AltVertical,
+        Depth,
         Custom
     };
     AxisEntity(AxisType type, Qt3DCore::QNode *parent = nullptr);
