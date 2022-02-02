@@ -2,8 +2,8 @@
 #include "axisentity.h"
 #include <QResizeEvent>
 #include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QOrbitCameraController>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
@@ -12,11 +12,11 @@
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
     // Set up a suitable monospace font
-    metrics_.font = QFont("monospace", 10.0);
+    metrics_.font = QFont("Tahoma", 11.0);
 
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
-     * a container widget. Is there a Qt3DWidget which can simplify this?
+     * a container widget. Is there not a Qt3DWidget which can simplify this?
      */
     viewWindow_ = new Qt3DExtras::Qt3DWindow();
 
@@ -119,8 +119,10 @@ void MildredWidget::createSceneGraph()
     axesEntity->addComponent(displayVolumeTransform_);
 
     // Components
-    auto *axesMaterial = new Qt3DExtras::QPhongMaterial(axesEntity);
+    auto *axesMaterial = new Qt3DExtras::QDiffuseSpecularMaterial(axesEntity);
     axesMaterial->setAmbient(Qt::black);
+    axesMaterial->setDiffuse(QColor(0, 0, 0));
+    axesMaterial->setShininess(0);
 
     // Axes
     xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, axesEntity);
@@ -138,7 +140,7 @@ void MildredWidget::createSceneGraph()
     dataEntity->addComponent(displayVolumeTransform_);
 
     // Test Scalable Central View Volume
-    auto *boxMaterial = new Qt3DExtras::QPhongMaterial(dataEntity);
+    auto *boxMaterial = new Qt3DExtras::QDiffuseSpecularMaterial(dataEntity);
     boxMaterial->setAmbient(Qt::red);
     auto *boxEntity = new LineEntity(dataEntity, Qt3DRender::QGeometryRenderer::LineLoop);
     boxEntity->addVertices({{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}});

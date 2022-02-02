@@ -220,6 +220,7 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
     {
         auto *entity = new TextEntity(this);
         entity->setFont(metrics.font);
+        entity->setAnchorPoint(tickLabelAnchorPoint_);
         tickLabelEntities_.push_back(entity);
     }
 

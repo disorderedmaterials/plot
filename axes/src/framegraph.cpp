@@ -35,7 +35,7 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, QObject *sur
 
     // Clear to background colour
     auto *clearBuffers = new Qt3DRender::QClearBuffers(viewport);
-    clearBuffers->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
+    clearBuffers->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
     clearBuffers->setClearColor(QColor(255, 255, 255, 255));
 
     // Set the camera to the one which was passed in
@@ -44,9 +44,10 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, QObject *sur
 
     // Render state
     auto *renderState = new Qt3DRender::QRenderStateSet(cameraSelector);
-    auto *lineWidth = new Qt3DRender::QLineWidth(renderState);
-    lineWidth->setValue(4.0);
-    renderState->addRenderState(lineWidth);
+//    auto *lineWidth = new Qt3DRender::QLineWidth();
+//    lineWidth->setValue(4.0);
+//    lineWidth->setSmooth(false);
+//    renderState->addRenderState(lineWidth);
 
     // Finally, set the active framegraph of the QRenderSettings to the top node of our framegraph
     parent->setActiveFrameGraph(surfaceSelector);
