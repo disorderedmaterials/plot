@@ -11,81 +11,77 @@ AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent)
  * Definition
  */
 
-// Calculate tick deltas
-void AxisEntity::calculateTickDeltas()
+// Calculate suitable tick start and delta
+std::pair<double, double> AxisEntity::calculateTickStartAndDelta() const
 {
+    // Constants
     const auto nBaseValues = 5, maxIterations = 10, maxTicks = 10;
+    const auto baseValues = std::vector<int>{1, 2, 3, 4, 5};
+
     auto baseValueIndex = 0, minTicks = maxTicks / 2;
     int nTicks, iteration;
-    auto baseValues = std::vector<int>{1, 2, 3, 4, 5};
 
     auto power = int(log10((maximum_ - minimum_) / maxTicks) - 1);
     iteration = 0;
 
-    if ((maximum_ - minimum_) > 1.0e-10)
+    // TODO This is a poorly-formed check - what if the axis spans values lower than 1.0e-10?
+    if ((maximum_ - minimum_) <= 1.0e-10)
+        return {minimum_, 1.0};
+
+    auto tickStart = 0.0, tickDelta = 0.0;
+    do
     {
-        do
+        // Calculate current tickDelta
+        tickDelta = baseValues[baseValueIndex] * pow(10.0, power);
+
+        // Get first tickmark value
+        tickStart = int(minimum_ / tickDelta) * tickDelta;
+
+        // How many ticks now fit between the firstTick and max value?
+        // Add 1 to get total ticks for this delta (i.e. including firstTick)
+        nTicks = int((maximum_ - minimum_) / tickDelta) + 1;
+
+        // Check n...
+        if (nTicks > maxTicks)
         {
-            // Calculate current tickDelta
-            tickDelta_ = baseValues[baseValueIndex] * pow(10.0, power);
-
-            // Get first tickmark value
-            tickStart_ = int(minimum_ / tickDelta_) * tickDelta_;
-
-            // How many ticks now fit between the firstTick and max value?
-            // Add 1 to get total ticks for this delta (i.e. including firstTick)
-            nTicks = int((maximum_ - minimum_) / tickDelta_) + 1;
-
-            // Check n...
-            if (nTicks > maxTicks)
+            ++baseValueIndex;
+            if (baseValueIndex == nBaseValues)
+                ++power;
+            baseValueIndex = baseValueIndex % nBaseValues;
+        }
+        else if (nTicks < minTicks)
+        {
+            --baseValueIndex;
+            if (baseValueIndex == -1)
             {
-                ++baseValueIndex;
-                if (baseValueIndex == nBaseValues)
-                    ++power;
-                baseValueIndex = baseValueIndex % nBaseValues;
+                --power;
+                baseValueIndex += nBaseValues;
             }
-            else if (nTicks < minTicks)
-            {
-                --baseValueIndex;
-                if (baseValueIndex == -1)
-                {
-                    --power;
-                    baseValueIndex += nBaseValues;
-                }
-            }
+        }
 
-            ++iteration;
-            if (iteration == maxIterations)
-                break;
+        ++iteration;
+        if (iteration == maxIterations)
+            break;
 
-        } while ((nTicks > maxTicks) || (nTicks < minTicks));
-    }
-    else
-    {
-        tickStart_ = minimum_;
-        tickDelta_ = 1.0;
-    }
+    } while ((nTicks > maxTicks) || (nTicks < minTicks));
+
+    return {tickStart, tickDelta};
 }
 
 // Generate linear ticks
-std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks()
+std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks(double tickStart, double tickDelta) const
 {
-    // Calculate autoticks if requested
-    if (autoTicks_)
-        calculateTickDeltas();
-
     // Check tickDelta
-    if (((maximum_ - minimum_) / tickDelta_) > 1e4)
+    if (((maximum_ - minimum_) / tickDelta) > 100)
         return {};
 
-    // Plot tickmarks
     auto count = 0;
-    auto delta = tickDelta_ / (nSubTicks_ + 1);
-    auto value = tickStart_;
+    auto delta = tickDelta / (nSubTicks_ + 1);
+    auto value = tickStart;
     std::vector<std::pair<double, bool>> ticks;
     while (value <= maximum_)
     {
-        // Draw tick here, only if value >= minimum_
+        // Add tick here, only if value >= minimum_
         if (value >= minimum_)
         {
             auto x = axisToGlobal(value);
@@ -108,7 +104,7 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks()
 }
 
 // Generate logarithmic ticks
-std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks()
+std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() const
 {
     // Check data range
     if (maximum_ < 0.0)
@@ -248,14 +244,22 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
     }
 }
 
-void AxisEntity::recreate(const MildredMetrics &metrics)
+// Get relevant scale from the supplied metrics
+double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
 {
     if (type_ == AxisType::Horizontal)
-        axisScale_ = metrics.displayVolumeExtent.x();
+        return metrics.displayVolumeExtent.x();
     else if (type_ == AxisType::Vertical || type_ == AxisType::AltVertical)
-        axisScale_ = metrics.displayVolumeExtent.y();
+        return metrics.displayVolumeExtent.y();
     else if (type_ == AxisType::Depth)
-        axisScale_ = metrics.displayVolumeExtent.z();
+        return metrics.displayVolumeExtent.z();
+}
+
+// Recreate axis entities
+void AxisEntity::recreate(const MildredMetrics &metrics)
+{
+    // Store axis scale from metrics
+    axisScale_ = getAxisScale(metrics);
 
     // Clear old primitives
     axisBarEntity_.clear();
@@ -268,7 +272,20 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
     axisBarEntity_.finalise();
 
     // Generate axis ticks
-    auto ticks = logarithmic_ ? generateLogarithmicTicks() : generateLinearTicks();
+    std::vector<std::pair<double, bool>> ticks;
+    if (logarithmic_)
+        ticks = generateLogarithmicTicks();
+    else
+    {
+        // Calculate autoticks if requested
+        if (autoTicks_)
+        {
+            auto [tickStart, tickDelta] = calculateTickStartAndDelta();
+            ticks = generateLinearTicks(tickStart, tickDelta);
+        }
+        else
+            ticks = generateLinearTicks(0.0, 1.0);
+    }
     createTicksAndLabels(ticks, metrics);
 
     ticksEntity_.setBasicIndices();

@@ -44,10 +44,10 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, QObject *sur
 
     // Render state
     auto *renderState = new Qt3DRender::QRenderStateSet(cameraSelector);
-//    auto *lineWidth = new Qt3DRender::QLineWidth();
-//    lineWidth->setValue(4.0);
-//    lineWidth->setSmooth(false);
-//    renderState->addRenderState(lineWidth);
+    //    auto *lineWidth = new Qt3DRender::QLineWidth();
+    //    lineWidth->setValue(4.0);
+    //    lineWidth->setSmooth(false);
+    //    renderState->addRenderState(lineWidth);
 
     // Finally, set the active framegraph of the QRenderSettings to the top node of our framegraph
     parent->setActiveFrameGraph(surfaceSelector);

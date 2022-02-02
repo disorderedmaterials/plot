@@ -45,20 +45,16 @@ class AxisEntity : public Qt3DCore::QEntity
     bool inverted_{false};
     // Number of ticks to display
     int nSubTicks_{4};
-    // Tick delta
-    double tickDelta_{1.0};
-    // Tick start value
-    double tickStart_{0.0};
     // Whether to determine major ticks automatically
     bool autoTicks_{false};
 
     private:
-    // Calculate tick deltas
-    void calculateTickDeltas();
+    // Calculate suitable tick start and delta
+    std::pair<double, double> calculateTickStartAndDelta() const;
     // Generate linear ticks
-    std::vector<std::pair<double, bool>> generateLinearTicks();
+    std::vector<std::pair<double, bool>> generateLinearTicks(double tickStart, double tickDelta) const;
     // Generate logarithmic ticks
-    std::vector<std::pair<double, bool>> generateLogarithmicTicks();
+    std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
 
     public:
     // Set axis type
@@ -82,9 +78,11 @@ class AxisEntity : public Qt3DCore::QEntity
     private:
     // Create / update ticks and labels at specified axis values
     void createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
+    // Get relevant scale from the supplied metrics
+    double getAxisScale(const MildredMetrics &metrics) const;
 
     public:
-    // Recreate axis
+    // Recreate axis entities
     void recreate(const MildredMetrics &metrics);
     // Add component to child entities
     void addComponentToChildren(Qt3DCore::QComponent *comp);
