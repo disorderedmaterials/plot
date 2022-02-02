@@ -9,8 +9,6 @@
 
 class AxisEntity : public Qt3DCore::QEntity
 {
-    Q_OBJECT
-
     public:
     // Axis type
     enum class AxisType
