@@ -79,7 +79,7 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 // Update metrics for specified surface size
 void MildredWidget::updateMetrics(int width, int height)
 {
-    const auto fontHeight = font().pointSizeF();
+    QFontMetrics fontMetrics(metrics_.font);
 
     // Initialise the display volume origin to zero (pixels) and the extent to the max surface size
     metrics_.displayVolumeOrigin = QVector3D(0, 0, 0);
@@ -92,7 +92,7 @@ void MildredWidget::updateMetrics(int width, int height)
     // Reduce display volume to accommodate axes
     if (xAxis_)
     {
-        auto xAxisHeight = metrics_.tickPixelSize + fontHeight + metrics_.tickLabelPixelGap;
+        auto xAxisHeight = metrics_.tickPixelSize + fontMetrics.height() + metrics_.tickLabelPixelGap;
         metrics_.displayVolumeOrigin += QVector3D(0.0, xAxisHeight, 0.0);
         metrics_.displayVolumeExtent -= QVector3D(0.0, xAxisHeight, 0.0);
     }

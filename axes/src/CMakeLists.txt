@@ -22,12 +22,14 @@ add_library(
   axisentity.cpp
   framegraph.cpp
   lineentity.cpp
+  textentity.cpp
   widget.cpp
   main.cpp
 
   axisentity.h
   framegraph.h
   lineentity.h
+  textentity.h
 )
 
 include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/src)

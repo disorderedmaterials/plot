@@ -2,6 +2,7 @@
 
 #include "lineentity.h"
 #include "metrics.h"
+#include "textentity.h"
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DCore/QTransform>
@@ -34,6 +35,8 @@ class AxisEntity : public Qt3DCore::QEntity
     QVector3D direction_{1.0, 0.0, 0.0};
     // Tick direction
     QVector3D tickDirection_{0.0, -1.0, 0.0};
+    // Tick label anchor point
+    MildredMetrics::AnchorPoint tickLabelAnchorPoint_{MildredMetrics::AnchorPoint::TopMiddle};
     // Extrema
     double minimum_{0.0}, maximum_{10.0};
     // Whether the axis is logarithmic
@@ -74,7 +77,7 @@ class AxisEntity : public Qt3DCore::QEntity
     // Tick marks
     LineEntity ticksEntity_, subTicksEntity_;
     // Tick labels
-    std::vector<std::tuple<Qt3DCore::QEntity *, Qt3DExtras::QExtrudedTextMesh *, Qt3DCore::QTransform *>> tickLabelMeshes_;
+    std::vector<TextEntity *> tickLabelEntities_;
 
     private:
     // Create / update ticks and labels at specified axis values

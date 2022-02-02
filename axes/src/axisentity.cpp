@@ -167,21 +167,25 @@ void AxisEntity::setType(AxisType type)
     {
         direction_ = QVector3D(1.0f, 0.0f, 0.0f);
         tickDirection_ = QVector3D(0.0f, -1.0, 0.0f);
+        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::TopMiddle;
     }
     else if (type_ == AxisType::Vertical)
     {
         direction_ = QVector3D(0.0f, 1.0f, 0.0f);
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
+        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleRight;
     }
     else if (type_ == AxisType::AltVertical)
     {
         direction_ = QVector3D(0.0f, 1.0f, 0.0f);
         tickDirection_ = QVector3D(1.0f, 0.0f, 0.0f);
+        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleLeft;
     }
     else if (type_ == AxisType::Depth)
     {
         direction_ = QVector3D(0.0f, 0.0f, 1.0f);
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
+        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleRight;
     }
 }
 
@@ -205,29 +209,23 @@ double AxisEntity::axisToGlobal(double axisValue) const
 void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
 {
     // First, hide all existing label entities
-    for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
+    for (auto &entity : tickLabelEntities_)
         entity->setEnabled(false);
 
     // Determine number of labels required
     auto nTicks = std::count_if(ticks.begin(), ticks.end(), [](const auto &t) { return t.second; });
 
     // Create any new text entities that we need
-    while (tickLabelMeshes_.size() < nTicks)
+    while (tickLabelEntities_.size() < nTicks)
     {
-        auto *entity = new Qt3DCore::QEntity(this);
-        auto *mesh = new Qt3DExtras::QExtrudedTextMesh(this);
-        auto *transform = new Qt3DCore::QTransform(entity);
-        mesh->setFont(metrics.font);
-        mesh->setDepth(0.1);
-        entity->addComponent(mesh);
-        transform->setScale3D({float(metrics.font.pointSizeF()), float(metrics.font.pointSizeF()), 1.0});
-        entity->addComponent(transform);
-        tickLabelMeshes_.emplace_back(entity, mesh, transform);
+        auto *entity = new TextEntity(this);
+        entity->setFont(metrics.font);
+        tickLabelEntities_.push_back(entity);
     }
 
     // Loop over new values and create / update entities as required
     // TODO Missing our zip operator here!
-    auto n = 0;
+    auto tickLabelEntity = tickLabelEntities_.begin();
     for (auto &&[v, label] : ticks)
     {
         auto vT = float(axisToGlobal(v));
@@ -238,11 +236,11 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
             ticksEntity_.addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
 
             // Set label details
-            auto &&[entity, mesh, transform] = tickLabelMeshes_[n];
-            entity->setEnabled(true);
-            mesh->setText(QString::number(v));
-            transform->setTranslation(direction_ * vT + tickDirection_ * (float(metrics.font.pointSizeF()) + metrics.tickPixelSize + metrics.tickLabelPixelGap));
-            ++n;
+            (*tickLabelEntity)->setEnabled(true);
+            (*tickLabelEntity)->setText(QString::number(v));
+            (*tickLabelEntity)
+                ->setAnchorPosition(direction_ * vT + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap));
+            ++tickLabelEntity;
         }
         else
             subTicksEntity_.addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
@@ -284,6 +282,6 @@ void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
     axisBarEntity_.addComponent(comp);
     ticksEntity_.addComponent(comp);
     subTicksEntity_.addComponent(comp);
-    for (auto &&[entity, mesh, transform] : tickLabelMeshes_)
+    for (auto &entity : tickLabelEntities_)
         entity->addComponent(comp);
 }
