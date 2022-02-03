@@ -29,14 +29,6 @@ class AxisEntity : public Qt3DCore::QEntity
     private:
     // Axis type
     AxisType type_;
-    // Global scaling for components
-    double axisScale_{100.0};
-    // Axis direction
-    QVector3D direction_{1.0, 0.0, 0.0};
-    // Tick direction
-    QVector3D tickDirection_{0.0, -1.0, 0.0};
-    // Tick label anchor point
-    MildredMetrics::AnchorPoint tickLabelAnchorPoint_{MildredMetrics::AnchorPoint::TopMiddle};
     // Extrema
     double minimum_{0.0}, maximum_{10.0};
     // Whether the axis is logarithmic
@@ -56,11 +48,26 @@ class AxisEntity : public Qt3DCore::QEntity
     // Generate logarithmic ticks
     std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
 
+    /*
+     * Layout
+     */
+    private:
+    // Global scaling for components
+    double axisScale_{100.0};
+    // Axis direction
+    QVector3D direction_{1.0, 0.0, 0.0};
+    // Tick direction
+    QVector3D tickDirection_{0.0, -1.0, 0.0};
+    // Tick label anchor point
+    MildredMetrics::AnchorPoint tickLabelAnchorPoint_{MildredMetrics::AnchorPoint::TopMiddle};
+
     public:
     // Set axis type
     void setType(AxisType type);
-    // Define direction
+    // Set explicit direction
     void setDirection(QVector3D principal);
+    // Get relevant scale from the supplied metrics
+    double getAxisScale(const MildredMetrics &metrics) const;
     // Map axis value to scaled global position
     double axisToGlobal(double axisValue) const;
 
@@ -77,9 +84,7 @@ class AxisEntity : public Qt3DCore::QEntity
 
     private:
     // Create / update ticks and labels at specified axis values
-    void createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
-    // Get relevant scale from the supplied metrics
-    double getAxisScale(const MildredMetrics &metrics) const;
+    void createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
 
     public:
     // Recreate axis entities

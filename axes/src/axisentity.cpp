@@ -154,6 +154,10 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     return ticks;
 }
 
+/*
+ * Layout
+ */
+
 // Set axis type
 void AxisEntity::setType(AxisType type)
 {
@@ -189,6 +193,17 @@ void AxisEntity::setType(AxisType type)
 // Define direction
 void AxisEntity::setDirection(QVector3D principal) { direction_ = principal; }
 
+// Get relevant scale from the supplied metrics
+double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
+{
+    if (type_ == AxisType::Horizontal)
+        return metrics.displayVolumeExtent.x();
+    else if (type_ == AxisType::Vertical || type_ == AxisType::AltVertical)
+        return metrics.displayVolumeExtent.y();
+    else if (type_ == AxisType::Depth)
+        return metrics.displayVolumeExtent.z();
+}
+
 // Map axis value to scaled global position
 double AxisEntity::axisToGlobal(double axisValue) const
 {
@@ -202,8 +217,8 @@ double AxisEntity::axisToGlobal(double axisValue) const
  * Entities
  */
 
-// Create / update tick labels at specified axis values
-void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
+// Create / update tick and label entities at specified axis values
+void AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
 {
     // First, hide all existing label entities
     for (auto &entity : tickLabelEntities_)
@@ -245,17 +260,6 @@ void AxisEntity::createTicksAndLabels(const std::vector<std::pair<double, bool>>
     }
 }
 
-// Get relevant scale from the supplied metrics
-double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
-{
-    if (type_ == AxisType::Horizontal)
-        return metrics.displayVolumeExtent.x();
-    else if (type_ == AxisType::Vertical || type_ == AxisType::AltVertical)
-        return metrics.displayVolumeExtent.y();
-    else if (type_ == AxisType::Depth)
-        return metrics.displayVolumeExtent.z();
-}
-
 // Recreate axis entities
 void AxisEntity::recreate(const MildredMetrics &metrics)
 {
@@ -287,7 +291,7 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
         else
             ticks = generateLinearTicks(0.0, 1.0);
     }
-    createTicksAndLabels(ticks, metrics);
+    createTickAndLabelEntities(ticks, metrics);
 
     ticksEntity_.setBasicIndices();
     ticksEntity_.finalise();
