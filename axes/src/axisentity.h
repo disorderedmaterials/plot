@@ -6,6 +6,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QExtrudedTextMesh>
 
 class AxisEntity : public Qt3DCore::QEntity
@@ -103,6 +104,17 @@ class AxisEntity : public Qt3DCore::QEntity
     void recreate(const MildredMetrics &metrics);
     // Return bounding rect for axis given its current settings and supplied metrics
     Cuboid boundingRect(const MildredMetrics &metrics) const;
-    // Add component to child entities
-    void addComponentToChildren(Qt3DCore::QComponent *comp);
+
+    /*
+     * Components
+     */
+    private:
+    // Materials
+    Qt3DExtras::QDiffuseSpecularMaterial *axisBarMaterial_{nullptr}, *labelMaterial_{nullptr};
+
+    public:
+    // Return axis bar material
+    Qt3DExtras::QDiffuseSpecularMaterial *axisBarMaterial();
+    // Return label material
+    Qt3DExtras::QDiffuseSpecularMaterial *labelMaterial();
 };

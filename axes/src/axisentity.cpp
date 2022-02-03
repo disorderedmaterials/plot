@@ -10,6 +10,16 @@ AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEnti
     axisTitleEntity_ = new TextEntity(this, "Unnamed Axis");
     axisTitleEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::TopMiddle);
 
+    // Create components
+    axisBarMaterial_ = new Qt3DExtras::QDiffuseSpecularMaterial(this);
+    axisBarMaterial_->setAmbient(QColor(150, 150, 150, 255));
+    axisBarEntity_->addComponent(axisBarMaterial_);
+    ticksEntity_->addComponent(axisBarMaterial_);
+    subTicksEntity_->addComponent(axisBarMaterial_);
+    labelMaterial_ = new Qt3DExtras::QDiffuseSpecularMaterial(this);
+    labelMaterial_->setAmbient(QColor(0, 0, 0, 255));
+    axisTitleEntity_->addComponent(labelMaterial_);
+
     setType(type_);
 }
 
@@ -259,6 +269,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     {
         auto *entity = new TextEntity(this);
         entity->setFont(metrics.axisTickLabelFont);
+        entity->addComponent(labelMaterial_);
         entity->setAnchorPoint(labelAnchorPoint_);
         tickLabelEntities_.push_back(entity);
     }
@@ -405,13 +416,12 @@ Cuboid AxisEntity::boundingRect(const MildredMetrics &metrics) const
     return cuboid;
 }
 
-// Add component to child entities
-void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
-{
-    axisBarEntity_->addComponent(comp);
-    ticksEntity_->addComponent(comp);
-    subTicksEntity_->addComponent(comp);
-    for (auto &entity : tickLabelEntities_)
-        entity->addComponent(comp);
-    axisTitleEntity_->addComponent(comp);
-}
+/*
+ * Components
+ */
+
+// Return axis bar material
+Qt3DExtras::QDiffuseSpecularMaterial *AxisEntity::axisBarMaterial() { return axisBarMaterial_; }
+
+// Return label material
+Qt3DExtras::QDiffuseSpecularMaterial *AxisEntity::labelMaterial() { return labelMaterial_; }

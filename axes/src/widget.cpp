@@ -134,19 +134,8 @@ void MildredWidget::createSceneGraph()
     displayVolumeTransform_->setTranslation(metrics_.displayVolumeOrigin);
     axesEntity->addComponent(displayVolumeTransform_);
 
-    // Components
-    auto *axesMaterial = new Qt3DExtras::QDiffuseSpecularMaterial(axesEntity);
-    axesMaterial->setAmbient(Qt::black);
-    axesMaterial->setDiffuse(QColor(0, 0, 0));
-    axesMaterial->setShininess(0);
-
-    // Axes
     xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, axesEntity);
-    xAxis_->recreate(metrics_);
-    xAxis_->addComponentToChildren(axesMaterial);
     yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, axesEntity);
-    yAxis_->recreate(metrics_);
-    yAxis_->addComponentToChildren(axesMaterial);
     zAxis_ = new AxisEntity(AxisEntity::AxisType::Depth, axesEntity);
     zAxis_->setEnabled(false);
 
