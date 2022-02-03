@@ -47,6 +47,10 @@ class AxisEntity : public Qt3DCore::QEntity
     std::vector<std::pair<double, bool>> generateLinearTicks(double tickStart, double tickDelta) const;
     // Generate logarithmic ticks
     std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
+    // Set axis title
+    void setAxisTitle(QString title);
+    // Return axis title
+    QString axisTitle() const;
 
     /*
      * Layout
@@ -56,10 +60,14 @@ class AxisEntity : public Qt3DCore::QEntity
     double axisScale_{100.0};
     // Axis direction
     QVector3D direction_{1.0, 0.0, 0.0};
+    // Axis direction array index (for easier manipulation of QVector3D)
+    int axisDirectionIndex_{0};
     // Tick direction
     QVector3D tickDirection_{0.0, -1.0, 0.0};
+    // Tick direction array index (for easier manipulation of QVector3D)
+    int tickDirectionIndex_{0};
     // Tick label anchor point
-    MildredMetrics::AnchorPoint tickLabelAnchorPoint_{MildredMetrics::AnchorPoint::TopMiddle};
+    MildredMetrics::AnchorPoint labelAnchorPoint_{MildredMetrics::AnchorPoint::TopMiddle};
 
     public:
     // Set axis type
@@ -81,16 +89,18 @@ class AxisEntity : public Qt3DCore::QEntity
     LineEntity *ticksEntity_{nullptr}, *subTicksEntity_{nullptr};
     // Tick labels
     std::vector<TextEntity *> tickLabelEntities_;
+    // Axis title
+    TextEntity *axisTitleEntity_{nullptr};
 
     private:
-    // Create / update ticks and labels at specified axis values
-    void createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
+    // Create / update ticks and labels at specified axis values, returning their bounding cuboid
+    Cuboid createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
 
     public:
     // Recreate axis entities
     void recreate(const MildredMetrics &metrics);
     // Return bounding rect for axis given its current settings and supplied metrics
-    QRectF boundingRect(const MildredMetrics &metrics) const;
+    Cuboid boundingRect(const MildredMetrics &metrics) const;
     // Add component to child entities
     void addComponentToChildren(Qt3DCore::QComponent *comp);
 };

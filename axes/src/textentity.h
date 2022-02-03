@@ -10,7 +10,7 @@
 class TextEntity : public Qt3DCore::QEntity
 {
     public:
-    TextEntity(Qt3DCore::QNode *parent = nullptr);
+    TextEntity(Qt3DCore::QNode *parent = nullptr, QString text = "");
     ~TextEntity() = default;
 
     private:
@@ -29,21 +29,23 @@ class TextEntity : public Qt3DCore::QEntity
     QVector3D anchorPosition_{0.0, 0.0, 0.0};
 
     private:
-    // Calculate anchor point coordinate
-    QVector3D anchorPointCoordinate() const;
     // Update translation
     void updateTranslation();
 
     public:
     // Set text
     void setText(const QString &text);
-    // Set font
+    // Return current text
+    QString text() const;
+    // Set axisTickLabelFont
     void setFont(const QFont &font);
     // Set anchor point
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
-    // Return local bounding cuboid taking anchor point into account
+    // Return simple bounding cuboid for text
+    static Cuboid boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
+    // Return bounding cuboid with translation and anchor point applied
     static Cuboid boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
                                  MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
 };

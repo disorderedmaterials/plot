@@ -7,6 +7,8 @@ AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEnti
     axisBarEntity_ = new LineEntity(this);
     ticksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
     subTicksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
+    axisTitleEntity_ = new TextEntity(this, "Unnamed Axis");
+    axisTitleEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::TopMiddle);
 
     setType(type_);
 }
@@ -157,6 +159,20 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     return ticks;
 }
 
+// Set axis title
+void AxisEntity::setAxisTitle(QString title)
+{
+    assert(axisTitleEntity_);
+    axisTitleEntity_->setText(title);
+}
+
+// Return axis title
+QString AxisEntity::axisTitle() const
+{
+    assert(axisTitleEntity_);
+    return axisTitleEntity_->text();
+}
+
 /*
  * Layout
  */
@@ -170,26 +186,34 @@ void AxisEntity::setType(AxisType type)
     if (type_ == AxisType::Horizontal || type_ == AxisType::Custom)
     {
         direction_ = QVector3D(1.0f, 0.0f, 0.0f);
+        axisDirectionIndex_ = 0;
         tickDirection_ = QVector3D(0.0f, -1.0, 0.0f);
-        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::TopMiddle;
+        tickDirectionIndex_ = 1;
+        labelAnchorPoint_ = MildredMetrics::AnchorPoint::TopMiddle;
     }
     else if (type_ == AxisType::Vertical)
     {
         direction_ = QVector3D(0.0f, 1.0f, 0.0f);
+        axisDirectionIndex_ = 1;
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
-        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleRight;
+        tickDirectionIndex_ = 0;
+        labelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleRight;
     }
     else if (type_ == AxisType::AltVertical)
     {
         direction_ = QVector3D(0.0f, 1.0f, 0.0f);
+        axisDirectionIndex_ = 1;
         tickDirection_ = QVector3D(1.0f, 0.0f, 0.0f);
-        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleLeft;
+        tickDirectionIndex_ = 0;
+        labelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleLeft;
     }
     else if (type_ == AxisType::Depth)
     {
         direction_ = QVector3D(0.0f, 0.0f, 1.0f);
+        axisDirectionIndex_ = 2;
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
-        tickLabelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleRight;
+        tickDirectionIndex_ = 0;
+        labelAnchorPoint_ = MildredMetrics::AnchorPoint::MiddleRight;
     }
 }
 
@@ -221,7 +245,7 @@ double AxisEntity::axisToGlobal(double axisValue) const
  */
 
 // Create / update tick and label entities at specified axis values
-void AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
+Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
 {
     // First, hide all existing label entities
     for (auto &entity : tickLabelEntities_)
@@ -234,33 +258,44 @@ void AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, 
     while (tickLabelEntities_.size() < nTicks)
     {
         auto *entity = new TextEntity(this);
-        entity->setFont(metrics.font);
-        entity->setAnchorPoint(tickLabelAnchorPoint_);
+        entity->setFont(metrics.axisTickLabelFont);
+        entity->setAnchorPoint(labelAnchorPoint_);
         tickLabelEntities_.push_back(entity);
     }
 
     // Loop over new values and create / update entities as required
-    // TODO Missing our zip operator here!
+    Cuboid boundingCuboid;
     auto tickLabelEntity = tickLabelEntities_.begin();
+    auto tickPos = tickDirection_ * metrics.tickPixelSize;
     for (auto &&[v, label] : ticks)
     {
         auto vT = float(axisToGlobal(v));
+        auto axisPos = direction_ * vT;
 
         if (label)
         {
             // Create tick mark
-            ticksEntity_->addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
+            ticksEntity_->addVertices({axisPos, axisPos + tickPos});
+            boundingCuboid.expand({axisPos, axisPos + tickPos});
 
             // Set label details
             (*tickLabelEntity)->setEnabled(true);
             (*tickLabelEntity)->setText(QString::number(v));
             (*tickLabelEntity)
-                ->setAnchorPosition(direction_ * vT + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap));
+                ->setAnchorPosition(axisPos + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap));
+            boundingCuboid.expand(TextEntity::boundingCuboid(
+                metrics.axisTickLabelFont, QString::number(v),
+                {axisPos + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap)}, labelAnchorPoint_));
             ++tickLabelEntity;
         }
         else
-            subTicksEntity_->addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
+        {
+            subTicksEntity_->addVertices({axisPos, {axisPos + tickPos * 0.5}});
+            boundingCuboid.expand({axisPos, axisPos + tickPos * 0.5});
+        }
     }
+
+    return boundingCuboid;
 }
 
 // Recreate axis entities
@@ -294,7 +329,20 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
         else
             ticks = generateLinearTicks(0.0, 1.0);
     }
-    createTickAndLabelEntities(ticks, metrics);
+    auto tickLabelBounds = createTickAndLabelEntities(ticks, metrics);
+
+    // Axis title
+    if (!axisTitleEntity_->text().isEmpty())
+    {
+        axisTitleEntity_->setEnabled(true);
+        axisTitleEntity_->setFont(metrics.axisTitleFont);
+        axisTitleEntity_->setAnchorPoint(labelAnchorPoint_);
+        axisTitleEntity_->setAnchorPosition(direction_ * metrics.displayVolumeExtent[axisDirectionIndex_] * 0.5 +
+                                            tickDirection_ *
+                                                (tickLabelBounds.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap));
+    }
+    else
+        axisTitleEntity_->setEnabled(false);
 
     ticksEntity_->setBasicIndices();
     ticksEntity_->finalise();
@@ -303,7 +351,7 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
 }
 
 // Return bounding rect for axis given its current settings and supplied metrics
-QRectF AxisEntity::boundingRect(const MildredMetrics &metrics) const
+Cuboid AxisEntity::boundingRect(const MildredMetrics &metrics) const
 {
     // Generate axis ticks
     std::vector<std::pair<double, bool>> ticks;
@@ -318,7 +366,7 @@ QRectF AxisEntity::boundingRect(const MildredMetrics &metrics) const
             ticks = generateLinearTicks(tickStart, tickDelta);
         }
         else
-            ticks = generateLinearTicks(0.0, 1.0);
+            ticks = generateLinearTicks(0.0, 10.0);
     }
 
     // Determine bounding cuboid for the axis
@@ -326,27 +374,35 @@ QRectF AxisEntity::boundingRect(const MildredMetrics &metrics) const
     // -- Axis bar
     auto axisScale = getAxisScale(metrics);
     cuboid.expand({{0.0, 0.0, 0.0}, direction_ * float(axisScale)});
+
     // -- Ticks
     for (auto &&[v, label] : ticks)
     {
         auto vT = float(axisToGlobal(v));
+        auto axisPos = direction_ * vT;
 
         if (label)
         {
             // Tick mark
-            cuboid.expand({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
+            cuboid.expand({axisPos, axisPos + tickDirection_ * metrics.tickPixelSize});
 
             // Label
             cuboid.expand(TextEntity::boundingCuboid(
-                metrics.font, QString::number(v),
-                {direction_ * vT + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap)},
-                tickLabelAnchorPoint_));
+                metrics.axisTickLabelFont, QString::number(v),
+                axisPos + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap), labelAnchorPoint_));
         }
         else
-            cuboid.expand({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
+            cuboid.expand({axisPos, axisPos + tickDirection_ * metrics.tickPixelSize * 0.5});
     }
+    // -- Title
+    if (!axisTitleEntity_->text().isEmpty())
+        cuboid.expand(
+            TextEntity::boundingCuboid(metrics.axisTitleFont, axisTitleEntity_->text(),
+                                       direction_ * metrics.displayVolumeExtent[axisDirectionIndex_] * 0.5 +
+                                           tickDirection_ * (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap),
+                                       labelAnchorPoint_));
 
-    return {cuboid.lowerLeftBack().x(), cuboid.lowerLeftBack().y(), cuboid.xExtent(), cuboid.yExtent()};
+    return cuboid;
 }
 
 // Add component to child entities
@@ -357,4 +413,5 @@ void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
     subTicksEntity_->addComponent(comp);
     for (auto &entity : tickLabelEntities_)
         entity->addComponent(comp);
+    axisTitleEntity_->addComponent(comp);
 }

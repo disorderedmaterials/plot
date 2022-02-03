@@ -32,6 +32,13 @@ void Cuboid::expand(const Cuboid &cuboid)
         v2_.setZ(std::max(cuboid.lowerLeftBack().z(), cuboid.upperRightFront().z()));
 }
 
+// Translate the cuboid by the supplied vector
+void Cuboid::translate(QVector3D v)
+{
+    v1_ += v;
+    v2_ += v;
+}
+
 // Return x extent of cuboid
 float Cuboid::xExtent() const { return v2_.x() - v1_.x(); }
 
@@ -40,3 +47,6 @@ float Cuboid::yExtent() const { return v2_.y() - v1_.y(); }
 
 // Return z extent of cuboid
 float Cuboid::zExtent() const { return v2_.z() - v1_.z(); }
+
+// Return vector of extents
+QVector3D Cuboid::extents() const { return {v2_.x() - v1_.x(), v2_.y() - v1_.y(), v2_.z() - v1_.z()}; }

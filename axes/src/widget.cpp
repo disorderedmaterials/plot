@@ -11,8 +11,9 @@
 
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
-    // Set up a suitable monospace font
-    metrics_.font = QFont("Tahoma", 11.0);
+    // Set up a suitable monospace axisTickLabelFont
+    metrics_.axisTickLabelFont = QFont("Tahoma", 10.0);
+    metrics_.axisTitleFont = QFont("Tahoma", 11.0);
 
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
@@ -79,7 +80,7 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 // Update metrics for specified surface size
 void MildredWidget::updateMetrics(int width, int height)
 {
-    QFontMetrics fontMetrics(metrics_.font);
+    QFontMetrics fontMetrics(metrics_.axisTickLabelFont);
 
     // Initialise the display volume origin to zero (pixels) and the extent to the max surface size
     metrics_.displayVolumeOrigin = QVector3D(0, 0, 0);
@@ -93,14 +94,14 @@ void MildredWidget::updateMetrics(int width, int height)
     if (xAxis_)
     {
         auto xRect = xAxis_->boundingRect(metrics_);
-        metrics_.displayVolumeOrigin += QVector3D(0.0, xRect.height(), 0.0);
-        metrics_.displayVolumeExtent -= QVector3D(0.0, xRect.height(), 0.0);
+        metrics_.displayVolumeOrigin += QVector3D(0.0, xRect.yExtent(), 0.0);
+        metrics_.displayVolumeExtent -= QVector3D(0.0, xRect.yExtent(), 0.0);
     }
     if (yAxis_)
     {
         auto yRect = yAxis_->boundingRect(metrics_);
-        metrics_.displayVolumeOrigin += QVector3D(yRect.width(), 0.0, 0.0);
-        metrics_.displayVolumeExtent -= QVector3D(yRect.width(), 0.0, 0.0);
+        metrics_.displayVolumeOrigin += QVector3D(yRect.xExtent(), 0.0, 0.0);
+        metrics_.displayVolumeExtent -= QVector3D(yRect.xExtent(), 0.0, 0.0);
     }
 }
 

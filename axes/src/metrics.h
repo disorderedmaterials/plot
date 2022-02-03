@@ -9,10 +9,10 @@ class MildredMetrics
      * General
      */
     public:
-    // Display font
-    QFont font;
+    // Fonts
+    QFont axisTickLabelFont, axisTitleFont;
     // Margin around outer edge of plot
-    float nMarginPixels{2.0};
+    float nMarginPixels{5.0};
 
     /*
      * Axis
@@ -21,7 +21,7 @@ class MildredMetrics
     // Tick size
     float tickPixelSize{5.0};
     // Spacing between tick marks and labels
-    float tickLabelPixelGap{4.0};
+    float tickLabelPixelGap{0.0};
 
     /*
      * Object Anchor Point

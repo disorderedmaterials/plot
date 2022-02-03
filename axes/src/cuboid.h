@@ -22,10 +22,14 @@ class Cuboid
     QVector3D upperRightFront() const;
     // Expand cuboid to encompass supplied cuboid
     void expand(const Cuboid &cuboid);
+    // Translate the cuboid by the supplied vector
+    void translate(QVector3D v);
     // Return x extent of cuboid
     float xExtent() const;
     // Return y extent of cuboid
     float yExtent() const;
     // Return z extent of cuboid
     float zExtent() const;
+    // Return vector of extents
+    QVector3D extents() const;
 };
