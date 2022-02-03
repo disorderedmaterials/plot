@@ -1,4 +1,5 @@
 #include "axisentity.h"
+#include "cuboid.h"
 
 AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(parent), type_(type), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines),
@@ -292,6 +293,53 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
     ticksEntity_.finalise();
     subTicksEntity_.setBasicIndices();
     subTicksEntity_.finalise();
+}
+
+// Return bounding rect for axis given its current settings and supplied metrics
+QRectF AxisEntity::boundingRect(const MildredMetrics &metrics) const
+{
+    // Generate axis ticks
+    std::vector<std::pair<double, bool>> ticks;
+    if (logarithmic_)
+        ticks = generateLogarithmicTicks();
+    else
+    {
+        // Calculate autoticks if requested
+        if (autoTicks_)
+        {
+            auto [tickStart, tickDelta] = calculateTickStartAndDelta();
+            ticks = generateLinearTicks(tickStart, tickDelta);
+        }
+        else
+            ticks = generateLinearTicks(0.0, 1.0);
+    }
+
+    // Determine bounding cuboid for the axis
+    Cuboid cuboid;
+    // -- Axis bar
+    auto axisScale = getAxisScale(metrics);
+    cuboid.expand({{0.0, 0.0, 0.0}, direction_ * float(axisScale)});
+    // -- Ticks
+    for (auto &&[v, label] : ticks)
+    {
+        auto vT = float(axisToGlobal(v));
+
+        if (label)
+        {
+            // Tick mark
+            cuboid.expand({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
+
+            // Label
+            cuboid.expand(TextEntity::boundingCuboid(
+                metrics.font, QString::number(v),
+                {direction_ * vT + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap)},
+                tickLabelAnchorPoint_));
+        }
+        else
+            cuboid.expand({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
+    }
+
+    return {cuboid.lowerLeftBack().x(), cuboid.lowerLeftBack().y(), cuboid.xExtent(), cuboid.yExtent()};
 }
 
 // Add component to child entities

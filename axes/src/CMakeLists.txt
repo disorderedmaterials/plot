@@ -30,7 +30,7 @@ add_library(
   framegraph.h
   lineentity.h
   textentity.h
-)
+        cuboid.h cuboid.cpp metrics.cpp)
 
 include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(

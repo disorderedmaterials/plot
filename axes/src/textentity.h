@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cuboid.h"
 #include "metrics.h"
 #include <QFontMetrics>
 #include <Qt3DCore/QEntity>
@@ -42,4 +43,7 @@ class TextEntity : public Qt3DCore::QEntity
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
+    // Return local bounding cuboid taking anchor point into account
+    static Cuboid boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
+                                 MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
 };

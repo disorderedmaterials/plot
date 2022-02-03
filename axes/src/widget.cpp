@@ -92,9 +92,15 @@ void MildredWidget::updateMetrics(int width, int height)
     // Reduce display volume to accommodate axes
     if (xAxis_)
     {
-        auto xAxisHeight = metrics_.tickPixelSize + fontMetrics.height() + metrics_.tickLabelPixelGap;
-        metrics_.displayVolumeOrigin += QVector3D(0.0, xAxisHeight, 0.0);
-        metrics_.displayVolumeExtent -= QVector3D(0.0, xAxisHeight, 0.0);
+        auto xRect = xAxis_->boundingRect(metrics_);
+        metrics_.displayVolumeOrigin += QVector3D(0.0, xRect.height(), 0.0);
+        metrics_.displayVolumeExtent -= QVector3D(0.0, xRect.height(), 0.0);
+    }
+    if (yAxis_)
+    {
+        auto yRect = yAxis_->boundingRect(metrics_);
+        metrics_.displayVolumeOrigin += QVector3D(yRect.width(), 0.0, 0.0);
+        metrics_.displayVolumeExtent -= QVector3D(yRect.width(), 0.0, 0.0);
     }
 }
 

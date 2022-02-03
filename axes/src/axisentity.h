@@ -84,6 +84,8 @@ class AxisEntity : public Qt3DCore::QEntity
     public:
     // Recreate axis entities
     void recreate(const MildredMetrics &metrics);
+    // Return bounding rect for axis given its current settings and supplied metrics
+    QRectF boundingRect(const MildredMetrics &metrics) const;
     // Add component to child entities
     void addComponentToChildren(Qt3DCore::QComponent *comp);
 };

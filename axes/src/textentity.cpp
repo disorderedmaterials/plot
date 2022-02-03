@@ -25,34 +25,11 @@ QVector3D TextEntity::anchorPointCoordinate() const
      * Remember that:
      *   - The QExtrudedTextMesh has origin (0,0,0) at the font baseline at the leftmost point.
      *   - The boundingRect returned by QFontMetrics is in screen coordinates so has -ve top
-     *
      */
     QFontMetrics fontMetrics(mesh_->font());
     auto boundingRect = fontMetrics.boundingRect(mesh_->text());
-
-    switch (anchorPoint_)
-    {
-        case (MildredMetrics::AnchorPoint::TopLeft):
-            return {0.0, float(mesh_->font().pointSizeF()), 0.0f};
-        case (MildredMetrics::AnchorPoint::TopMiddle):
-            return {float(boundingRect.width() * 0.5), float(mesh_->font().pointSizeF()), 0.0f};
-        case (MildredMetrics::AnchorPoint::TopRight):
-            return {float(boundingRect.width()), float(mesh_->font().pointSizeF()), 0.0f};
-        case (MildredMetrics::AnchorPoint::MiddleLeft):
-            return {0.0, float(mesh_->font().pointSizeF() * 0.5), 0.0f};
-        case (MildredMetrics::AnchorPoint::Middle):
-            return {float(boundingRect.width() * 0.5), float(mesh_->font().pointSizeF() * 0.5), 0.0f};
-        case (MildredMetrics::AnchorPoint::MiddleRight):
-            return {float(boundingRect.width()), float(mesh_->font().pointSizeF() * 0.5), 0.0f};
-        case (MildredMetrics::AnchorPoint::BottomLeft):
-            return {0.0, 0.0, 0.0f};
-        case (MildredMetrics::AnchorPoint::BottomMiddle):
-            return {float(boundingRect.width() * 0.5), 0.0, 0.0f};
-        case (MildredMetrics::AnchorPoint::BottomRight):
-            return {float(boundingRect.width()), 0.0, 0.0f};
-        default:
-            throw(std::runtime_error("Unhandled anchor point."));
-    }
+    auto anchorFrac = MildredMetrics::anchorLocation(anchorPoint_);
+    return {float(boundingRect.width() * anchorFrac.x()), float(mesh_->font().pointSizeF() * anchorFrac.y()), 0.0};
 }
 
 // Update translation
@@ -95,4 +72,21 @@ void TextEntity::setAnchorPosition(QVector3D p)
     anchorPosition_ = p;
 
     updateTranslation();
+}
+
+// Return bounding cuboid
+Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
+                                  MildredMetrics::AnchorPoint anchorPoint, float depth)
+{
+    QFontMetrics fontMetrics(font);
+    auto boundingRect = fontMetrics.boundingRect(text);
+    auto anchorFrac = MildredMetrics::anchorLocation(anchorPoint);
+
+    QRectF boundingRectF(boundingRect);
+    boundingRectF.translate(boundingRect.width() * anchorFrac.x(), font.pointSizeF() * anchorFrac.y());
+
+    // Translate the bounding rect according to the anchor and position
+    QVector3D v1(anchorPosition);
+    v1 += {float(boundingRectF.left()), float(boundingRectF.bottom()), 0.0};
+    return {v1, v1 + QVector3D(float(boundingRectF.width()), float(boundingRectF.height()), depth)};
 }

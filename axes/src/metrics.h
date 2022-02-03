@@ -39,8 +39,8 @@ class MildredMetrics
         BottomMiddle,
         BottomRight
     };
-    // Return the coordinates of the anchor point on the specified rect
-    static QPoint anchorPosition(QRect boundingRect);
+    // Return the fractional anchor location, with (0,0) corresponding to bottom-left corner
+    static QPointF anchorLocation(AnchorPoint anchor);
 
     /*
      * Display
