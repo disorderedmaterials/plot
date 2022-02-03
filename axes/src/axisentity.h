@@ -47,10 +47,12 @@ class AxisEntity : public Qt3DCore::QEntity
     std::vector<std::pair<double, bool>> generateLinearTicks(double tickStart, double tickDelta) const;
     // Generate logarithmic ticks
     std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
-    // Set axis title
-    void setAxisTitle(QString title);
-    // Return axis title
-    QString axisTitle() const;
+
+    public:
+    // Set title text
+    void setTitleText(const QString &title);
+    // Return title text
+    QString titleText() const;
 
     /*
      * Layout

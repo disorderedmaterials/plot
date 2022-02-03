@@ -17,7 +17,5 @@ class MainWindow : public QMainWindow
     // Main form declaration
     Ui::MainWindow ui_;
 
-    protected:
-    // void closeEvent(QCloseEvent *event);
-    // void resizeEvent(QResizeEvent *event);
+    private slots:
 };

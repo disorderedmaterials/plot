@@ -51,6 +51,8 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     createSceneGraph();
 
     viewWindow_->setRootEntity(rootEntity_.data());
+
+    updateMetrics();
 }
 
 /*
@@ -63,10 +65,6 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 
     if (localToSurfaceTransform_)
         localToSurfaceTransform_->setTranslation(metrics_.displayVolumeOrigin);
-    if (xAxis_)
-        xAxis_->recreate(metrics_);
-    if (yAxis_)
-        yAxis_->recreate(metrics_);
 
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
     camera_->setAspectRatio(float(width()) / float(height()));
@@ -91,19 +89,30 @@ void MildredWidget::updateMetrics(int width, int height)
     metrics_.displayVolumeExtent -= QVector3D(2.0f * metrics_.nMarginPixels, 2.0f * metrics_.nMarginPixels, 0.0);
 
     // Reduce display volume to accommodate axes
-    if (xAxis_)
+    if (xAxis_ && xAxis_->isEnabled())
     {
         auto xRect = xAxis_->boundingRect(metrics_);
         metrics_.displayVolumeOrigin += QVector3D(0.0, xRect.yExtent(), 0.0);
         metrics_.displayVolumeExtent -= QVector3D(0.0, xRect.yExtent(), 0.0);
     }
-    if (yAxis_)
+    if (yAxis_ && yAxis_->isEnabled())
     {
         auto yRect = yAxis_->boundingRect(metrics_);
         metrics_.displayVolumeOrigin += QVector3D(yRect.xExtent(), 0.0, 0.0);
         metrics_.displayVolumeExtent -= QVector3D(yRect.xExtent(), 0.0, 0.0);
     }
+
+    // Recreate visible axes
+    if (xAxis_ && xAxis_->isEnabled())
+        xAxis_->recreate(metrics_);
+    if (yAxis_ && yAxis_->isEnabled())
+        yAxis_->recreate(metrics_);
+    if (zAxis_ && zAxis_->isEnabled())
+        zAxis_->recreate(metrics_);
 }
+
+// Update metrics for current surface size
+void MildredWidget::updateMetrics() { updateMetrics(width(), height()); }
 
 /*
  * SceneGraph
@@ -138,10 +147,13 @@ void MildredWidget::createSceneGraph()
     yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, axesEntity);
     yAxis_->recreate(metrics_);
     yAxis_->addComponentToChildren(axesMaterial);
+    zAxis_ = new AxisEntity(AxisEntity::AxisType::Depth, axesEntity);
+    zAxis_->setEnabled(false);
 
     /*
      * Data Space Leaf
      */
+
     auto *dataEntity = new Qt3DCore::QEntity(sceneRootEntity_);
     displayVolumeTransform_ = new Qt3DCore::QTransform(dataEntity);
     dataEntity->addComponent(displayVolumeTransform_);
@@ -154,4 +166,38 @@ void MildredWidget::createSceneGraph()
     boxEntity->setBasicIndices();
     boxEntity->finalise();
     boxEntity->addComponent(boxMaterial);
+}
+
+// Return x axis entity
+const AxisEntity *MildredWidget::xAxis() const { return xAxis_; }
+
+// Return y axis entity
+const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
+
+// Return z axis entity
+const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
+
+/*
+ * Slots
+ */
+
+void MildredWidget::setXAxisTitle(const QString &title)
+{
+    assert(xAxis_);
+    xAxis_->setTitleText(title);
+    updateMetrics();
+}
+
+void MildredWidget::setYAxisTitle(const QString &title)
+{
+    assert(yAxis_);
+    yAxis_->setTitleText(title);
+    updateMetrics();
+}
+
+void MildredWidget::setZAxisTitle(const QString &title)
+{
+    assert(zAxis_);
+    zAxis_->setTitleText(title);
+    updateMetrics();
 }

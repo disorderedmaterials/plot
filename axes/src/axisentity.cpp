@@ -159,15 +159,15 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     return ticks;
 }
 
-// Set axis title
-void AxisEntity::setAxisTitle(QString title)
+// Set title text
+void AxisEntity::setTitleText(const QString &title)
 {
     assert(axisTitleEntity_);
     axisTitleEntity_->setText(title);
 }
 
-// Return axis title
-QString AxisEntity::axisTitle() const
+// Return title text
+QString AxisEntity::titleText() const
 {
     assert(axisTitleEntity_);
     return axisTitleEntity_->text();

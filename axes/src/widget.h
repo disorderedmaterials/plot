@@ -52,11 +52,9 @@ class MildredWidget : public QWidget
     // Update metrics for specified surface size
     void updateMetrics(int width, int height);
 
-    /*
-     * Component Interaction
-     */
-    signals:
-    void displayVolumeBoundsChanged(double);
+    public:
+    // Update metrics for current surface size
+    void updateMetrics();
 
     /*
      * Appearance
@@ -69,7 +67,6 @@ class MildredWidget : public QWidget
         View3D
     };
 
-    private:
     /*
      * SceneGraph
      */
@@ -77,11 +74,27 @@ class MildredWidget : public QWidget
     // Head node for scene (owned by root entity)
     Qt3DCore::QEntity *sceneRootEntity_{nullptr};
     // Axes
-    AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr};
+    AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr}, *altYAxis_{nullptr}, *zAxis_{nullptr};
     // Transforms
     Qt3DCore::QTransform *displayVolumeTransform_{nullptr}, *localToSurfaceTransform_{nullptr};
 
     private:
     // Create basis scenegraph
     void createSceneGraph();
+
+    public:
+    // Return x axis entity
+    const AxisEntity *xAxis() const;
+    // Return y axis entity
+    const AxisEntity *yAxis() const;
+    // Return z axis entity
+    const AxisEntity *zAxis() const;
+
+    /*
+     * Slots
+     */
+    public slots:
+    void setXAxisTitle(const QString &title);
+    void setYAxisTitle(const QString &title);
+    void setZAxisTitle(const QString &title);
 };
