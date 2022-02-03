@@ -76,9 +76,9 @@ class AxisEntity : public Qt3DCore::QEntity
      */
     private:
     // Axis bar
-    LineEntity axisBarEntity_;
+    LineEntity *axisBarEntity_{nullptr};
     // Tick marks
-    LineEntity ticksEntity_, subTicksEntity_;
+    LineEntity *ticksEntity_{nullptr}, *subTicksEntity_{nullptr};
     // Tick labels
     std::vector<TextEntity *> tickLabelEntities_;
 

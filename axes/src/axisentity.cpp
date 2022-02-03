@@ -1,10 +1,13 @@
 #include "axisentity.h"
 #include "cuboid.h"
 
-AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent)
-    : Qt3DCore::QEntity(parent), type_(type), axisBarEntity_(this), ticksEntity_(this, Qt3DRender::QGeometryRenderer::Lines),
-      subTicksEntity_(this, Qt3DRender::QGeometryRenderer::Lines)
+AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), type_(type)
 {
+    // Create entities
+    axisBarEntity_ = new LineEntity(this);
+    ticksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
+    subTicksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
+
     setType(type_);
 }
 
@@ -246,7 +249,7 @@ void AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, 
         if (label)
         {
             // Create tick mark
-            ticksEntity_.addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
+            ticksEntity_->addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize}});
 
             // Set label details
             (*tickLabelEntity)->setEnabled(true);
@@ -256,7 +259,7 @@ void AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, 
             ++tickLabelEntity;
         }
         else
-            subTicksEntity_.addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
+            subTicksEntity_->addVertices({{direction_ * vT}, {direction_ * vT + tickDirection_ * metrics.tickPixelSize * 0.5}});
     }
 }
 
@@ -267,14 +270,14 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
     axisScale_ = getAxisScale(metrics);
 
     // Clear old primitives
-    axisBarEntity_.clear();
-    ticksEntity_.clear();
-    subTicksEntity_.clear();
+    axisBarEntity_->clear();
+    ticksEntity_->clear();
+    subTicksEntity_->clear();
 
     // Plot basic axis line
-    axisBarEntity_.addVertices({{0.0, 0.0, 0.0}, direction_ * float(axisScale_)});
-    axisBarEntity_.setBasicIndices();
-    axisBarEntity_.finalise();
+    axisBarEntity_->addVertices({{0.0, 0.0, 0.0}, direction_ * float(axisScale_)});
+    axisBarEntity_->setBasicIndices();
+    axisBarEntity_->finalise();
 
     // Generate axis ticks
     std::vector<std::pair<double, bool>> ticks;
@@ -293,10 +296,10 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
     }
     createTickAndLabelEntities(ticks, metrics);
 
-    ticksEntity_.setBasicIndices();
-    ticksEntity_.finalise();
-    subTicksEntity_.setBasicIndices();
-    subTicksEntity_.finalise();
+    ticksEntity_->setBasicIndices();
+    ticksEntity_->finalise();
+    subTicksEntity_->setBasicIndices();
+    subTicksEntity_->finalise();
 }
 
 // Return bounding rect for axis given its current settings and supplied metrics
@@ -349,9 +352,9 @@ QRectF AxisEntity::boundingRect(const MildredMetrics &metrics) const
 // Add component to child entities
 void AxisEntity::addComponentToChildren(Qt3DCore::QComponent *comp)
 {
-    axisBarEntity_.addComponent(comp);
-    ticksEntity_.addComponent(comp);
-    subTicksEntity_.addComponent(comp);
+    axisBarEntity_->addComponent(comp);
+    ticksEntity_->addComponent(comp);
+    subTicksEntity_->addComponent(comp);
     for (auto &entity : tickLabelEntities_)
         entity->addComponent(comp);
 }
