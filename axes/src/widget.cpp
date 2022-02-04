@@ -4,6 +4,7 @@
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QOrbitCameraController>
+#include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
@@ -31,18 +32,23 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     renderSettings_ = new Qt3DRender::QRenderSettings(rootEntity_.data());
     rootEntity_->addComponent(renderSettings_);
 
+    // Add a mouse handler and connect it up
+    auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());
+    auto *mouseDevice = new Qt3DInput::QMouseDevice(rootEntity_.data());
+    mouseHandler->setSourceDevice(mouseDevice);
+    rootEntity_->addComponent(mouseHandler);
+    connect(mouseHandler, SIGNAL(positionChanged(Qt3DInput::QMouseEvent *)), this,
+            SLOT(mousePositionChanged(Qt3DInput::QMouseEvent *)));
+    connect(mouseHandler, SIGNAL(pressed(Qt3DInput::QMouseEvent *)), this, SLOT(mouseButtonPressed(Qt3DInput::QMouseEvent *)));
+    connect(mouseHandler, SIGNAL(released(Qt3DInput::QMouseEvent *)), this,
+            SLOT(mouseButtonReleased(Qt3DInput::QMouseEvent *)));
+
     // Construct a camera
     camera_ = new Qt3DRender::QCamera(rootEntity_.data());
     //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
     camera_->setPosition(QVector3D(0, 0, 1.0f));
-    camera_->setViewCenter(QVector3D(0, 0, 0));
-
-    // For camera controls
-    auto *camController = new Qt3DExtras::QOrbitCameraController(rootEntity_.data());
-    camController->setLinearSpeed(50.0f);
-    camController->setLookSpeed(180.0f);
-    camController->setCamera(camera_);
+    camera_->setViewCenter(QVector3D(0, 0, -10.0));
 
     // Create the framegraph
     frameGraph_.create(renderSettings_, viewWindow_, camera_);
@@ -63,11 +69,24 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 {
     updateMetrics(width(), height());
 
-    if (localToSurfaceTransform_)
-        localToSurfaceTransform_->setTranslation(metrics_.displayVolumeOrigin);
+    // Move the scene root position to be the centre of the XY plane and a suitable distance away
+    sceneRootTransform_->setTranslation(QVector3D(width() / 2.0, height() / 2.0, -width()));
 
-    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
+    // Set the local transform so global origin corresponds to the visible screen origin
+    if (sceneObjectsTransform_)
+        sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin -
+                                               QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
+
+    dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin);
+
+    // Reset projection for new viewport
+    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, width() * 2.0f);
     camera_->setAspectRatio(float(width()) / float(height()));
+
+    // Debug objects
+    sceneBoundingCuboidTransform_->setScale3D(QVector3D(width(), height(), width()));
+
+    // Lastly, resize our view container
     viewContainer_->resize(this->size());
 }
 
@@ -120,19 +139,54 @@ void MildredWidget::updateMetrics() { updateMetrics(width(), height()); }
 
 void MildredWidget::createSceneGraph()
 {
-    // Create the top-level scene entity which will perform our global transform matrix
+    /*
+     *    Scene Graph Layout
+     *    ------------------
+     *
+     *          [RootEntity]               Top-level root entity
+     *               |
+     *         sceneRootEntity_
+     *          |           |
+     * sceneRootTransform_  |              Translates to distant rotation point and applies 3D view rotation
+     *                      |
+     *              sceneObjectsEntity_    Contains all viewable objects for plotting
+     *               |         |    |
+     * sceneObjectsTransform_  |    |      Places scene objects so that global 0,0,0 is lower left corner to the viewer
+     *                         |    |
+     *                 axesEntity   |      Contains the individual AxesEntities
+     *                     |        |
+     *           xAxis_,yAxis_...   |      Individual axis entities
+     *                              |
+     *                      dataEntity     Parent entity for all displayed data series
+     *                       |      |
+     *      dataOriginTransform_    *      Sets the coordinate system so that 0,0,0 is at the axes origin
+     */
+
     sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_.data());
-    localToSurfaceTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
-    sceneRootEntity_->addComponent(localToSurfaceTransform_);
+    sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
+    sceneRootEntity_->addComponent(sceneRootTransform_);
+
+    auto *sceneObjectsEntity_ = new Qt3DCore::QEntity(sceneRootEntity_);
+    sceneObjectsTransform_ = new Qt3DCore::QTransform(sceneObjectsEntity_);
+    sceneObjectsEntity_->addComponent(sceneObjectsTransform_);
+
+    // Debug
+    sceneBoundingCuboidEntity_ = new Qt3DCore::QEntity(sceneRootEntity_);
+    sceneBoundingCuboidEntity_->setEnabled(false);
+    auto *cuboidMesh = new Qt3DExtras::QCuboidMesh(sceneBoundingCuboidEntity_);
+    sceneBoundingCuboidEntity_->addComponent(cuboidMesh);
+    sceneBoundingCuboidTransform_ = new Qt3DCore::QTransform(sceneBoundingCuboidEntity_);
+    sceneBoundingCuboidEntity_->addComponent(sceneBoundingCuboidTransform_);
+    auto *cuboidMaterial = new Qt3DExtras::QDiffuseSpecularMaterial(sceneBoundingCuboidEntity_);
+    cuboidMaterial->setAmbient(QColor(255, 0, 0, 100));
+    cuboidMaterial->setAlphaBlendingEnabled(true);
+    sceneBoundingCuboidEntity_->addComponent(cuboidMaterial);
 
     /*
      * Axes Leaf
      */
 
-    auto *axesEntity = new Qt3DCore::QEntity(sceneRootEntity_);
-    displayVolumeTransform_ = new Qt3DCore::QTransform(axesEntity);
-    displayVolumeTransform_->setTranslation(metrics_.displayVolumeOrigin);
-    axesEntity->addComponent(displayVolumeTransform_);
+    auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
 
     xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, axesEntity);
     yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, axesEntity);
@@ -143,18 +197,9 @@ void MildredWidget::createSceneGraph()
      * Data Space Leaf
      */
 
-    auto *dataEntity = new Qt3DCore::QEntity(sceneRootEntity_);
-    displayVolumeTransform_ = new Qt3DCore::QTransform(dataEntity);
-    dataEntity->addComponent(displayVolumeTransform_);
-
-    // Test Scalable Central View Volume
-    auto *boxMaterial = new Qt3DExtras::QDiffuseSpecularMaterial(dataEntity);
-    boxMaterial->setAmbient(Qt::red);
-    auto *boxEntity = new LineEntity(dataEntity, Qt3DRender::QGeometryRenderer::LineLoop);
-    boxEntity->addVertices({{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}});
-    boxEntity->setBasicIndices();
-    boxEntity->finalise();
-    boxEntity->addComponent(boxMaterial);
+    auto *dataEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
+    dataOriginTransform_ = new Qt3DCore::QTransform(dataEntity);
+    dataEntity->addComponent(dataOriginTransform_);
 }
 
 // Return x axis entity
@@ -165,6 +210,34 @@ const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
 
 // Return z axis entity
 const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
+
+/*
+ * Mouse Handling
+ */
+
+void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
+{
+    // Check previous position
+    if (lastMousePosition_.isNull())
+    {
+        lastMousePosition_ = QPoint(event->x(), event->y());
+        return;
+    }
+
+    // Rotate scene volume (right mouse button pressed)
+    if (event->buttons() & Qt3DInput::QMouseEvent::RightButton)
+    {
+        auto q = QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(), event->x() - lastMousePosition_.x(), 0.0) *
+                 sceneRootTransform_->rotation();
+        sceneRootTransform_->setRotation(q);
+    }
+
+    lastMousePosition_ = QPoint(event->x(), event->y());
+}
+
+void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
+
+void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
 
 /*
  * Slots
@@ -189,4 +262,10 @@ void MildredWidget::setZAxisTitle(const QString &title)
     assert(zAxis_);
     zAxis_->setTitleText(title);
     updateMetrics();
+}
+
+void MildredWidget::setSceneCuboidEnabled(bool enabled)
+{
+    assert(sceneBoundingCuboidEntity_);
+    sceneBoundingCuboidEntity_->setEnabled(enabled);
 }

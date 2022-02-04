@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DInput/QMouseEvent>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
@@ -76,10 +77,13 @@ class MildredWidget : public QWidget
     // Axes
     AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr}, *altYAxis_{nullptr}, *zAxis_{nullptr};
     // Transforms
-    Qt3DCore::QTransform *displayVolumeTransform_{nullptr}, *localToSurfaceTransform_{nullptr};
+    Qt3DCore::QTransform *dataOriginTransform_{nullptr}, *sceneObjectsTransform_{nullptr}, *sceneRootTransform_{nullptr};
+    // Debug objects
+    Qt3DCore::QEntity *sceneBoundingCuboidEntity_{nullptr};
+    Qt3DCore::QTransform *sceneBoundingCuboidTransform_{nullptr};
 
     private:
-    // Create basis scenegraph
+    // Create basic scenegraph
     void createSceneGraph();
 
     public:
@@ -91,10 +95,25 @@ class MildredWidget : public QWidget
     const AxisEntity *zAxis() const;
 
     /*
+     * Mouse Handling / Interaction
+     */
+    private:
+    // Last recorded mouse position
+    QPoint lastMousePosition_;
+
+    private slots:
+    void mousePositionChanged(Qt3DInput::QMouseEvent *event);
+    void mouseButtonPressed(Qt3DInput::QMouseEvent *event);
+    void mouseButtonReleased(Qt3DInput::QMouseEvent *event);
+
+    /*
      * Slots
      */
     public slots:
+    // Axis Titles
     void setXAxisTitle(const QString &title);
     void setYAxisTitle(const QString &title);
     void setZAxisTitle(const QString &title);
+    // Debug Objects
+    void setSceneCuboidEnabled(bool enabled);
 };
