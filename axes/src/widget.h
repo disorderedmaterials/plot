@@ -53,7 +53,7 @@ class MildredWidget : public QWidget
     // Update metrics for specified surface size
     void updateMetrics(int width, int height);
 
-    public:
+    public slots:
     // Update metrics for current surface size
     void updateMetrics();
 

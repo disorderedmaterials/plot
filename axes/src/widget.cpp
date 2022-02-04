@@ -187,10 +187,12 @@ void MildredWidget::createSceneGraph()
      */
 
     auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
-
     xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, axesEntity);
+    connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, axesEntity);
+    connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     zAxis_ = new AxisEntity(AxisEntity::AxisType::Depth, axesEntity);
+    connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
 
     /*
