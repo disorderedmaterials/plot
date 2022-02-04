@@ -219,7 +219,7 @@ void AxisEntity::setType(AxisType type)
     }
     else if (type_ == AxisType::Depth)
     {
-        direction_ = QVector3D(0.0f, 0.0f, 1.0f);
+        direction_ = QVector3D(0.0f, 0.0f, -1.0f);
         axisDirectionIndex_ = 2;
         tickDirection_ = QVector3D(-1.0f, 0.0f, 0.0f);
         tickDirectionIndex_ = 0;
