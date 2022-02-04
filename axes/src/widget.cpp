@@ -72,13 +72,6 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
     // Move the scene root position to be the centre of the XY plane and a suitable distance away
     sceneRootTransform_->setTranslation(QVector3D(width() / 2.0, height() / 2.0, -width()));
 
-    // Set the local transform so global origin corresponds to the visible screen origin
-    if (sceneObjectsTransform_)
-        sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin -
-                                               QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
-
-    dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin);
-
     // Reset projection for new viewport
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, width() * 2.0f);
     camera_->setAspectRatio(float(width()) / float(height()));
@@ -128,6 +121,14 @@ void MildredWidget::updateMetrics(int width, int height)
         yAxis_->recreate(metrics_);
     if (zAxis_ && zAxis_->isEnabled())
         zAxis_->recreate(metrics_);
+
+    // Set new transforms
+    if (sceneObjectsTransform_)
+        sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin -
+                                               QVector3D(width / 2.0, height / 2.0, -width / 2.0));
+
+    if (dataOriginTransform_)
+        dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin);
 }
 
 // Update metrics for current surface size
