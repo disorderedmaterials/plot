@@ -6,7 +6,10 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.setupUi(this);
 
     // View
+    connect(ui_.ResetViewButton, SIGNAL(clicked(bool)), ui_.TestingWidget, SLOT(resetView()));
     connect(ui_.ShowSceneCuboidCheck, SIGNAL(clicked(bool)), ui_.TestingWidget, SLOT(setSceneCuboidEnabled(bool)));
+    ui_.FlatViewCheck->setChecked(ui_.TestingWidget->isFlatView());
+    connect(ui_.FlatViewCheck, SIGNAL(clicked(bool)), ui_.TestingWidget, SLOT(setFlatView(bool)));
 
     // Axes
     ui_.XTitleEdit->setText(ui_.TestingWidget->xAxis()->titleText());

@@ -135,6 +135,29 @@ void MildredWidget::updateMetrics(int width, int height)
 void MildredWidget::updateMetrics() { updateMetrics(width(), height()); }
 
 /*
+ * Appearance
+ */
+
+// Return whether the view is flat
+bool MildredWidget::isFlatView() const { return flatView_; }
+
+// Set whether view is flat
+void MildredWidget::setFlatView(bool flat)
+{
+    if (flatView_ == flat)
+        return;
+
+    flatView_ = flat;
+
+    // Set z-axis visibility
+    zAxis_->setEnabled(!flatView_);
+
+    // Reset view and update
+    resetView();
+    updateMetrics();
+}
+
+/*
  * SceneGraph
  */
 
@@ -213,6 +236,13 @@ const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
 
 // Return z axis entity
 const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
+
+// Reset view
+void MildredWidget::resetView()
+{
+    assert(sceneRootTransform_);
+    sceneRootTransform_->setRotation(QQuaternion());
+}
 
 /*
  * Mouse Handling

@@ -60,13 +60,17 @@ class MildredWidget : public QWidget
     /*
      * Appearance
      */
+    private:
+    // Whether the current view is flat
+    bool flatView_{true};
+
     public:
-    // View Types
-    enum class ViewType
-    {
-        View2D,
-        View3D
-    };
+    // Return whether the view is flat
+    bool isFlatView() const;
+
+    public slots:
+    // Set whether view is flat
+    void setFlatView(bool flat);
 
     /*
      * SceneGraph
@@ -93,6 +97,10 @@ class MildredWidget : public QWidget
     const AxisEntity *yAxis() const;
     // Return z axis entity
     const AxisEntity *zAxis() const;
+
+    public slots:
+    // Reset view
+    void resetView();
 
     /*
      * Mouse Handling / Interaction
