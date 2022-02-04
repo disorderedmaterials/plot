@@ -222,12 +222,26 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
         return;
     }
 
-    // Rotate scene volume (right mouse button pressed)
+    // Right button - Rotate scene volume (3D)
     if (event->buttons() & Qt3DInput::QMouseEvent::RightButton)
     {
-        auto q = QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(), event->x() - lastMousePosition_.x(), 0.0) *
-                 sceneRootTransform_->rotation();
-        sceneRootTransform_->setRotation(q);
+        // Rotations only allowed for 3D view
+        if (!flatView_)
+            sceneRootTransform_->setRotation(
+                QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(), event->x() - lastMousePosition_.x(), 0.0) *
+                sceneRootTransform_->rotation());
+    }
+
+    // Middle button - translate axis ranges (2D)
+    if (event->buttons() & Qt3DInput::QMouseEvent::MiddleButton)
+    {
+        if (flatView_)
+        {
+            xAxis_->adjustRange(-xAxis_->range() *
+                                (double(event->x() - lastMousePosition_.x()) / metrics_.displayVolumeExtent().x()));
+            yAxis_->adjustRange(yAxis_->range() *
+                                (double(event->y() - lastMousePosition_.y()) / metrics_.displayVolumeExtent().y()));
+        }
     }
 
     lastMousePosition_ = QPoint(event->x(), event->y());

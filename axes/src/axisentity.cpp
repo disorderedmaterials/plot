@@ -174,6 +174,20 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     return ticks;
 }
 
+// Return range of axis
+double AxisEntity::range() const { return maximum_ - minimum_; }
+
+// Adjust range of axis
+void AxisEntity::adjustRange(double delta)
+{
+    minimum_ += delta;
+    maximum_ += delta;
+
+    recreate();
+
+    emit(rangeChanged());
+}
+
 // Set title text
 void AxisEntity::setTitleText(const QString &title)
 {
@@ -186,6 +200,38 @@ QString AxisEntity::titleText() const
 {
     assert(axisTitleEntity_);
     return axisTitleEntity_->text();
+}
+
+// Set axis minimum
+void AxisEntity::setMinimum(double value)
+{
+    // Switch maximum and minimum if the supplied minimum is greater than the current maximum
+    if (value > maximum_)
+    {
+        minimum_ = maximum_;
+        maximum_ = value;
+    }
+    else
+        minimum_ = value;
+
+    emit(rangeChanged());
+}
+
+// Set axis maximum
+void AxisEntity::setMaximum(double value)
+{
+    // Switch maximum and minimum if the supplied maximum is less than the current minimum
+    if (value < minimum_)
+    {
+        maximum_ = minimum_;
+        minimum_ = value;
+    }
+    else
+        maximum_ = value;
+
+    recreate();
+
+    emit(rangeChanged());
 }
 
 /*

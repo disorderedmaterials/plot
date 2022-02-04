@@ -45,7 +45,7 @@ class AxisEntity : public Qt3DCore::QEntity
     // Number of ticks to display
     int nSubTicks_{4};
     // Whether to determine major ticks automatically
-    bool autoTicks_{false};
+    bool autoTicks_{true};
 
     private:
     // Calculate suitable tick start and delta
@@ -56,10 +56,23 @@ class AxisEntity : public Qt3DCore::QEntity
     std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
 
     public:
+    // Return range of axis
+    double range() const;
+    // Adjust range of axis
+    void adjustRange(double delta);
     // Set title text
     void setTitleText(const QString &title);
     // Return title text
     QString titleText() const;
+
+    public slots:
+    // Set axis minimum
+    void setMinimum(double value);
+    // Set axis maximum
+    void setMaximum(double value);
+
+    signals:
+    void rangeChanged();
 
     /*
      * Layout
