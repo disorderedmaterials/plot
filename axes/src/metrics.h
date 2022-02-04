@@ -3,25 +3,40 @@
 #include <QFont>
 #include <QVector3D>
 
-class MildredMetrics
+// Forward Declarations
+class AxisEntity;
+
+class MildredMetrics : public QObject
 {
+    Q_OBJECT
+
     /*
-     * General
+     * Fonts
      */
-    public:
+    private:
     // Fonts
-    QFont axisTickLabelFont, axisTitleFont;
-    // Margin around outer edge of plot
-    float nMarginPixels{5.0};
+    QFont axisTickLabelFont_{"Tahoma", 10}, axisTitleFont_{"Tahoma", 11};
+
+    public:
+    // Return font for axis tick labels
+    const QFont &axisTickLabelFont() const;
+    // Return font for axis title
+    const QFont &axisTitleFont() const;
 
     /*
      * Axis
      */
-    public:
+    private:
     // Tick size
-    float tickPixelSize{5.0};
+    float tickPixelSize_{5.0};
     // Spacing between tick marks and labels
-    float tickLabelPixelGap{0.0};
+    float tickLabelPixelGap_{0.0};
+
+    public:
+    // Return tick size
+    float tickPixelSize() const;
+    // Return spacing between tick marks and labels
+    float tickLabelPixelGap() const;
 
     /*
      * Object Anchor Point
@@ -45,7 +60,29 @@ class MildredMetrics
     /*
      * Display
      */
-    public:
+    private:
+    // Margin around outer edge of plot
+    float nMarginPixels_{5.0};
+    // Display volume origin
+    QVector3D displayVolumeOrigin_;
     // Display volume bounds
-    QVector3D displayVolumeOrigin, displayVolumeExtent;
+    QVector3D displayVolumeExtent_;
+
+    public:
+    // Return margin around outer edge of plot
+    float nMarginPixels() const;
+    // Return display volume origin
+    QVector3D displayVolumeOrigin() const;
+    // Return display volume bounds
+    QVector3D displayVolumeExtent() const;
+
+    /*
+     * Update
+     */
+    public:
+    // Update metrics given supplied surface size and axes
+    void update(int width, int height, const AxisEntity *xAxis, const AxisEntity *yAxis);
+
+    signals:
+    void metricsChanged();
 };

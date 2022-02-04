@@ -49,11 +49,7 @@ class MildredWidget : public QWidget
     // Display metrics
     MildredMetrics metrics_;
 
-    private:
-    // Update metrics for specified surface size
-    void updateMetrics(int width, int height);
-
-    public slots:
+    private slots:
     // Update metrics for current surface size
     void updateMetrics();
 
@@ -99,6 +95,8 @@ class MildredWidget : public QWidget
     const AxisEntity *zAxis() const;
 
     public slots:
+    // Update transforms from metrics
+    void updateTransforms();
     // Reset view
     void resetView();
 

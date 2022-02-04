@@ -12,13 +12,9 @@
 
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
-    // Set up a suitable monospace axisTickLabelFont
-    metrics_.axisTickLabelFont = QFont("Tahoma", 10.0);
-    metrics_.axisTitleFont = QFont("Tahoma", 11.0);
-
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
-     * a container widget. Is there not a Qt3DWidget which can simplify this?
+     * a container widget.
      */
     viewWindow_ = new Qt3DExtras::Qt3DWindow();
 
@@ -56,9 +52,11 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     // Set up basic scenegraph
     createSceneGraph();
 
+    // Set the main root entity
     viewWindow_->setRootEntity(rootEntity_.data());
 
-    updateMetrics();
+    // Connect the metrics object and update
+    connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
 }
 
 /*
@@ -67,7 +65,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
-    updateMetrics(width(), height());
+    updateMetrics();
 
     // Move the scene root position to be the centre of the XY plane and a suitable distance away
     sceneRootTransform_->setTranslation(QVector3D(width() / 2.0, height() / 2.0, -width()));
@@ -87,52 +85,8 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
  * Metrics
  */
 
-// Update metrics for specified surface size
-void MildredWidget::updateMetrics(int width, int height)
-{
-    QFontMetrics fontMetrics(metrics_.axisTickLabelFont);
-
-    // Initialise the display volume origin to zero (pixels) and the extent to the max surface size
-    metrics_.displayVolumeOrigin = QVector3D(0, 0, 0);
-    metrics_.displayVolumeExtent = QVector3D(float(width), float(height), float(width + height) / 2.0f);
-
-    // Apply margin around extreme edge of surface
-    metrics_.displayVolumeOrigin += QVector3D(metrics_.nMarginPixels, metrics_.nMarginPixels, 0.0);
-    metrics_.displayVolumeExtent -= QVector3D(2.0f * metrics_.nMarginPixels, 2.0f * metrics_.nMarginPixels, 0.0);
-
-    // Reduce display volume to accommodate axes
-    if (xAxis_ && xAxis_->isEnabled())
-    {
-        auto xRect = xAxis_->boundingRect(metrics_);
-        metrics_.displayVolumeOrigin += QVector3D(0.0, xRect.yExtent(), 0.0);
-        metrics_.displayVolumeExtent -= QVector3D(0.0, xRect.yExtent(), 0.0);
-    }
-    if (yAxis_ && yAxis_->isEnabled())
-    {
-        auto yRect = yAxis_->boundingRect(metrics_);
-        metrics_.displayVolumeOrigin += QVector3D(yRect.xExtent(), 0.0, 0.0);
-        metrics_.displayVolumeExtent -= QVector3D(yRect.xExtent(), 0.0, 0.0);
-    }
-
-    // Recreate visible axes
-    if (xAxis_ && xAxis_->isEnabled())
-        xAxis_->recreate(metrics_);
-    if (yAxis_ && yAxis_->isEnabled())
-        yAxis_->recreate(metrics_);
-    if (zAxis_ && zAxis_->isEnabled())
-        zAxis_->recreate(metrics_);
-
-    // Set new transforms
-    if (sceneObjectsTransform_)
-        sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin -
-                                               QVector3D(width / 2.0, height / 2.0, -width / 2.0));
-
-    if (dataOriginTransform_)
-        dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin);
-}
-
 // Update metrics for current surface size
-void MildredWidget::updateMetrics() { updateMetrics(width(), height()); }
+void MildredWidget::updateMetrics() { metrics_.update(width(), height(), xAxis_, yAxis_); }
 
 /*
  * Appearance
@@ -211,11 +165,11 @@ void MildredWidget::createSceneGraph()
      */
 
     auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
-    xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, axesEntity);
+    xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, metrics_, axesEntity);
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-    yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, axesEntity);
+    yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, metrics_, axesEntity);
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-    zAxis_ = new AxisEntity(AxisEntity::AxisType::Depth, axesEntity);
+    zAxis_ = new AxisEntity(AxisEntity::AxisType::Depth, metrics_, axesEntity);
     connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
 
@@ -236,6 +190,17 @@ const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
 
 // Return z axis entity
 const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
+
+// Update transforms from metrics
+void MildredWidget::updateTransforms()
+{
+    if (sceneObjectsTransform_)
+        sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin() -
+                                               QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
+
+    if (dataOriginTransform_)
+        dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin());
+}
 
 // Reset view
 void MildredWidget::resetView()

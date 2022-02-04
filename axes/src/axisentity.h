@@ -11,6 +11,8 @@
 
 class AxisEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
     public:
     // Axis type
     enum class AxisType
@@ -21,8 +23,12 @@ class AxisEntity : public Qt3DCore::QEntity
         Depth,
         Custom
     };
-    AxisEntity(AxisType type, Qt3DCore::QNode *parent = nullptr);
+    AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::QNode *parent = nullptr);
     ~AxisEntity() = default;
+
+    private:
+    // Reference to chart metrics object
+    const MildredMetrics &metrics_;
 
     /*
      * Definition
@@ -97,13 +103,15 @@ class AxisEntity : public Qt3DCore::QEntity
 
     private:
     // Create / update ticks and labels at specified axis values, returning their bounding cuboid
-    Cuboid createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics);
+    Cuboid createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks);
 
     public:
-    // Recreate axis entities
-    void recreate(const MildredMetrics &metrics);
-    // Return bounding rect for axis given its current settings and supplied metrics
-    Cuboid boundingRect(const MildredMetrics &metrics) const;
+    // Return bounding cuboid for axis given its current settings and supplied metrics
+    Cuboid boundingCuboid(const MildredMetrics &metrics) const;
+
+    public slots:
+    // Recreate axis entities from scratch using stored metrics
+    void recreate();
 
     /*
      * Components

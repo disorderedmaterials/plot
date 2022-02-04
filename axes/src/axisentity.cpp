@@ -1,7 +1,8 @@
 #include "axisentity.h"
 #include "cuboid.h"
 
-AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent), type_(type)
+AxisEntity::AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(parent), metrics_(metrics), type_(type)
 {
     // Create entities
     axisBarEntity_ = new LineEntity(this);
@@ -20,7 +21,11 @@ AxisEntity::AxisEntity(AxisType type, Qt3DCore::QNode *parent) : Qt3DCore::QEnti
     labelMaterial_->setAmbient(QColor(0, 0, 0, 255));
     axisTitleEntity_->addComponent(labelMaterial_);
 
+    // Update data dependent on the axis type
     setType(type_);
+
+    // Connect to metrics object
+    connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(recreate()));
 }
 
 /*
@@ -234,11 +239,11 @@ void AxisEntity::setDirection(QVector3D principal) { direction_ = principal; }
 double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
 {
     if (type_ == AxisType::Horizontal)
-        return metrics.displayVolumeExtent.x();
+        return metrics.displayVolumeExtent().x();
     else if (type_ == AxisType::Vertical || type_ == AxisType::AltVertical)
-        return metrics.displayVolumeExtent.y();
+        return metrics.displayVolumeExtent().y();
     else if (type_ == AxisType::Depth)
-        return metrics.displayVolumeExtent.z();
+        return metrics.displayVolumeExtent().z();
 }
 
 // Map axis value to scaled global position
@@ -255,7 +260,7 @@ double AxisEntity::axisToGlobal(double axisValue) const
  */
 
 // Create / update tick and label entities at specified axis values
-Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks, const MildredMetrics &metrics)
+Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks)
 {
     // First, hide all existing label entities
     for (auto &entity : tickLabelEntities_)
@@ -268,7 +273,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     while (tickLabelEntities_.size() < nTicks)
     {
         auto *entity = new TextEntity(this);
-        entity->setFont(metrics.axisTickLabelFont);
+        entity->setFont(metrics_.axisTickLabelFont());
         entity->addComponent(labelMaterial_);
         entity->setAnchorPoint(labelAnchorPoint_);
         tickLabelEntities_.push_back(entity);
@@ -277,7 +282,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     // Loop over new values and create / update entities as required
     Cuboid boundingCuboid;
     auto tickLabelEntity = tickLabelEntities_.begin();
-    auto tickPos = tickDirection_ * metrics.tickPixelSize;
+    auto tickPos = tickDirection_ * metrics_.tickPixelSize();
     for (auto &&[v, label] : ticks)
     {
         auto vT = float(axisToGlobal(v));
@@ -293,10 +298,10 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
             (*tickLabelEntity)->setEnabled(true);
             (*tickLabelEntity)->setText(QString::number(v));
             (*tickLabelEntity)
-                ->setAnchorPosition(axisPos + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap));
+                ->setAnchorPosition(axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap()));
             boundingCuboid.expand(TextEntity::boundingCuboid(
-                metrics.axisTickLabelFont, QString::number(v),
-                {axisPos + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap)}, labelAnchorPoint_));
+                metrics_.axisTickLabelFont(), QString::number(v),
+                {axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap())}, labelAnchorPoint_));
             ++tickLabelEntity;
         }
         else
@@ -309,11 +314,14 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     return boundingCuboid;
 }
 
-// Recreate axis entities
-void AxisEntity::recreate(const MildredMetrics &metrics)
+// Recreate axis entities from scratch using stored metrics
+void AxisEntity::recreate()
 {
+    if (!isEnabled())
+        return;
+
     // Store axis scale from metrics
-    axisScale_ = getAxisScale(metrics);
+    axisScale_ = getAxisScale(metrics_);
 
     // Clear old primitives
     axisBarEntity_->clear();
@@ -340,17 +348,17 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
         else
             ticks = generateLinearTicks(0.0, 1.0);
     }
-    auto tickLabelBounds = createTickAndLabelEntities(ticks, metrics);
+    auto tickLabelBounds = createTickAndLabelEntities(ticks);
 
     // Axis title
     if (!axisTitleEntity_->text().isEmpty())
     {
         axisTitleEntity_->setEnabled(true);
-        axisTitleEntity_->setFont(metrics.axisTitleFont);
+        axisTitleEntity_->setFont(metrics_.axisTitleFont());
         axisTitleEntity_->setAnchorPoint(labelAnchorPoint_);
-        axisTitleEntity_->setAnchorPosition(direction_ * metrics.displayVolumeExtent[axisDirectionIndex_] * 0.5 +
-                                            tickDirection_ *
-                                                (tickLabelBounds.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap));
+        axisTitleEntity_->setAnchorPosition(
+            direction_ * metrics_.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
+            tickDirection_ * (tickLabelBounds.extents()[tickDirectionIndex_] + metrics_.tickLabelPixelGap()));
     }
     else
         axisTitleEntity_->setEnabled(false);
@@ -361,8 +369,8 @@ void AxisEntity::recreate(const MildredMetrics &metrics)
     subTicksEntity_->finalise();
 }
 
-// Return bounding rect for axis given its current settings and supplied metrics
-Cuboid AxisEntity::boundingRect(const MildredMetrics &metrics) const
+// Return bounding cuboid for axis given its current settings and supplied metrics
+Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
 {
     // Generate axis ticks
     std::vector<std::pair<double, bool>> ticks;
@@ -395,23 +403,23 @@ Cuboid AxisEntity::boundingRect(const MildredMetrics &metrics) const
         if (label)
         {
             // Tick mark
-            cuboid.expand({axisPos, axisPos + tickDirection_ * metrics.tickPixelSize});
+            cuboid.expand({axisPos, axisPos + tickDirection_ * metrics_.tickPixelSize()});
 
             // Label
             cuboid.expand(TextEntity::boundingCuboid(
-                metrics.axisTickLabelFont, QString::number(v),
-                axisPos + tickDirection_ * (metrics.tickPixelSize + metrics.tickLabelPixelGap), labelAnchorPoint_));
+                metrics.axisTickLabelFont(), QString::number(v),
+                axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics.tickLabelPixelGap()), labelAnchorPoint_));
         }
         else
-            cuboid.expand({axisPos, axisPos + tickDirection_ * metrics.tickPixelSize * 0.5});
+            cuboid.expand({axisPos, axisPos + tickDirection_ * metrics_.tickPixelSize() * 0.5});
     }
     // -- Title
     if (!axisTitleEntity_->text().isEmpty())
-        cuboid.expand(
-            TextEntity::boundingCuboid(metrics.axisTitleFont, axisTitleEntity_->text(),
-                                       direction_ * metrics.displayVolumeExtent[axisDirectionIndex_] * 0.5 +
-                                           tickDirection_ * (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap),
-                                       labelAnchorPoint_));
+        cuboid.expand(TextEntity::boundingCuboid(metrics.axisTitleFont(), axisTitleEntity_->text(),
+                                                 direction_ * metrics.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
+                                                     tickDirection_ *
+                                                         (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap()),
+                                                 labelAnchorPoint_));
 
     return cuboid;
 }
