@@ -1,5 +1,13 @@
-#include "textentity.h"
+#include "entities/axis.h"
 
+//! Construct a new text entity
+/*!
+ * Constructs a new @class TextEntity with the supplied text and default transform.
+ *
+ * The entity leverages QExtrudedTextMesh in order to generate the 3D representation of the glyphs required. These are generate
+ * to be unit height, so the scaling factors of the associated QTransform are set so as to reproduce the original point size in
+ * pixels.
+ */
 TextEntity::TextEntity(Qt3DCore::QNode *parent, QString text) : Qt3DCore::QEntity(parent)
 {
     // Create an extruded text mesh
@@ -19,7 +27,10 @@ TextEntity::TextEntity(Qt3DCore::QNode *parent, QString text) : Qt3DCore::QEntit
  * Definition
  */
 
-// Update translation
+//! Update translation
+/*!
+ * Update the translation such that the stored anchor point is located at the stored position in 3D space.
+ */
 void TextEntity::updateTranslation()
 {
     // Set the translation vector so that the defined anchor point is located at the desired position
@@ -29,7 +40,7 @@ void TextEntity::updateTranslation()
                                QVector3D(textCuboid.xExtent() * anchorFrac.x(), textCuboid.yExtent() * anchorFrac.y(), 0.0));
 }
 
-// Set text
+//! Set text
 void TextEntity::setText(const QString &text)
 {
     mesh_->setText(text);
@@ -37,10 +48,10 @@ void TextEntity::setText(const QString &text)
     updateTranslation();
 }
 
-// Return current text
+//! Return current text
 QString TextEntity::text() const { return mesh_->text(); }
 
-// Set axisTickLabelFont
+//! Set font
 void TextEntity::setFont(const QFont &font)
 {
     mesh_->setFont(font);
@@ -51,7 +62,7 @@ void TextEntity::setFont(const QFont &font)
     updateTranslation();
 }
 
-// Set anchor point
+//! Set anchor point
 void TextEntity::setAnchorPoint(MildredMetrics::AnchorPoint anchor)
 {
     anchorPoint_ = anchor;
@@ -59,7 +70,7 @@ void TextEntity::setAnchorPoint(MildredMetrics::AnchorPoint anchor)
     updateTranslation();
 }
 
-// Set anchor position
+// 1 Set anchor position
 void TextEntity::setAnchorPosition(QVector3D p)
 {
     anchorPosition_ = p;
@@ -67,7 +78,11 @@ void TextEntity::setAnchorPosition(QVector3D p)
     updateTranslation();
 }
 
-// Return simple bounding cuboid for text
+//! Return simple bounding cuboid for text
+/*!
+ * Calculates a bounding cuboid in the XY plane for the specified@param font and @param text. The @param depth is applied in the
+ * z-direction, and the bounding cuboid's lower-left-back corner is located at (0,0,0).
+ */
 Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, float depth)
 {
     QFontMetrics fontMetrics(font);
@@ -80,7 +95,11 @@ Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, float 
             {float(boundingRect.right()), float(-boundingRect.top()), depth}};
 }
 
-// Return bounding cuboid with translation and anchor point applied
+//! Return bounding cuboid with translation and anchor point applied
+/*!
+ * Calculates a bounding cuboid in the XY plane for the specified @param font and @param text, and translated to put the
+ * requested @param anchorPoint at the supplied @param anchorPosition. The @param depth is applied in the z-direction.
+ */
 Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
                                   MildredMetrics::AnchorPoint anchorPoint, float depth)
 {

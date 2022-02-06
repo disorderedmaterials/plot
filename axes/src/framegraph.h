@@ -1,9 +1,11 @@
 #pragma once
 
 #include <QWidget>
+#include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
+//! MildredFrameGraph creates and manages a framegraph
 class MildredFrameGraph
 {
     public:
@@ -19,5 +21,5 @@ class MildredFrameGraph
 
     public:
     // Create and attach framegraph
-    void create(Qt3DRender::QRenderSettings *parent, QObject *surface, Qt3DRender::QCamera *camera);
+    void create(Qt3DRender::QRenderSettings *parent, Qt3DExtras::Qt3DWindow *surface, Qt3DRender::QCamera *camera);
 };

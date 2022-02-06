@@ -1,5 +1,10 @@
-#include "lineentity.h"
+#include "entities/line.h"
 
+//! Construct a new LineEntity
+/*!
+ * Creates an empty LineEntity with the specified drawing @param primitiveType. This function creates the necessary buffers and
+ * attributes in order to be able to generate a line primitive by providing the necessary vertices and indices piecewise.
+ */
 LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
     : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this), vertexBuffer_(&geometry_),
       vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_)
@@ -34,26 +39,54 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
  * Convenience Functions
  */
 
-// Append vertices to cached data
+//! Append vertex to cached data
+/*!
+ * Append the vertex @param v to the cached vertices. The buffer objects (and hence the display primitive) are not regenerated
+ * until a call to the finalise() method is made.
+ */
 void LineEntity::addVertex(QVector3D v) { cachedVertices_.emplace_back(v); }
+
+//! Append verteices to cached data
+/*!
+ * Append the vector of @param vertices to the cached vertices. The buffer objects (and hence the display primitive) are not
+ * regenerated until a call to the finalise() method is made.
+ */
 void LineEntity::addVertices(const std::vector<QVector3D> &vertices)
 {
     std::copy(vertices.begin(), vertices.end(), std::back_inserter(cachedVertices_));
 }
 
-// Append indices to cached data
-void LineEntity::setBasicIndices()
-{
-    cachedIndices_.resize(cachedVertices_.size());
-    std::iota(cachedIndices_.begin(), cachedIndices_.end(), 0);
-}
+//! Append index to cached data
+/*!
+ * Append the index @param i to the list of cached indices. The buffer objects (and hence the display primitive) are not
+ * regenerated until a call to the finalise() method is made.
+ */
 void LineEntity::addIndex(unsigned int i) { cachedIndices_.push_back(i); }
+
+//! Append indices to cached data
+/*!
+ * Append the vector of @param indices to the list of cached indices. The buffer objects (and hence the display primitive) are
+ * not regenerated until a call to the finalise() method is made.
+ */
 void LineEntity::addIndices(const std::vector<unsigned int> &indices)
 {
     std::copy(indices.begin(), indices.end(), std::back_inserter(cachedIndices_));
 }
 
-// Finalise geometry from cached data
+//! Set basic (sequential) indices
+void LineEntity::setBasicIndices()
+{
+    cachedIndices_.resize(cachedVertices_.size());
+    std::iota(cachedIndices_.begin(), cachedIndices_.end(), 0);
+}
+
+//! Finalise geometry from cached data
+/*!
+ * Finalise the entity making it ready for rendering, creating the necessary buffers from the cached vertices and indices.
+ *
+ * Once the geometry is constructed the cached vertex and index data is cleared, permitting new data to be added and the entity
+ * to be recreated again at a later date.
+ */
 void LineEntity::finalise()
 {
     // Convert vertex cache into a QByteArray
@@ -81,7 +114,11 @@ void LineEntity::finalise()
     cachedIndices_.clear();
 }
 
-// Clear geometry
+//! Clear geometry
+/*!
+ * Remove all cached vertex and index data and set the expected size of the geometry's attributed to zero, effectively making
+ * the entity render nothing to screen.
+ */
 void LineEntity::clear()
 {
     vertexAttribute_.setCount(0);

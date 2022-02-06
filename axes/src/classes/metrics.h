@@ -6,6 +6,15 @@
 // Forward Declarations
 class AxisEntity;
 
+//! The MildredMetrics object contains basic view / layout metrics.
+/*!
+ * The @class MildredMetrics class controls the overall look and layout of the main plot area and axes, and core metrics
+ * defining the volume extent and position. The volume extent along each of the cardinal directions is used by the various data
+ * display classes in order to plot and scale the data correctly in 3D space.
+ *
+ * The metrics are frequently updated when objects within the view (e.g. axis titles, labels), or the size of the view surface
+ * itself, are changed, so as to ensure that the graph area is correctly laid out and sized relative to the view.
+ */
 class MildredMetrics : public QObject
 {
     Q_OBJECT
@@ -73,7 +82,7 @@ class MildredMetrics : public QObject
     float nMarginPixels() const;
     // Return display volume origin
     QVector3D displayVolumeOrigin() const;
-    // Return display volume bounds
+    // Return display volume extent
     QVector3D displayVolumeExtent() const;
 
     /*

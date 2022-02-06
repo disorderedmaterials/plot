@@ -1,12 +1,16 @@
 #pragma once
 
-#include "cuboid.h"
-#include "metrics.h"
+#include "classes/cuboid.h"
+#include "classes/metrics.h"
 #include <QFontMetrics>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QExtrudedTextMesh>
 
+//! TextEntity represents a 3D text entity
+/*!
+ * TextEntity represents a renderable entity displaying a specified string with a given transform.
+ */
 class TextEntity : public Qt3DCore::QEntity
 {
     public:

@@ -1,6 +1,13 @@
-#include "axisentity.h"
-#include "cuboid.h"
+#include "entities/axis.h"
+#include "classes/cuboid.h"
 
+//! Create a new AxisEntity
+/*!
+ * Constructs a new AxisEntity of the specified @param type, and referencing the supplied @class MildredMetrics.
+ *
+ * The direction of the axis bar and tick marks in 3D space is set from the given @param type, as are the anchor point and
+ * orientation of the axis title.
+ */
 AxisEntity::AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(parent), metrics_(metrics), type_(type)
 {
@@ -32,7 +39,10 @@ AxisEntity::AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::Q
  * Definition
  */
 
-// Calculate suitable tick start and delta
+//! Calculate suitable tick start and delta
+/*!
+ * Calculate and return a suitable tick start and delta for the axis given the current range.
+ */
 std::pair<double, double> AxisEntity::calculateTickStartAndDelta() const
 {
     // Constants
@@ -89,7 +99,12 @@ std::pair<double, double> AxisEntity::calculateTickStartAndDelta() const
     return {tickStart, tickDelta};
 }
 
-// Generate linear ticks
+//! Generate linear ticks
+/*!
+ * Generate a series of evenly-spaced tick positions given the supplied @param tickStart and @param tickDelta. The returned
+ * vector consists of pairs of double and bool specifying the numerical value (within the defined axis range) and whether that
+ * tick is a full/value tick requiring a label (true) or is just a sub-tick (false).
+ */
 std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks(double tickStart, double tickDelta) const
 {
     // Check tickDelta
@@ -124,7 +139,12 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks(double tick
     return ticks;
 }
 
-// Generate logarithmic ticks
+//! Generate logarithmic ticks
+/*!
+ * Generate a series of logarithmically-spaced tick positions given the supplied @param tickStart and @param tickDelta. The
+ * returned vector consists of pairs of double and bool specifying the numerical value (within the defined axis range) and
+ * whether that tick is a full/value tick requiring a label (true) or is just a sub-tick (false).
+ */
 std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() const
 {
     // Check data range
@@ -174,11 +194,20 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     return ticks;
 }
 
-// Return range of axis
+//! Return range of axis
+/*!
+ * Return the value range of the axis, i.e. the numerical difference between the minimum and maximum values.
+ */
 double AxisEntity::range() const { return maximum_ - minimum_; }
 
-// Adjust range of axis
-void AxisEntity::adjustRange(double delta)
+//! Shift the limits of the axis
+/*!
+ * Adjust the limits of the axis by the supplied @param delta. The @param delta is added to both the minimum and maximum values.
+ * The overall range of the axis is not modified.
+ *
+ * Emits rangeChanged().
+ */
+void AxisEntity::shiftLimits(double delta)
 {
     minimum_ += delta;
     maximum_ += delta;
@@ -188,21 +217,35 @@ void AxisEntity::adjustRange(double delta)
     emit(rangeChanged());
 }
 
-// Set title text
-void AxisEntity::setTitleText(const QString &title)
+//! Set title text
+/*!
+ * Sets the display title of the axis to @param text, modifying the underlying @class TextEntity object.
+ */
+void AxisEntity::setTitleText(const QString &text)
 {
     assert(axisTitleEntity_);
-    axisTitleEntity_->setText(title);
+    axisTitleEntity_->setText(text);
 }
 
-// Return title text
+//! Return title text
+/*!
+ * Returns the current text displayed as the axis title.
+ */
 QString AxisEntity::titleText() const
 {
     assert(axisTitleEntity_);
     return axisTitleEntity_->text();
 }
 
-// Set axis minimum
+//! Set axis minimum
+/*!
+ * Set the minimum displayed limit of the axis to @param value. If the new minimum is greater than the current maximum the
+ * limiting values are swapped to maintain the condition minimum < maximum.
+ *
+ * Once the new limit(s) are set, the axis entities are recreated.
+ *
+ * Emits rangeChanged().
+ */
 void AxisEntity::setMinimum(double value)
 {
     // Switch maximum and minimum if the supplied minimum is greater than the current maximum
@@ -217,7 +260,15 @@ void AxisEntity::setMinimum(double value)
     emit(rangeChanged());
 }
 
-// Set axis maximum
+//! Set axis maximum
+/*!
+ * Set the maximum displayed limit of the axis to @param value. If the new maximum is less than the current minimum the limiting
+ * values are swapped to maintain the condition maximum > minimum.
+ *
+ * Once the new limit(s) are set, the axis entities are recreated.
+ *
+ * Emits rangeChanged().
+ */
 void AxisEntity::setMaximum(double value)
 {
     // Switch maximum and minimum if the supplied maximum is less than the current minimum
@@ -238,7 +289,11 @@ void AxisEntity::setMaximum(double value)
  * Layout
  */
 
-// Set axis type
+//! Set axis type
+/*!
+ * Set the axis to be of the defined @param type, setting directional parameters (in 3D space) for the axis bar, tick marks and
+ * label positioning.
+ */
 void AxisEntity::setType(AxisType type)
 {
     type_ = type;
@@ -281,7 +336,10 @@ void AxisEntity::setType(AxisType type)
 // Define direction
 void AxisEntity::setDirection(QVector3D principal) { direction_ = principal; }
 
-// Get relevant scale from the supplied metrics
+//! Get relevant scale from the supplied metrics
+/*!
+ * Retrieve the relevant scale from the supplied @param metrics given the current axis type.
+ */
 double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
 {
     if (type_ == AxisType::Horizontal)
@@ -292,7 +350,10 @@ double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
         return metrics.displayVolumeExtent().z();
 }
 
-// Map axis value to scaled global position
+//! Map axis value to scaled global position
+/*!
+ * Convert the supplied @param axisValue into scaled view volume coordinates, ready for plotting.
+ */
 double AxisEntity::axisToGlobal(double axisValue) const
 {
     if (logarithmic_)
@@ -305,7 +366,12 @@ double AxisEntity::axisToGlobal(double axisValue) const
  * Entities
  */
 
-// Create / update tick and label entities at specified axis values
+//! Create / update tick and label entities at specified axis values
+/*!
+ * Construct rendering entities displaying tick marks and labels from the supplied vector of @param ticks.
+ *
+ * During construction the bounding @class Cuboid containing the ticks and label entities is calculated and returned.
+ */
 Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double, bool>> &ticks)
 {
     // First, hide all existing label entities
@@ -360,7 +426,11 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     return boundingCuboid;
 }
 
-// Recreate axis entities from scratch using stored metrics
+//! Recreate axis entities from scratch using stored metrics
+/*!
+ * Recreate all entities for the axis from stored information. This function is called whenever the underlying @class
+ * MildredMetrics object is changed (via Qt signalling) and is used internally when the axis limits are modified in some way.
+ */
 void AxisEntity::recreate()
 {
     if (!isEnabled())
@@ -415,7 +485,11 @@ void AxisEntity::recreate()
     subTicksEntity_->finalise();
 }
 
-// Return bounding cuboid for axis given its current settings and supplied metrics
+//! Return bounding cuboid for axis given its current settings and supplied metrics
+/*!
+ * Return the bounding cuboid for the axis given the supplied @param metrics. The returned cuboid represents the limiting 3D
+ * coordinates required to exactly enclose the axis bar, ticks, tick labels, and axis title.
+ */
 Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
 {
     // Generate axis ticks
@@ -474,8 +548,14 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
  * Components
  */
 
-// Return axis bar material
+//! Return axis bar material
+/*!
+ * Return the material used for the axis bar.
+ */
 Qt3DExtras::QDiffuseSpecularMaterial *AxisEntity::axisBarMaterial() { return axisBarMaterial_; }
 
-// Return label material
+//! Return label material
+/*!
+ * Return the material used for axis labels (tick value labels and axis title).
+ */
 Qt3DExtras::QDiffuseSpecularMaterial *AxisEntity::labelMaterial() { return labelMaterial_; }

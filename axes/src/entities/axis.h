@@ -1,14 +1,18 @@
 #pragma once
 
-#include "lineentity.h"
-#include "metrics.h"
-#include "textentity.h"
-#include <Qt3DCore/QEntity>
-#include <Qt3DCore/QGeometry>
+#include "classes/metrics.h"
+#include "entities/axis.h"
+#include "entities/line.h"
+#include "entities/text.h"
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QExtrudedTextMesh>
 
+//! AxisEntity completely defines and renders an axis.
+/*!
+ * AxisEntity defines a QEntity which represents a single axis, encompassing its numerical range and type and providing a
+ * renderable representation in 3D. The entity contains @class LineEntity objects representing the axis bar, tick and sub-tick
+ * marks, and @class TextEntity objects to render the tick value labels and axis title.
+ */
 class AxisEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
@@ -58,10 +62,10 @@ class AxisEntity : public Qt3DCore::QEntity
     public:
     // Return range of axis
     double range() const;
-    // Adjust range of axis
-    void adjustRange(double delta);
+    // Shift limits of axis
+    void shiftLimits(double delta);
     // Set title text
-    void setTitleText(const QString &title);
+    void setTitleText(const QString &text);
     // Return title text
     QString titleText() const;
 

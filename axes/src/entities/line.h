@@ -4,6 +4,10 @@
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
 
+//! LineEntity represents a renderable lines / wireframe object
+/*!
+ * LineEntity encapsulates the buffers and attributes necessary to provide a line-drawn QEntity for use in a Qt3D scenegraph.
+ */
 class LineEntity : public Qt3DCore::QEntity
 {
     public:
@@ -36,9 +40,10 @@ class LineEntity : public Qt3DCore::QEntity
     void addVertex(QVector3D v);
     void addVertices(const std::vector<QVector3D> &vertices);
     // Append indices to cached data
-    void setBasicIndices();
     void addIndex(unsigned int i);
     void addIndices(const std::vector<unsigned int> &indices);
+    // Set basic (sequential) indices
+    void setBasicIndices();
     // Finalise geometry from cached data
     void finalise();
     // Clear geometry

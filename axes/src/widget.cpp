@@ -1,15 +1,15 @@
 #include "widget.h"
-#include "axisentity.h"
+#include "entities/axis.h"
 #include <QResizeEvent>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
-#include <Qt3DExtras/QForwardRenderer>
-
+//! Constructs a Mildred widget which is a child of \param parent.
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
     /*
@@ -63,6 +63,11 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
  * QWidget
  */
 
+//! Handle QWidget resize events
+/*!
+ * Resizing the widget demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of the
+ * available drawing surface is used for visualisation.
+ */
 void MildredWidget::resizeEvent(QResizeEvent *event)
 {
     updateMetrics();
@@ -85,17 +90,26 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
  * Metrics
  */
 
-// Update metrics for current surface size
+//! Update metrics for current surface size
+/*!
+ *  Updates the internal @class MildredMetrics object.
+ */
 void MildredWidget::updateMetrics() { metrics_.update(width(), height(), xAxis_, yAxis_); }
 
 /*
  * Appearance
  */
 
-// Return whether the view is flat
+//! Return whether the view is flat
 bool MildredWidget::isFlatView() const { return flatView_; }
 
-// Set whether view is flat
+//! Set whether view is flat
+/*!
+ * This controls whether the current view is set to fixed, flat (2D) drawing (@param flat = true) with only the x and y axes
+ * shown, or the view is full 3D in which case all axes (including the depth z axis) are visible.
+ *
+ * Changing the view type necessarily enforces a recalculation of the metrics object.
+ */
 void MildredWidget::setFlatView(bool flat)
 {
     if (flatView_ == flat)
@@ -115,31 +129,30 @@ void MildredWidget::setFlatView(bool flat)
  * SceneGraph
  */
 
+//! Creates the scene graph for the display.
+/*!
+ * The Qt3D scene graph is created with the following layout.
+ *
+ *          [RootEntity]               Top-level root entity
+ *               |
+ *         sceneRootEntity_
+ *          |           |
+ * sceneRootTransform_  |              Translates to distant rotation point and applies 3D view rotation
+ *                      |
+ *              sceneObjectsEntity_    Contains all viewable objects for plotting
+ *               |         |    |
+ * sceneObjectsTransform_  |    |      Places scene objects so that global 0,0,0 is lower left corner to the viewer
+ *                         |    |
+ *                 axesEntity   |      Contains the individual AxesEntities
+ *                     |        |
+ *           xAxis_,yAxis_...   |      Individual axis entities
+ *                              |
+ *                      dataEntity     Parent entity for all displayed data series
+ *                       |      |
+ *      dataOriginTransform_    *      Sets the coordinate system so that 0,0,0 is at the axes origin
+ */
 void MildredWidget::createSceneGraph()
 {
-    /*
-     *    Scene Graph Layout
-     *    ------------------
-     *
-     *          [RootEntity]               Top-level root entity
-     *               |
-     *         sceneRootEntity_
-     *          |           |
-     * sceneRootTransform_  |              Translates to distant rotation point and applies 3D view rotation
-     *                      |
-     *              sceneObjectsEntity_    Contains all viewable objects for plotting
-     *               |         |    |
-     * sceneObjectsTransform_  |    |      Places scene objects so that global 0,0,0 is lower left corner to the viewer
-     *                         |    |
-     *                 axesEntity   |      Contains the individual AxesEntities
-     *                     |        |
-     *           xAxis_,yAxis_...   |      Individual axis entities
-     *                              |
-     *                      dataEntity     Parent entity for all displayed data series
-     *                       |      |
-     *      dataOriginTransform_    *      Sets the coordinate system so that 0,0,0 is at the axes origin
-     */
-
     sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_.data());
     sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
     sceneRootEntity_->addComponent(sceneRootTransform_);
@@ -182,16 +195,21 @@ void MildredWidget::createSceneGraph()
     dataEntity->addComponent(dataOriginTransform_);
 }
 
-// Return x axis entity
+//! Return x axis entity
 const AxisEntity *MildredWidget::xAxis() const { return xAxis_; }
 
-// Return y axis entity
+//! Return y axis entity
 const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
 
-// Return z axis entity
+//! Return z axis entity
 const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
 
-// Update transforms from metrics
+//! Update transforms from metrics
+/*!
+ * The metrics defined in the @class MildredMetrics object contains the offsets in 3D space for the axes origin and general
+ * graphing volume. This slot is connected internally to signals in the @class MildredMetrics object to ensure correct update of
+ * the view when the metrics have been recalculated.
+ */
 void MildredWidget::updateTransforms()
 {
     if (sceneObjectsTransform_)
@@ -202,7 +220,10 @@ void MildredWidget::updateTransforms()
         dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin());
 }
 
-// Reset view
+//! Reset view
+/*!
+ * Resets the main scene view rotation to the identity matrix
+ */
 void MildredWidget::resetView()
 {
     assert(sceneRootTransform_);
@@ -213,6 +234,35 @@ void MildredWidget::resetView()
  * Mouse Handling
  */
 
+//! React to mouse movement
+/*!
+ * React to mouse move events signalled by a Qt3DMouseHandler attached to the Qt3D surface, potentially affecting changes to the
+ * axes ranges or view volume, depending on the current view type and options.
+ *
+ * Active mouse buttons modify the effect of the event, and which also depends on the current view mode and depressed modifier
+ * keys.
+ *
+ * | Button | View Type | Modifier | Action |
+ * | :----: | :-------: | :------: | ------ |
+ * | Left   | Flat / 2D | None     | Update current coordinate under the mouse. |
+ * | ^      | ^         | Ctrl     |        |
+ * | ^      | ^         | Shift    |        |
+ * | ^      | 3D        | None     | None   |
+ * | ^      | ^         | Ctrl     |        |
+ * | ^      | ^         | Shift    |        |
+ * | Middle | Flat / 2D | None     | Translate view in the XY plane, modifying the corresponding ranges of the x and y axes |
+ * | ^      | ^         | Ctrl     |        |
+ * | ^      | ^         | Shift    |        |
+ * | ^      | 3D        | None     |        |
+ * | ^      | ^         | Ctrl     |        |
+ * | ^      | ^         | Shift    |        |
+ * | Right  | Flat / 2D | None     | None   |
+ * | ^      | ^         | Ctrl     |        |
+ * | ^      | ^         | Shift    |        |
+ * | ^      | 3D        | None     | Rotate view volume around its centroid. |
+ * | ^      | ^         | Ctrl     |        |
+ * | ^      | ^         | Shift    |        |
+ */
 void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 {
     // Check previous position
@@ -237,9 +287,9 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     {
         if (flatView_)
         {
-            xAxis_->adjustRange(-xAxis_->range() *
+            xAxis_->shiftLimits(-xAxis_->range() *
                                 (double(event->x() - lastMousePosition_.x()) / metrics_.displayVolumeExtent().x()));
-            yAxis_->adjustRange(yAxis_->range() *
+            yAxis_->shiftLimits(yAxis_->range() *
                                 (double(event->y() - lastMousePosition_.y()) / metrics_.displayVolumeExtent().y()));
         }
     }
@@ -255,6 +305,10 @@ void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
  * Slots
  */
 
+//! Change the text of the x-axis title.
+/*!
+ * Set the displayed text of the x-axis title to @param title. Metrics are updated after the change.
+ */
 void MildredWidget::setXAxisTitle(const QString &title)
 {
     assert(xAxis_);
@@ -262,6 +316,10 @@ void MildredWidget::setXAxisTitle(const QString &title)
     updateMetrics();
 }
 
+//! Change the text of the y-axis title.
+/*!
+ * Set the displayed text of the y-axis title to @param title. Metrics are updated after the change.
+ */
 void MildredWidget::setYAxisTitle(const QString &title)
 {
     assert(yAxis_);
@@ -269,6 +327,10 @@ void MildredWidget::setYAxisTitle(const QString &title)
     updateMetrics();
 }
 
+//! Change the text of the z-axis title.
+/*!
+ * Set the displayed text of the z-axis title to @param title. Metrics are updated after the change.
+ */
 void MildredWidget::setZAxisTitle(const QString &title)
 {
     assert(zAxis_);
@@ -276,6 +338,10 @@ void MildredWidget::setZAxisTitle(const QString &title)
     updateMetrics();
 }
 
+//! Change the visibility of the scene debug cuboid.
+/*!
+ * Sets whether the scene debug cuboid is enabled (visible), and which illustrates the current view volume extent.
+ */
 void MildredWidget::setSceneCuboidEnabled(bool enabled)
 {
     assert(sceneBoundingCuboidEntity_);

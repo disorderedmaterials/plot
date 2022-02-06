@@ -1,20 +1,28 @@
-#include "cuboid.h"
+#include "classes/cuboid.h"
 
+//! Construct a new Cuboid from the supplied positions
 Cuboid::Cuboid(QVector3D v1, QVector3D v2) : v1_(v1), v2_(v2) {}
 
-// Reset the cuboid to zero size
+//! Reset the cuboid to zero size
+/*!
+ * Set both extrema of the @class Cuboid to (0,0,0).
+ */
 void Cuboid::zero()
 {
     v1_ = QVector3D(0.0, 0.0, 0.0);
     v2_ = QVector3D(0.0, 0.0, 0.0);
 }
 
-// Return the lower left back coordinate
+//! Return the lower left back coordinate
 QVector3D Cuboid::lowerLeftBack() const { return v1_; }
-// Return the upper right front coordinate
+
+//! Return the upper right front coordinate
 QVector3D Cuboid::upperRightFront() const { return v2_; }
 
-// Expand cuboid to encompass supplied cuboid
+//! Expand cuboid to encompass supplied cuboid
+/*!
+ * Expand the current extrema so as to completely encompass the supplied @param cuboid.
+ */
 void Cuboid::expand(const Cuboid &cuboid)
 {
     if (cuboid.lowerLeftBack().x() < v1_.x() || cuboid.upperRightFront().x() < v1_.x())
@@ -32,21 +40,21 @@ void Cuboid::expand(const Cuboid &cuboid)
         v2_.setZ(std::max(cuboid.lowerLeftBack().z(), cuboid.upperRightFront().z()));
 }
 
-// Translate the cuboid by the supplied vector
+//! Translate the cuboid by the supplied vector
 void Cuboid::translate(QVector3D v)
 {
     v1_ += v;
     v2_ += v;
 }
 
-// Return x extent of cuboid
+//! Return x extent of cuboid
 float Cuboid::xExtent() const { return v2_.x() - v1_.x(); }
 
-// Return y extent of cuboid
+//! Return y extent of cuboid
 float Cuboid::yExtent() const { return v2_.y() - v1_.y(); }
 
-// Return z extent of cuboid
+//! Return z extent of cuboid
 float Cuboid::zExtent() const { return v2_.z() - v1_.z(); }
 
-// Return vector of extents
+//! Return vector of extents
 QVector3D Cuboid::extents() const { return {v2_.x() - v1_.x(), v2_.y() - v1_.y(), v2_.z() - v1_.z()}; }

@@ -20,7 +20,8 @@ set(CMAKE_AUTOMOC OFF)
 # Set policy for automatic linkage of Qt libs to project
 cmake_policy(SET CMP0020 NEW)
 
-# Request C++17 Standard Support (Required for std::optional and auto types in lambda parameters)
+# Request C++17 Standard Support (Required for std::optional and auto types in
+# lambda parameters)
 set(CMAKE_CXX_STANDARD 17)
 
 if(APPLE)
@@ -28,7 +29,16 @@ if(APPLE)
 endif(APPLE)
 
 find_package(OpenGL REQUIRED)
-find_package(Qt6 COMPONENTS Core Gui Widgets 3DCore 3DExtras 3DRender 3DExtras REQUIRED)
+find_package(
+  Qt6
+  COMPONENTS Core
+             Gui
+             Widgets
+             3DCore
+             3DExtras
+             3DRender
+             3DExtras
+  REQUIRED)
 
 # Make sure CMake won't try to generate rules for moc (we will do it ourselves)
 set(CMAKE_AUTOMOC OFF)
@@ -36,16 +46,16 @@ set(CMAKE_AUTOMOC OFF)
 # Set policy for automatic linkage of Qt libs to project
 cmake_policy(SET CMP0020 NEW)
 
-# ------------------------------- #
-# Perform platform-specific setup
+# ------------------------------- # Perform platform-specific setup
 # ------------------------------- #
 
 set(target_name axes)
 
-#-- Windows
+# -- Windows
 if(WIN32)
-  # Add defines for Windows systems - NOMINMAX to prevent conflicts with std::min() and std::max() - NOGDI to prevent conflicts arising from
-  # Windows defining ERROR as a global macro (used in ANTLR4)
+  # Add defines for Windows systems - NOMINMAX to prevent conflicts with
+  # std::min() and std::max() - NOGDI to prevent conflicts arising from Windows
+  # defining ERROR as a global macro (used in ANTLR4)
   add_definitions(-DNOMINMAX -DNOGDI)
 endif(WIN32)
 
@@ -56,7 +66,8 @@ endif(UNIX)
 
 # -- OSX
 if(APPLE)
-  # Set some specific C++11 related options here (set_property below does not seem to persist)
+  # Set some specific C++11 related options here (set_property below does not
+  # seem to persist)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 
   # Suppress warnings for undefined template vars
@@ -78,23 +89,18 @@ add_executable(${target_name} MACOSX_BUNDLE ${SRCS}/main.cpp)
 
 # Set project-local include directories for target
 target_include_directories(
-  ${target_name} PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src 
-            ${Qt6Core_INCLUDE_DIRS}
-            ${Qt6Gui_INCLUDE_DIRS}
-            ${Qt6OpenGL_INCLUDE_DIRS}
-            ${Qt6Widgets_INCLUDE_DIRS}
-            ${Qt6OpenGL_INCLUDE_DIRS}
-            ${Qt6OpenGLWidgets_INCLUDE_DIRS}
-  )
+  ${target_name}
+  PRIVATE ${PROJECT_SOURCE_DIR}/src
+          ${PROJECT_BINARY_DIR}/src
+          ${Qt6Core_INCLUDE_DIRS}
+          ${Qt6Gui_INCLUDE_DIRS}
+          ${Qt6OpenGL_INCLUDE_DIRS}
+          ${Qt6Widgets_INCLUDE_DIRS}
+          ${Qt6OpenGL_INCLUDE_DIRS}
+          ${Qt6OpenGLWidgets_INCLUDE_DIRS})
 
 target_link_libraries(
   ${target_name}
-  PUBLIC ${WHOLE_ARCHIVE_FLAG}
-           main
-    PRIVATE # External libs
-            Qt6::Widgets
-            Qt6::Core
-            Qt6::3DCore
-        Qt6::3DRender
-        Qt6::3DExtras
-  )
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} main classes entities
+  PRIVATE # External libs
+          Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras)

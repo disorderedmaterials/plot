@@ -2,6 +2,10 @@
 
 #include <QVector3D>
 
+//! Cuboid defines a region in 3D space
+/*!
+ * The @class Cuboid class defines a cuboid in 3D space from its lower-left-back and upper-right-front coordinates.
+ */
 class Cuboid
 {
     public:

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "axisentity.h"
+#include "classes/metrics.h"
+#include "entities/axis.h"
 #include "framegraph.h"
-#include "metrics.h"
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>
@@ -10,6 +10,17 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
+//! The Mildred widget is the core class of Mildred.
+/*!
+ * The Mildred widget is a standard QWidget displaying a Qt3D-based subwidget providing full 2D (flat) and 3D data
+ * visualisation of discrete data as represented by the XXX class. It is the parent object of all displayed entities, including
+ * axes.
+ *
+ *  Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
+ * in order to have ready access to key metrics, e.g. the pixel scaling along each cardinal axis direction.
+ *
+ *
+ */
 class MildredWidget : public QWidget
 {
     Q_OBJECT

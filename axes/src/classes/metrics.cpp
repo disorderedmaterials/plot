@@ -1,31 +1,43 @@
-#include "metrics.h"
-#include "axisentity.h"
+#include "classes/metrics.h"
+#include "entities/axis.h"
 
 /*
  * Fonts
  */
 
-// Return font for axis tick labels
+//! Return font for axis tick labels
 const QFont &MildredMetrics::axisTickLabelFont() const { return axisTickLabelFont_; }
 
-// Return font for axis title
+//! Return font for axis title
 const QFont &MildredMetrics::axisTitleFont() const { return axisTitleFont_; }
 
 /*
  * Axis
  */
 
-// Return tick size
+//! Return tick size in pixels.
+/*!
+ * Returns the length, in pixels, of axis tick marks. Note that this directly defines the length of tick marks at labelled
+ * positions - sub (minor) ticks in between labelled value positions are drawn with half the length defined here.
+ */
 float MildredMetrics::tickPixelSize() const { return tickPixelSize_; }
 
-// Return spacing between tick marks and labels
+//! Return spacing between tick marks and labels.
+/*!
+ * Returns the spacing, in pixels, to add between tick marks at labelled positions and tick label values.
+ */
 float MildredMetrics::tickLabelPixelGap() const { return tickLabelPixelGap_; }
 
 /*
  * Object Anchor Point
  */
 
-// Return the fractional anchor location, with (0,0) corresponding to bottom-left corner
+//! Return fractional anchor position.
+/*!
+ * Return the fractional coordinate of the specified anchor location in the XY plane, for use when positioning other objects.
+ *
+ * (0,0) corresponds to the bottom-left corner, and (1,1) corresponds the the top-right.
+ */
 QPointF MildredMetrics::anchorLocation(AnchorPoint anchor)
 {
     switch (anchor)
@@ -57,20 +69,37 @@ QPointF MildredMetrics::anchorLocation(AnchorPoint anchor)
  * Display
  */
 
-// Return margin around outer edge of plot
+//! Return margin around outer edge of plot
+/*!
+ * Returns the margin, in pixels, to reserve around the extreme edge of the display surface.
+ */
 float MildredMetrics::nMarginPixels() const { return nMarginPixels_; }
 
-// Return display volume origin
+//! Return display volume origin
+/*!
+ * Return the calculated display volume origin coordinate. This is the coordinate, in 3D space, by which an entity must be
+ * transformed in order to assure that drawing at (0,0,0) coincides with the junction point of the displayed axes objects.
+ */
 QVector3D MildredMetrics::displayVolumeOrigin() const { return displayVolumeOrigin_; }
 
-// Return display volume bounds
+//! Return display volume extent
+/*!
+ * Returns the calculated available display volume extents, in units of pixels, available for plotting data series. The extents
+ * define the maximal distance from the display volume origin that is available for plotting.
+ */
 QVector3D MildredMetrics::displayVolumeExtent() const { return displayVolumeExtent_; }
 
 /*
  * Update
  */
 
-// Update metrics given supplied surface size and axes
+//! Update metrics given supplied surface size and axes
+/*!
+ * Recalculates the available display origin and extents given the supplied pixel @param width and @param height of the drawing
+ * surface, and the current @param xAxis and @param yAxis entities.
+ *
+ * Emits metricsChanged().
+ */
 void MildredMetrics::update(int width, int height, const AxisEntity *xAxis, const AxisEntity *yAxis)
 {
     // Initialise the display volume origin to zero (pixels) and the extent to the max surface size

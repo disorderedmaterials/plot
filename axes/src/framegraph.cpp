@@ -9,22 +9,26 @@
 
 #include "framegraph.h"
 
-void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, QObject *surface, Qt3DRender::QCamera *camera)
+//! Create the framegraph
+/*!
+ * Create a suitable framegraph for the supplied QRenderSettings @param parent and specified @param surface.
+ * @param camera
+ *
+ * The framegraph is constructed with the following structure:
+ *
+ *        [QRenderSettings]         Parent of first framegraph node
+ *               |
+ *        QSurfaceSelector          Sets the target surface for the renderer
+ *               |
+ *           QViewport              Defines the viewport on the target surface
+ *               |
+ *         QClearBuffers            Sets the targets to clear and the default attributes to clear to
+ *               |
+ *        QCameraSelector           Selects an existing camera to view the scenegraph
+ */
+void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, Qt3DExtras::Qt3DWindow *surface,
+                               Qt3DRender::QCamera *camera)
 {
-    /*
-     * Set up a simple forward renderer framegraph. Nodes are constructed as a single-leaf stack:
-     *
-     *        [QRenderSettings]         Parent of first framegraph node
-     *               |
-     *        QSurfaceSelector          Sets the target surface for the renderer
-     *               |
-     *           QViewport              Defines the viewport on the target surface
-     *               |
-     *         QClearBuffers            Sets the targets to clear and the default attributes to clear to
-     *               |
-     *        QCameraSelector           Selects an existing camera to view the scenegraph
-     */
-
     // Set our rendering surface
     auto *surfaceSelector = new Qt3DRender::QRenderSurfaceSelector(parent);
     surfaceSelector->setSurface(surface);
