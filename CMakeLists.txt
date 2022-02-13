@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(axes)
+project(mildred)
 
 set(DESCRIPTION "Qt3D example")
 set(AUTHOR "Qt Project")
@@ -46,10 +46,11 @@ set(CMAKE_AUTOMOC OFF)
 # Set policy for automatic linkage of Qt libs to project
 cmake_policy(SET CMP0020 NEW)
 
-# ------------------------------- # Perform platform-specific setup
+# ------------------------------- #
+# Perform platform-specific setup #
 # ------------------------------- #
 
-set(target_name axes)
+set(target_name mildred)
 
 # -- Windows
 if(WIN32)
