@@ -2,6 +2,7 @@
 
 #include "classes/metrics.h"
 #include "entities/axis.h"
+#include "entities/data1d.h"
 #include "framegraph.h"
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
@@ -89,6 +90,8 @@ class MildredWidget : public QWidget
     AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr}, *altYAxis_{nullptr}, *zAxis_{nullptr};
     // Transforms
     Qt3DCore::QTransform *dataOriginTransform_{nullptr}, *sceneObjectsTransform_{nullptr}, *sceneRootTransform_{nullptr};
+    // Data Entities
+    Qt3DCore::QEntity *dataRootEntity_{nullptr}, *dataEntityParent_{nullptr};
     // Debug objects
     Qt3DCore::QEntity *sceneBoundingCuboidEntity_{nullptr};
     Qt3DCore::QTransform *sceneBoundingCuboidTransform_{nullptr};
@@ -122,6 +125,17 @@ class MildredWidget : public QWidget
     void mousePositionChanged(Qt3DInput::QMouseEvent *event);
     void mouseButtonPressed(Qt3DInput::QMouseEvent *event);
     void mouseButtonReleased(Qt3DInput::QMouseEvent *event);
+
+    /*
+     * Display Data
+     */
+    private:
+    // Associated data entities (with identifying tag)
+    std::vector<std::pair<std::string, DataEntity *>> dataEntities_;
+
+    public:
+    // Add new data entity for supplied data
+    Data1DEntity *addData1D(std::string_view tag);
 
     /*
      * Slots

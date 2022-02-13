@@ -97,11 +97,10 @@ target_include_directories(
           ${Qt6Gui_INCLUDE_DIRS}
           ${Qt6OpenGL_INCLUDE_DIRS}
           ${Qt6Widgets_INCLUDE_DIRS}
-          ${Qt6OpenGL_INCLUDE_DIRS}
-          ${Qt6OpenGLWidgets_INCLUDE_DIRS})
+)
 
 target_link_libraries(
   ${target_name}
-  PUBLIC ${WHOLE_ARCHIVE_FLAG} main classes entities
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} main classes entities renderers1d
   PRIVATE # External libs
           Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras)

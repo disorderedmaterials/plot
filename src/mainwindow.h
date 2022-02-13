@@ -17,5 +17,10 @@ class MainWindow : public QMainWindow
     // Main form declaration
     Ui::MainWindow ui_;
 
-    private slots:
+    /*
+     * Data
+     */
+    private:
+    // Test data
+    std::vector<double> squaresX_, squaresValues_;
 };

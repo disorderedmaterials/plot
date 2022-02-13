@@ -24,3 +24,4 @@ target_include_directories(
 
 add_subdirectory(classes)
 add_subdirectory(entities)
+add_subdirectory(renderers)

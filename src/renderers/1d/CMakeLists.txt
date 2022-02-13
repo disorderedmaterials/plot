@@ -1,11 +1,9 @@
-# Meta-Objects
-set(classes_MOC_HDRS metrics.h)
-qt6_wrap_cpp(classes_MOC_SRCS ${classes_MOC_HDRS})
-
-add_library(classes ${classes_MOC_SRCS} cuboid.h cuboid.cpp metrics.cpp)
+add_library(
+  renderers1d
+  line.cpp stylefactory.cpp base.h line.h stylefactory.h)
 
 target_include_directories(
-  classes
+  renderers1d
   PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src
         ${Qt63DCore_INCLUDE_DIRS}
         ${Qt63DExtras_INCLUDE_DIRS}

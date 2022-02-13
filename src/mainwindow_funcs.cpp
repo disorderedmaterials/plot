@@ -24,4 +24,13 @@ MainWindow::MainWindow() : QMainWindow()
     connect(ui_.YVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->yAxis(), SLOT(setEnabled(bool)));
     ui_.ZVisibleCheck->setChecked(ui_.TestingWidget->zAxis()->isEnabled());
     connect(ui_.ZVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->zAxis(), SLOT(setEnabled(bool)));
+
+    // Data
+    for (auto n = -5; n <= 5; ++n)
+    {
+        squaresX_.push_back(n);
+        squaresValues_.push_back(fabs(n));
+    }
+    auto *squares = ui_.TestingWidget->addData1D("Squares");
+    squares->setData(squaresX_, squaresValues_);
 };

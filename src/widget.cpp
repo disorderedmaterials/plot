@@ -5,6 +5,7 @@
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QOrbitCameraController>
+#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
@@ -18,7 +19,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
      */
     viewWindow_ = new Qt3DExtras::Qt3DWindow();
 
-    // create a container for Qt3DWindow
+    // Create a container for the Qt3DWindow
     viewContainer_ = createWindowContainer(viewWindow_, this);
 
     // Create our root entity
@@ -190,9 +191,10 @@ void MildredWidget::createSceneGraph()
      * Data Space Leaf
      */
 
-    auto *dataEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
-    dataOriginTransform_ = new Qt3DCore::QTransform(dataEntity);
-    dataEntity->addComponent(dataOriginTransform_);
+    dataRootEntity_ = new Qt3DCore::QEntity(sceneObjectsEntity_);
+    dataEntityParent_ = new Qt3DCore::QEntity(dataRootEntity_);
+    dataOriginTransform_ = new Qt3DCore::QTransform(dataEntityParent_);
+    dataEntityParent_->addComponent(dataOriginTransform_);
 }
 
 //! Return x axis entity
@@ -217,7 +219,8 @@ void MildredWidget::updateTransforms()
                                                QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
 
     if (dataOriginTransform_)
-        dataOriginTransform_->setTranslation(metrics_.displayVolumeOrigin());
+        dataOriginTransform_->setTranslation(
+            -(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) + zAxis_->toScaled(zAxis_->minimum())));
 }
 
 //! Reset view
@@ -291,6 +294,7 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
                                 (double(event->x() - lastMousePosition_.x()) / metrics_.displayVolumeExtent().x()));
             yAxis_->shiftLimits(yAxis_->range() *
                                 (double(event->y() - lastMousePosition_.y()) / metrics_.displayVolumeExtent().y()));
+            updateTransforms();
         }
     }
 
@@ -300,6 +304,30 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
 
 void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
+
+/*
+ * Display Data
+ */
+
+// Add new 1-dimensional data entity for supplied data
+Data1DEntity *MildredWidget::addData1D(std::string_view tag)
+{
+    // Check for existing tag
+    auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
+    if (it != dataEntities_.end())
+    {
+        printf("Data with tag '%s' already exists, so can't add it again. Returning the existing data instead.\n",
+               it->first.c_str());
+        throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
+    }
+
+    // Create a new entity
+    auto *entity = new Data1DEntity(xAxis_, yAxis_, dataEntityParent_);
+    connect(&metrics_, SIGNAL(metricsChanged()), entity, SLOT(updateRenderables()));
+    dataEntities_.emplace_back(tag, entity);
+
+    return entity;
+}
 
 /*
  * Slots

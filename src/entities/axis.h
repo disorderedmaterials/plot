@@ -60,6 +60,10 @@ class AxisEntity : public Qt3DCore::QEntity
     std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
 
     public:
+    // Return the minimum display value of the axis
+    double minimum() const;
+    // Return the maximum display value of the axis
+    double maximum() const;
     // Return range of axis
     double range() const;
     // Shift limits of axis
@@ -103,7 +107,11 @@ class AxisEntity : public Qt3DCore::QEntity
     // Get relevant scale from the supplied metrics
     double getAxisScale(const MildredMetrics &metrics) const;
     // Map axis value to scaled global position
-    double axisToGlobal(double axisValue) const;
+    double toGlobal(double axisValue) const;
+    // Map axis value to 3D point
+    QVector3D to3D(double axisValue) const;
+    // Return scaled value point
+    QVector3D toScaled(double axisValue) const;
 
     /*
      * Entities

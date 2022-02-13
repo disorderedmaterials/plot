@@ -120,7 +120,7 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks(double tick
         // Add tick here, only if value >= minimum_
         if (value >= minimum_)
         {
-            auto x = axisToGlobal(value);
+            auto x = toGlobal(value);
 
             if (count % (nSubTicks_ + 1) == 0)
             {
@@ -193,6 +193,12 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
 
     return ticks;
 }
+
+// Return the minimum display value of the axis
+double AxisEntity::minimum() const { return minimum_; }
+
+// Return the maximum display value of the axis
+double AxisEntity::maximum() const { return maximum_; }
 
 //! Return range of axis
 /*!
@@ -352,15 +358,24 @@ double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
 
 //! Map axis value to scaled global position
 /*!
- * Convert the supplied @param axisValue into scaled view volume coordinates, ready for plotting.
+ * Convert the supplied @param axisValue into scaled view volume coordinates.
  */
-double AxisEntity::axisToGlobal(double axisValue) const
+double AxisEntity::toGlobal(double axisValue) const
 {
     if (logarithmic_)
         return ((axisValue - minimum_) / (maximum_ - minimum_)) * axisScale_;
     else
         return ((inverted_ ? (maximum_ - axisValue) : (axisValue - minimum_)) / (maximum_ - minimum_)) * axisScale_;
 }
+
+//! Map axis value to 3D point
+/*!
+ * Convert the supplied @param axisValue into view volume coordinates along the direction of the axis.
+ */
+QVector3D AxisEntity::to3D(double axisValue) const { return direction_ * float(toGlobal(axisValue)); }
+
+//! Return scaled value point
+QVector3D AxisEntity::toScaled(double axisValue) const { return direction_ * axisValue * axisScale_ / (maximum_ - minimum_); }
 
 /*
  * Entities
@@ -397,8 +412,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     auto tickPos = tickDirection_ * metrics_.tickPixelSize();
     for (auto &&[v, label] : ticks)
     {
-        auto vT = float(axisToGlobal(v));
-        auto axisPos = direction_ * vT;
+        auto axisPos = to3D(v);
 
         if (label)
         {
@@ -517,8 +531,7 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
     // -- Ticks
     for (auto &&[v, label] : ticks)
     {
-        auto vT = float(axisToGlobal(v));
-        auto axisPos = direction_ * vT;
+        auto axisPos = to3D(v);
 
         if (label)
         {
