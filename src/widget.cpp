@@ -8,7 +8,6 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QRenderSettings>
 
 //! Constructs a Mildred widget which is a child of \param parent.
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
@@ -26,8 +25,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     rootEntity_ = Qt3DCore::QEntityPtr(new Qt3DCore::QEntity);
 
     // Create a QRenderSettings and add it as a component to the root entity
-    renderSettings_ = new Qt3DRender::QRenderSettings(rootEntity_.data());
-    rootEntity_->addComponent(renderSettings_);
+    renderSettings_ = viewWindow_->renderSettings();
 
     // Add a mouse handler and connect it up
     auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());

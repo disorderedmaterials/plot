@@ -1,6 +1,8 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QClipPlane>
+#include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QLineWidth>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderStateSet>
@@ -45,13 +47,6 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, Qt3DExtras::
     // Set the camera to the one which was passed in
     auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
     cameraSelector->setCamera(camera);
-
-    // Render state
-    auto *renderState = new Qt3DRender::QRenderStateSet(cameraSelector);
-    //    auto *lineWidth = new Qt3DRender::QLineWidth();
-    //    lineWidth->setValue(4.0);
-    //    lineWidth->setSmooth(false);
-    //    renderState->addRenderState(lineWidth);
 
     // Finally, set the active framegraph of the QRenderSettings to the top node of our framegraph
     parent->setActiveFrameGraph(surfaceSelector);
