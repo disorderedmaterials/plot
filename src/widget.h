@@ -84,6 +84,8 @@ class MildredWidget : public QWidget
      * SceneGraph
      */
     private:
+    // Global light position
+    QVector3D lightPosition_{0.0, 0.0, -100.0};
     // Head node for scene (owned by root entity)
     Qt3DCore::QEntity *sceneRootEntity_{nullptr};
     // Axes

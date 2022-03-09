@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="shaders">
+    <file>shaders/es2/default.vert</file>
+    <file>shaders/gl3/default.vert</file>
+    <file>shaders/rhi/default_pos_norm.vert</file>
+    <file>shaders/graphs/phong.frag.json</file>
+    <file>shaders/phong.frag</file>
+    <file>shaders/phong.vert</file>
+  </qresource>
+</RCC>
