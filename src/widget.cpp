@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "entities/axis.h"
+#include "materials/material.h"
 #include <QResizeEvent>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
@@ -8,6 +9,7 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QPointLight>
 
 //! Constructs a Mildred widget which is a child of \param parent.
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
@@ -152,6 +154,17 @@ void MildredWidget::setFlatView(bool flat)
  */
 void MildredWidget::createSceneGraph()
 {
+    auto *lightEntity = new Qt3DCore::QEntity(rootEntity_.data());
+
+    auto *light = new Qt3DRender::QPointLight(lightEntity);
+    light->setColor("white");
+    light->setIntensity(1);
+    lightEntity->addComponent(light);
+
+    auto *lightTransform = new Qt3DCore::QTransform(lightEntity);
+    lightTransform->setTranslation(lightPosition_);
+    lightEntity->addComponent(lightTransform);
+
     sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_.data());
     sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
     sceneRootEntity_->addComponent(sceneRootTransform_);
@@ -171,6 +184,16 @@ void MildredWidget::createSceneGraph()
     cuboidMaterial->setAmbient(QColor(255, 0, 0, 100));
     cuboidMaterial->setAlphaBlendingEnabled(true);
     sceneBoundingCuboidEntity_->addComponent(cuboidMaterial);
+
+    // TEST
+    auto *sphereEntity_ = new Qt3DCore::QEntity(sceneObjectsEntity_);
+    auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
+    sphereEntity_->addComponent(sphereMesh);
+    auto *sphereMaterial = new PhongMaterial(sphereEntity_);
+    sphereEntity_->addComponent(sphereMaterial);
+    auto *sphereTransform = new Qt3DCore::QTransform();
+    sphereTransform->setScale(50.0);
+    sphereEntity_->addComponent(sphereTransform);
 
     /*
      * Axes Leaf
