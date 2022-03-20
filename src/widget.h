@@ -86,6 +86,9 @@ class MildredWidget : public QWidget
     private:
     // Global light position
     QVector3D lightPosition_{0.0, 0.0, -100.0};
+    // View rotation and associated parameter
+    QQuaternion viewRotationMatrix_;
+    Qt3DRender::QParameter *viewRotationParameter_{nullptr};
     // Head node for scene (owned by root entity)
     Qt3DCore::QEntity *sceneRootEntity_{nullptr};
     // Axes
