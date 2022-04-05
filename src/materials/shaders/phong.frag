@@ -18,6 +18,9 @@ uniform float shininess;
 // -- Light position
 uniform vec3 lightPosition;
 
+// Output variables
+out vec4 fragColour;
+
 void main() {
   // Calculate normalised surface normal and light vector
   vec3 N = normalize(worldNormal);
@@ -38,7 +41,7 @@ void main() {
   }
 
   // Construct final colour
-  gl_FragColor = vec4(ka * ambient +
+  fragColour = vec4(ka * ambient +
                       kd * lambertian * diffuse +
                       ks * specPow * specular, 1.0);
 }
