@@ -29,6 +29,9 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     // Create a QRenderSettings and add it as a component to the root entity
     renderSettings_ = viewWindow_->renderSettings();
 
+    // Create parameters
+    viewRotationParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewRotation"), QQuaternion());
+
     // Add a mouse handler and connect it up
     auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());
     auto *mouseDevice = new Qt3DInput::QMouseDevice(rootEntity_.data());
@@ -190,9 +193,11 @@ void MildredWidget::createSceneGraph()
     auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
     sphereEntity_->addComponent(sphereMesh);
     auto *sphereMaterial = new PhongMaterial(sphereEntity_);
+    sphereMaterial->addParameter(viewRotationParameter_);
     sphereEntity_->addComponent(sphereMaterial);
     auto *sphereTransform = new Qt3DCore::QTransform();
     sphereTransform->setScale(50.0);
+    sphereTransform->setTranslation(QVector3D(25,336,-339.5));
     sphereEntity_->addComponent(sphereTransform);
 
     /*
@@ -238,6 +243,7 @@ void MildredWidget::updateTransforms()
     if (sceneObjectsTransform_)
         sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin() -
                                                QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
+    printf("%f %f %f\n", width() / 2.0, height() / 2.0, -width() / 2.0);
 
     if (dataOriginTransform_)
         dataOriginTransform_->setTranslation(
@@ -251,7 +257,9 @@ void MildredWidget::updateTransforms()
 void MildredWidget::resetView()
 {
     assert(sceneRootTransform_);
-    sceneRootTransform_->setRotation(QQuaternion());
+    viewRotationMatrix_ = QQuaternion();
+    viewRotationParameter_->setValue(viewRotationMatrix_.toRotationMatrix());
+    sceneRootTransform_->setRotation(viewRotationMatrix_);
 }
 
 /*
@@ -300,10 +308,12 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     if (event->buttons() & Qt3DInput::QMouseEvent::RightButton)
     {
         // Rotations only allowed for 3D view
-        if (!flatView_)
-            sceneRootTransform_->setRotation(
-                QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(), event->x() - lastMousePosition_.x(), 0.0) *
-                sceneRootTransform_->rotation());
+        if (!flatView_) {
+            viewRotationMatrix_ *= QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(),
+                                                                event->x() - lastMousePosition_.x(), 0.0);
+            viewRotationParameter_->setValue(viewRotationMatrix_);
+            sceneRootTransform_->setRotation(viewRotationMatrix_);
+        }
     }
 
     // Middle button - translate axis ranges (2D)
