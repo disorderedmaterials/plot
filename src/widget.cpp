@@ -30,7 +30,9 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     renderSettings_ = viewWindow_->renderSettings();
 
     // Create parameters
-    viewRotationParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewRotation"), QQuaternion());
+    sceneDataAxesParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxes"), QMatrix4x4());
+    sceneDataAxesExtentsParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxesExtents"), QVector3D());
+    sceneDataTransformInverseParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataTransformInverse"), QMatrix4x4());
 
     // Add a mouse handler and connect it up
     auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());
@@ -188,18 +190,6 @@ void MildredWidget::createSceneGraph()
     cuboidMaterial->setAlphaBlendingEnabled(true);
     sceneBoundingCuboidEntity_->addComponent(cuboidMaterial);
 
-    // TEST
-    auto *sphereEntity_ = new Qt3DCore::QEntity(sceneObjectsEntity_);
-    auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
-    sphereEntity_->addComponent(sphereMesh);
-    auto *sphereMaterial = new PhongMaterial(sphereEntity_);
-    sphereMaterial->addParameter(viewRotationParameter_);
-    sphereEntity_->addComponent(sphereMaterial);
-    auto *sphereTransform = new Qt3DCore::QTransform();
-    sphereTransform->setScale(50.0);
-    sphereTransform->setTranslation(QVector3D(25,336,-339.5));
-    sphereEntity_->addComponent(sphereTransform);
-
     /*
      * Axes Leaf
      */
@@ -221,6 +211,20 @@ void MildredWidget::createSceneGraph()
     dataEntityParent_ = new Qt3DCore::QEntity(dataRootEntity_);
     dataOriginTransform_ = new Qt3DCore::QTransform(dataEntityParent_);
     dataEntityParent_->addComponent(dataOriginTransform_);
+
+    // TEST
+    auto *sphereEntity_ = new Qt3DCore::QEntity(dataEntityParent_);
+    auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
+    sphereEntity_->addComponent(sphereMesh);
+    auto *sphereMaterial = new PhongMaterial(sphereEntity_);
+    sphereMaterial->addParameter(sceneDataAxesParameter_);
+    sphereMaterial->addParameter(sceneDataAxesExtentsParameter_);
+    sphereMaterial->addParameter(sceneDataTransformInverseParameter_);
+    sphereEntity_->addComponent(sphereMaterial);
+    auto *sphereTransform = new Qt3DCore::QTransform();
+    sphereTransform->setScale(50.0);
+    sphereTransform->setTranslation(QVector3D(530.0,50,0));
+    sphereEntity_->addComponent(sphereTransform);
 }
 
 //! Return x axis entity
@@ -243,11 +247,23 @@ void MildredWidget::updateTransforms()
     if (sceneObjectsTransform_)
         sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin() -
                                                QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
-    printf("%f %f %f\n", width() / 2.0, height() / 2.0, -width() / 2.0);
-
     if (dataOriginTransform_)
         dataOriginTransform_->setTranslation(
             -(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) + zAxis_->toScaled(zAxis_->minimum())));
+}
+
+//! Update shader parameters
+/*!
+ * Update shader parameters from current view information.
+ */
+void MildredWidget::updateShaderParameters()
+{
+    sceneDataAxesParameter_->setValue(QMatrix4x4(xAxis_->direction().x(), xAxis_->direction().y(), xAxis_->direction().z(), 0.0,
+                                                 yAxis_->direction().x(), yAxis_->direction().y(), yAxis_->direction().z(), 0.0,
+                                                 zAxis_->direction().x(), zAxis_->direction().y(), zAxis_->direction().z(), 0.0,
+                                                 0.0, 0.0, 0.0, 1.0));
+    sceneDataAxesExtentsParameter_->setValue(metrics_.displayVolumeExtent());
+    sceneDataTransformInverseParameter_->setValue((sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
 }
 
 //! Reset view
@@ -257,9 +273,11 @@ void MildredWidget::updateTransforms()
 void MildredWidget::resetView()
 {
     assert(sceneRootTransform_);
+
     viewRotationMatrix_ = QQuaternion();
-    viewRotationParameter_->setValue(viewRotationMatrix_.toRotationMatrix());
     sceneRootTransform_->setRotation(viewRotationMatrix_);
+
+    updateShaderParameters();
 }
 
 /*
@@ -311,7 +329,6 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
         if (!flatView_) {
             viewRotationMatrix_ *= QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(),
                                                                 event->x() - lastMousePosition_.x(), 0.0);
-            viewRotationParameter_->setValue(viewRotationMatrix_);
             sceneRootTransform_->setRotation(viewRotationMatrix_);
         }
     }
@@ -328,6 +345,8 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             updateTransforms();
         }
     }
+
+    updateShaderParameters();
 
     lastMousePosition_ = QPoint(event->x(), event->y());
 }

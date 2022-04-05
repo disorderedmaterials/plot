@@ -86,20 +86,23 @@ class MildredWidget : public QWidget
     private:
     // Global light position
     QVector3D lightPosition_{0.0, 0.0, -100.0};
-    // View rotation and associated parameter
+    // View rotation
     QQuaternion viewRotationMatrix_;
-    Qt3DRender::QParameter *viewRotationParameter_{nullptr};
     // Head node for scene (owned by root entity)
     Qt3DCore::QEntity *sceneRootEntity_{nullptr};
     // Axes
     AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr}, *altYAxis_{nullptr}, *zAxis_{nullptr};
-    // Transforms
+    // Transforms and associated parameters
     Qt3DCore::QTransform *dataOriginTransform_{nullptr}, *sceneObjectsTransform_{nullptr}, *sceneRootTransform_{nullptr};
     // Data Entities
     Qt3DCore::QEntity *dataRootEntity_{nullptr}, *dataEntityParent_{nullptr};
     // Debug objects
     Qt3DCore::QEntity *sceneBoundingCuboidEntity_{nullptr};
     Qt3DCore::QTransform *sceneBoundingCuboidTransform_{nullptr};
+    // Shader parameters
+    Qt3DRender::QParameter *sceneDataAxesParameter_{nullptr};
+    Qt3DRender::QParameter *sceneDataAxesExtentsParameter_{nullptr};
+    Qt3DRender::QParameter *sceneDataTransformInverseParameter_{nullptr};
 
     private:
     // Create basic scenegraph
@@ -116,6 +119,8 @@ class MildredWidget : public QWidget
     public slots:
     // Update transforms from metrics
     void updateTransforms();
+    // Update shader parameters
+    void updateShaderParameters();
     // Reset view
     void resetView();
 

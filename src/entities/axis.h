@@ -103,7 +103,9 @@ class AxisEntity : public Qt3DCore::QEntity
     // Set axis type
     void setType(AxisType type);
     // Set explicit direction
-    void setDirection(QVector3D principal);
+    void setDirection(QVector3D v);
+    // Return explicit direction
+    QVector3D direction() const;
     // Get relevant scale from the supplied metrics
     double getAxisScale(const MildredMetrics &metrics) const;
     // Map axis value to scaled global position

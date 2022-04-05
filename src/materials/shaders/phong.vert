@@ -8,28 +8,39 @@ in vec3 vertexNormal;
 out vec3 worldPosition;
 out vec3 worldNormal;
 
-// Uniform variables per-primitive
+// Standard uniform variables per-primitive
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 modelViewProjection;
-uniform mat3 viewRotation;
+
+// Custom uniforms
+uniform mat4 sceneDataTransformInverse;
+uniform mat4 sceneDataAxes;
+uniform vec3 sceneDataAxesExtents;
 
 void main()
 {
-  vec4 vertex4 = vec4(vertexPosition, 1.0);
+  // Convert vertex position to a vec4
+  vec4 vertexPosition4 = vec4(vertexPosition, 1.0);
 
   // Transform vertex data to world space
-  worldPosition = vec3(modelMatrix * vertex4);
+  worldPosition = vec3(modelMatrix * vertexPosition4);
   worldNormal = modelNormalMatrix * vertexNormal;
 
-  vec3 test = vec3(modelMatrix * vec4(339.5,0.0,0.0,1.0));
+  // Transform vertex into "plain" data space
+  vec4 dataPosition = sceneDataTransformInverse * vec4(worldPosition, 1.0);
 
-//  for (int i = 0; i < sectionsData.sectionsCount; ++i) {
-  gl_ClipDistance[0] = dot(vec4(worldPosition - vec3(0.0,0,0), 1.0), vec4(1.0,0.0,0.0, 0.0));
-    gl_ClipDistance[1] = dot(vec4(vertexPosition - vec3(0,336,0), 1.0), vec4(0.0, 1.0, 0.0, 336.0));
-  gl_ClipDistance[2] = dot(vec4(vertexPosition - vec3(0,0,-339.5), 1.0), vec4(0.0, 0.0, -1.0, 339.5));
-//  }
+  // Clip vertices to data volume
+  // -- X axis
+  gl_ClipDistance[0] = dot(dataPosition, sceneDataAxes[0].xyzw);
+  gl_ClipDistance[1] = dot(dataPosition, vec4(-sceneDataAxes[0].xyz, sceneDataAxesExtents.x));
+  // -- Y axis
+  gl_ClipDistance[2] = dot(dataPosition, sceneDataAxes[1].xyzw);
+  gl_ClipDistance[3] = dot(dataPosition, vec4(-sceneDataAxes[1].xyz, sceneDataAxesExtents.y));
+  // -- Z axis
+  gl_ClipDistance[4] = dot(dataPosition, sceneDataAxes[2].xyzw);
+  gl_ClipDistance[5] = dot(dataPosition, vec4(-sceneDataAxes[2].xyz, sceneDataAxesExtents.z));
 
   // Output projected vertex position
-  gl_Position = modelViewProjection * vertex4;
+  gl_Position = modelViewProjection * vertexPosition4;
 }

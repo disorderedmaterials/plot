@@ -339,8 +339,14 @@ void AxisEntity::setType(AxisType type)
     }
 }
 
-// Define direction
-void AxisEntity::setDirection(QVector3D principal) { direction_ = principal; }
+//! Define direction
+/*!
+ * Set the direction of the axis in 3D space to the supplied vector @param v.
+ */
+void AxisEntity::setDirection(QVector3D v) { direction_ = v; }
+
+// Return explicit direction
+QVector3D AxisEntity::direction() const { return direction_; }
 
 //! Get relevant scale from the supplied metrics
 /*!

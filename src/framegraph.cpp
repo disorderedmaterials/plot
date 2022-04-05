@@ -3,6 +3,7 @@
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QClipPlane>
 #include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QLineWidth>
 #include <Qt3DRender/QRenderSettings>
@@ -49,22 +50,19 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, Qt3DExtras::
     auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
     cameraSelector->setCamera(camera);
 
+    // Create a render state set
     auto *renderStateSet = new Qt3DRender::QRenderStateSet(cameraSelector);
-    auto *cp0 = new Qt3DRender::QClipPlane;
-    cp0->setPlaneIndex(0);
-    cp0->setEnabled(true);
-    renderStateSet->addRenderState(cp0);
-    auto *cp1 = new Qt3DRender::QClipPlane;
-    cp1->setPlaneIndex(1);
-    cp1->setEnabled(true);
-    renderStateSet->addRenderState(cp1);
-    auto *cp2 = new Qt3DRender::QClipPlane;
-    cp2->setPlaneIndex(2);
-    cp2->setEnabled(true);
-    renderStateSet->addRenderState(cp2);
-//    auto *dt = new Qt3DRender::QDepthTest;
-//    dt->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);
-//    renderStateSet->addRenderState(dt);
+    // -- Enable six clip planes for the data viewing volume
+    for (auto n=0; n<6; ++n)
+    {
+        auto *cp = new Qt3DRender::QClipPlane;
+        cp->setPlaneIndex(n);
+        cp->setEnabled(true);
+        renderStateSet->addRenderState(cp);
+    }
+    auto *cull = new Qt3DRender::QCullFace();
+    cull->setMode(Qt3DRender::QCullFace::NoCulling);
+    renderStateSet->addRenderState(cull);
 
     // Finally, set the active framegraph of the QRenderSettings to the top node of our framegraph
     parent->setActiveFrameGraph(surfaceSelector);
