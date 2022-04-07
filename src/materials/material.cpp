@@ -1,14 +1,13 @@
 #include "materials/material.h"
 #include "materials/effect.h"
 
-#include <Qt3DRender/QFilterKey>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QShaderProgram>
-#include <QtCore/QUrl>
 #include <QVector3D>
+#include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
+#include <QtCore/QUrl>
 
 PhongMaterial::PhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(parent)
 {
@@ -42,8 +41,10 @@ PhongMaterial::PhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(pa
 
     // Set up GL 3.1 shader and technique
     auto *shader3 = new Qt3DRender::QShaderProgram(this);
-    shader3->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.vert"))));
-    shader3->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
+    shader3->setVertexShaderCode(
+        Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.vert"))));
+    shader3->setFragmentShaderCode(
+        Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
 
     auto *renderPass3 = new Qt3DRender::QRenderPass(this);
     renderPass3->setShaderProgram(shader3);

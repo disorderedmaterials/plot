@@ -4,6 +4,6 @@
 
 class PhongEffect : public Qt3DRender::QEffect
 {
-public:
+    public:
     explicit PhongEffect(Qt3DCore::QNode *parent = nullptr);
 };

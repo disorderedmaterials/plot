@@ -223,7 +223,7 @@ void MildredWidget::createSceneGraph()
     sphereEntity_->addComponent(sphereMaterial);
     auto *sphereTransform = new Qt3DCore::QTransform();
     sphereTransform->setScale(50.0);
-    sphereTransform->setTranslation(QVector3D(530.0,50,0));
+    sphereTransform->setTranslation(QVector3D(530.0, 50, 0));
     sphereEntity_->addComponent(sphereTransform);
 }
 
@@ -263,7 +263,8 @@ void MildredWidget::updateShaderParameters()
                                                  zAxis_->direction().x(), zAxis_->direction().y(), zAxis_->direction().z(), 0.0,
                                                  0.0, 0.0, 0.0, 1.0));
     sceneDataAxesExtentsParameter_->setValue(metrics_.displayVolumeExtent());
-    sceneDataTransformInverseParameter_->setValue((sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
+    sceneDataTransformInverseParameter_->setValue(
+        (sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
 }
 
 //! Reset view
@@ -326,9 +327,10 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     if (event->buttons() & Qt3DInput::QMouseEvent::RightButton)
     {
         // Rotations only allowed for 3D view
-        if (!flatView_) {
-            viewRotationMatrix_ *= QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(),
-                                                                event->x() - lastMousePosition_.x(), 0.0);
+        if (!flatView_)
+        {
+            viewRotationMatrix_ *=
+                QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(), event->x() - lastMousePosition_.x(), 0.0);
             sceneRootTransform_->setRotation(viewRotationMatrix_);
         }
     }

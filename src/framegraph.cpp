@@ -53,7 +53,7 @@ void MildredFrameGraph::create(Qt3DRender::QRenderSettings *parent, Qt3DExtras::
     // Create a render state set
     auto *renderStateSet = new Qt3DRender::QRenderStateSet(cameraSelector);
     // -- Enable six clip planes for the data viewing volume
-    for (auto n=0; n<6; ++n)
+    for (auto n = 0; n < 6; ++n)
     {
         auto *cp = new Qt3DRender::QClipPlane;
         cp->setPlaneIndex(n);

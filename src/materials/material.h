@@ -6,13 +6,13 @@
 // Phong Material
 class PhongMaterial : public Qt3DRender::QMaterial
 {
-public:
+    public:
     explicit PhongMaterial(Qt3DCore::QNode *parent = nullptr);
 
     /*
      * Properties
      */
-private:
+    private:
     // Colour components
     QColor ambient_, diffuse_, specular_;
     // Shininess
