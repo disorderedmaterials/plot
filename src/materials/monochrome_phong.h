@@ -4,10 +4,10 @@
 #include <Qt3DRender/QParameter>
 
 // Phong Material
-class PhongMaterial : public Qt3DRender::QMaterial
+class MonochromePhongMaterial : public Qt3DRender::QMaterial
 {
     public:
-    explicit PhongMaterial(Qt3DCore::QNode *parent = nullptr);
+    explicit MonochromePhongMaterial(Qt3DCore::QNode *parent = nullptr);
 
     /*
      * Properties
@@ -25,4 +25,12 @@ class PhongMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QParameter *diffuseReflectionParameter_{nullptr};
     Qt3DRender::QParameter *specularReflectionParameter_{nullptr};
     Qt3DRender::QParameter *shininessParameter_{nullptr};
+
+    public:
+    // Set ambient colour component
+    void setAmbient(QColor ambient);
+    // Set diffuse colour component
+    void setDiffuse(QColor diffuse);
+    // Set specular colour component
+    void setSpecular(QColor specular);
 };

@@ -1,5 +1,4 @@
 #include "materials/monochrome_phong.h"
-#include "materials/monochrome_phong_effect.h"
 #include <QVector3D>
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -8,7 +7,7 @@
 #include <Qt3DRender/QTechnique>
 #include <QtCore/QUrl>
 
-PhongMaterial::PhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(parent)
+MonochromePhongMaterial::MonochromePhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(parent)
 {
     // Initialise parameters
     ambient_.setNamedColor("#000000");
@@ -55,4 +54,29 @@ PhongMaterial::PhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(pa
     auto *effect = new Qt3DRender::QEffect(this);
     effect->addTechnique(techniqueGL31);
     setEffect(effect);
+}
+
+/*
+ * Properties
+ */
+
+// Set ambient colour component
+void MonochromePhongMaterial::setAmbient(QColor ambient)
+{
+    ambient_ = ambient;
+    ambientParameter_->setValue(ambient_);
+}
+
+// Set diffuse colour component
+void MonochromePhongMaterial::setDiffuse(QColor diffuse)
+{
+    diffuse_ = diffuse;
+    diffuseParameter_->setValue(diffuse_);
+}
+
+// Set specular colour component
+void MonochromePhongMaterial::setSpecular(QColor specular)
+{
+    specular_ = specular;
+    specularParameter_->setValue(specular_);
 }

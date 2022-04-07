@@ -219,7 +219,7 @@ void MildredWidget::createSceneGraph()
     auto *sphereEntity_ = new Qt3DCore::QEntity(dataEntityParent_);
     auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
     sphereEntity_->addComponent(sphereMesh);
-    auto *sphereMaterial = new PhongMaterial(sphereEntity_);
+    auto *sphereMaterial = new MonochromePhongMaterial(sphereEntity_);
     sphereMaterial->addParameter(sceneDataAxesParameter_);
     sphereMaterial->addParameter(sceneDataAxesExtentsParameter_);
     sphereMaterial->addParameter(sceneDataTransformInverseParameter_);
