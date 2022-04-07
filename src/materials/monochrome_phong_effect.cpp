@@ -1,4 +1,4 @@
-#include "materials/effect.h"
+#include "materials/monochrome_phong_effect.h"
 
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QTechnique>
