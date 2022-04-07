@@ -4,8 +4,6 @@
 #include <Qt3DRender/QClipPlane>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender/QLineWidth>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderSurfaceSelector>
