@@ -43,7 +43,7 @@ class Data1DEntity : public DataEntity
     // Axes to plot against
     const AxisEntity *xAxis_{nullptr}, *valueAxis_{nullptr};
     // Data style
-    StyleFactory1D::Style style_;
+    StyleFactory1D::Style style_{StyleFactory1D::Style::Line};
     // Data Renderer
     std::shared_ptr<DataRenderer1D> dataRenderer_{nullptr};
     // Orientation
