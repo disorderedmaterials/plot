@@ -3,9 +3,6 @@
 LineRenderer1D::LineRenderer1D(Qt3DCore::QEntity *rootEntity) : DataRenderer1D(rootEntity)
 {
     lines_ = new LineEntity(rootEntity_);
-    auto *c = new Qt3DExtras::QDiffuseSpecularMaterial(rootEntity_);
-    c->setAmbient(Qt::blue);
-    lines_->addComponent(c);
 }
 
 LineRenderer1D::~LineRenderer1D()

@@ -33,4 +33,7 @@ MainWindow::MainWindow() : QMainWindow()
     }
     auto *squares = ui_.TestingWidget->addData1D("Squares");
     squares->setData(squaresX_, squaresValues_);
+    auto *c = new Qt3DExtras::QDiffuseSpecularMaterial(squares);
+    c->setAmbient(Qt::blue);
+    squares->addComponent(c);
 };
