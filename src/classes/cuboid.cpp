@@ -19,6 +19,27 @@ QVector3D Cuboid::lowerLeftBack() const { return v1_; }
 //! Return the upper right front coordinate
 QVector3D Cuboid::upperRightFront() const { return v2_; }
 
+//! Expand cuboid to encompass supplied point
+/*!
+ * Expand the current extrema so as to encompass the supplied point @param v.
+ */
+void Cuboid::expand(const QVector3D &v)
+{
+    if (v.x() < v1_.x())
+        v1_.setX(v.x());
+    if (v.y() < v1_.y())
+        v1_.setY(v.y());
+    if (v.z() < v1_.z())
+        v1_.setZ(v.z());
+
+    if (v.x() > v2_.x())
+        v2_.setX(v.x());
+    if (v.y() > v2_.y())
+        v2_.setY(v.y());
+    if (v.z() > v2_.z())
+        v2_.setZ(v.z());
+}
+
 //! Expand cuboid to encompass supplied cuboid
 /*!
  * Expand the current extrema so as to completely encompass the supplied @param cuboid.

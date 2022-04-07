@@ -24,6 +24,8 @@ class Cuboid
     QVector3D lowerLeftBack() const;
     // Return the upper right front coordinate
     QVector3D upperRightFront() const;
+    // Expand cuboid to encompass supplied point
+    void expand(const QVector3D &v);
     // Expand cuboid to encompass supplied cuboid
     void expand(const Cuboid &cuboid);
     // Translate the cuboid by the supplied vector
