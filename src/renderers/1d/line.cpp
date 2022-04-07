@@ -19,10 +19,10 @@ LineRenderer1D::~LineRenderer1D()
 Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xAxis, const std::vector<double> &values,
                               const AxisEntity *valueAxis)
 {
-    printf("Creating line entity\n");
-
     assert(lines_);
     lines_->clear();
+
+    Cuboid cuboid;
 
     // Check array sizes
     if (x.size() != values.size())
@@ -36,7 +36,9 @@ Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xA
     auto xit = x.cbegin(), vit = values.cbegin();
     while (xit != x.end())
     {
-        lines_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit));
+        auto v = xAxis->toScaled(*xit) + valueAxis->toScaled(*vit);
+        cuboid.expand(v);
+        lines_->addVertex(v);
         ++xit;
         ++vit;
     }
@@ -46,4 +48,6 @@ Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xA
 
     // Finalise the entity
     lines_->finalise();
+
+    return cuboid;
 }
