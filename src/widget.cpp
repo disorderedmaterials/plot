@@ -14,6 +14,9 @@
 //! Constructs a Mildred widget which is a child of \param parent.
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
+    // Initialise our resources
+    Q_INIT_RESOURCE(shaders);
+
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
      * a container widget.

@@ -1,6 +1,5 @@
 #include "materials/monochrome_phong.h"
 #include "materials/monochrome_phong_effect.h"
-
 #include <QVector3D>
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -23,9 +22,6 @@ PhongMaterial::PhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(pa
     diffuseReflectionParameter_ = new Qt3DRender::QParameter(QStringLiteral("kd"), 1.0f, this);
     specularReflectionParameter_ = new Qt3DRender::QParameter(QStringLiteral("ks"), 1.0f, this);
 
-    // Temporary TODO
-    addParameter(new Qt3DRender::QParameter(QStringLiteral("lightPosition"), QVector3D(100.0, 100.0, 100.0), this));
-
     addParameter(ambientParameter_);
     addParameter(diffuseParameter_);
     addParameter(specularParameter_);
@@ -34,7 +30,6 @@ PhongMaterial::PhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(pa
     addParameter(specularReflectionParameter_);
     addParameter(shininessParameter_);
 
-    Q_INIT_RESOURCE(shaders);
     auto *filterKey = new Qt3DRender::QFilterKey;
     filterKey->setName(QStringLiteral("renderingStyle"));
     filterKey->setValue(QStringLiteral("forward"));
