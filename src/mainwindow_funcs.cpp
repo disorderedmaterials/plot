@@ -35,5 +35,5 @@ MainWindow::MainWindow() : QMainWindow()
     squares->setData(squaresX_, squaresValues_);
     auto *c = new Qt3DExtras::QDiffuseSpecularMaterial(squares);
     c->setAmbient(Qt::blue);
-    squares->addComponent(c);
+    squares->setDataMaterial(c);
 };

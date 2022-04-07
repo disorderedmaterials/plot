@@ -21,6 +21,32 @@ DataEntity::DataEntity(Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent)
 std::optional<Cuboid> DataEntity::extrema() const { return extrema_; }
 
 /*
+ * Components
+ */
+
+// Set data entity material
+void DataEntity::setDataMaterial(Qt3DRender::QMaterial *material)
+{
+    // Remove existing material if one exists
+    if (dataEntityMaterial_)
+        foreach (auto *node, dataEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->removeComponent(dataEntityMaterial_);
+        }
+
+    dataEntityMaterial_ = material;
+    if (dataEntityMaterial_)
+        foreach (auto *node, dataEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->addComponent(dataEntityMaterial_);
+        }
+}
+
+/*
  * Rendering
  */
 

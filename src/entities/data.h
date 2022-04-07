@@ -53,6 +53,12 @@ class DataEntity : public Qt3DCore::QEntity
     private:
     // Transform in 3D space, used internally for special positioning
     Qt3DCore::QTransform *positionalTransform_{nullptr};
+    // Material for data entity
+    Qt3DRender::QMaterial *dataEntityMaterial_{nullptr};
+
+    public:
+    // Set data entity material
+    void setDataMaterial(Qt3DRender::QMaterial *material);
 
     /*
      * Rendering
