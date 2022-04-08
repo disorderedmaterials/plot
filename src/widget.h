@@ -102,6 +102,7 @@ class MildredWidget : public QWidget
     // Shader parameters
     Qt3DRender::QParameter *sceneDataAxesParameter_{nullptr};
     Qt3DRender::QParameter *sceneDataAxesExtentsParameter_{nullptr};
+    Qt3DRender::QParameter *sceneDataAxesOriginParameter_{nullptr};
     Qt3DRender::QParameter *sceneDataTransformInverseParameter_{nullptr};
 
     private:

@@ -17,6 +17,7 @@ uniform mat4 modelViewProjection;
 uniform mat4 sceneDataTransformInverse;
 uniform mat4 sceneDataAxes;
 uniform vec3 sceneDataAxesExtents;
+uniform vec3 sceneDataAxesOrigin;
 
 void main()
 {
@@ -29,6 +30,7 @@ void main()
 
   // Transform vertex into "plain" data space
   vec4 dataPosition = sceneDataTransformInverse * vec4(worldPosition, 1.0);
+  dataPosition.xyz -= sceneDataAxesOrigin;
 
   // Clip vertices to data volume
   // -- X axis
