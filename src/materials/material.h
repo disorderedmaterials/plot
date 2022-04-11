@@ -24,9 +24,8 @@ class RenderableMaterial : public Qt3DRender::QMaterial
     {
         Phong
     };
-    explicit RenderableMaterial(Qt3DCore::QNode *parent = nullptr, VertexShaderType vertexShader = VertexShaderType::Unclipped,
-                                GeometryShaderType geometryShader = GeometryShaderType::None,
-                                FragmentShaderType fragmentShader = FragmentShaderType::Phong);
+    explicit RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType vertexShader, GeometryShaderType geometryShader,
+                                FragmentShaderType fragmentShader);
 
     /*
      * Properties

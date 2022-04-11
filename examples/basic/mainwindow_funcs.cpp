@@ -34,7 +34,4 @@ MainWindow::MainWindow() : QMainWindow()
     }
     auto *squares = ui_.TestingWidget->addData1D("Squares");
     squares->setData(squaresX_, squaresValues_);
-    auto *c = new RenderableMaterial(squares);
-    c->setAmbient(Qt::blue);
-    squares->setDataMaterial(c);
 };
