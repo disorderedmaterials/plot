@@ -1,26 +1,20 @@
-# User Interface Files
-set(main_UIS mainwindow.ui)
-qt6_wrap_ui(main_UIS_H ${main_UIS})
-
 # Meta-Objects
-set(main_MOC_HDRS mainwindow.h widget.h)
-qt6_wrap_cpp(main_MOC_SRCS ${main_MOC_HDRS})
+set(mildred_MOC_HDRS widget.h)
+qt6_wrap_cpp(mildred_MOC_SRCS ${mildred_MOC_HDRS})
 
-add_library(
-  main
-  ${main_UIS_H}
-  ${main_MOC_SRCS}
-  mainwindow_funcs.cpp
-  framegraph.cpp
-  widget.cpp
-  main.cpp
-  framegraph.h)
+add_library(mildred ${mildred_MOC_SRCS} framegraph.cpp widget.cpp framegraph.h)
 
-include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/src)
+include_directories(mildred PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(
-  main
+  mildred
   PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src
           ${Qt6Widgets_INCLUDE_DIRS} Qt6::3DRender Qt6::3DCore Qt6::3DExtras)
+
+target_link_libraries(
+  mildred
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} main classes entities materials renderers1d
+  PRIVATE # External libs
+          Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras)
 
 add_subdirectory(classes)
 add_subdirectory(entities)
