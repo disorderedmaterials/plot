@@ -7,6 +7,5 @@ add_library(classes ${classes_MOC_SRCS} cuboid.h cuboid.cpp metrics.cpp)
 target_include_directories(
   classes
   PRIVATE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src
-        ${Qt63DCore_INCLUDE_DIRS}
-        ${Qt63DExtras_INCLUDE_DIRS}
-        ${Qt63DRender_INCLUDE_DIRS})
+          ${Qt63DCore_INCLUDE_DIRS} ${Qt63DExtras_INCLUDE_DIRS}
+          ${Qt63DRender_INCLUDE_DIRS})

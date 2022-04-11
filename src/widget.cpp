@@ -268,7 +268,8 @@ void MildredWidget::updateShaderParameters()
                                                  zAxis_->direction().x(), zAxis_->direction().y(), zAxis_->direction().z(), 0.0,
                                                  0.0, 0.0, 0.0, 1.0));
     sceneDataAxesExtentsParameter_->setValue(metrics_.displayVolumeExtent());
-    sceneDataAxesOriginParameter_->setValue(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) + zAxis_->toScaled(zAxis_->minimum()));
+    sceneDataAxesOriginParameter_->setValue(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) +
+                                            zAxis_->toScaled(zAxis_->minimum()));
     sceneDataTransformInverseParameter_->setValue(
         (sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
 }
