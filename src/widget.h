@@ -104,6 +104,7 @@ class MildredWidget : public QWidget
     Qt3DRender::QParameter *sceneDataAxesExtentsParameter_{nullptr};
     Qt3DRender::QParameter *sceneDataAxesOriginParameter_{nullptr};
     Qt3DRender::QParameter *sceneDataTransformInverseParameter_{nullptr};
+    Qt3DRender::QParameter *viewportSizeParameter_{nullptr};
 
     private:
     // Create basic scenegraph

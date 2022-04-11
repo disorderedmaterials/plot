@@ -39,6 +39,8 @@ MonochromePhongMaterial::MonochromePhongMaterial(Qt3DCore::QNode *parent) : Qt3D
         Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/standard.vert"))));
     shader3->setFragmentShaderCode(
         Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
+    shader3->setGeometryShaderCode(
+        Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_tesselator.geom"))));
 
     auto *renderPass3 = new Qt3DRender::QRenderPass(this);
     renderPass3->setShaderProgram(shader3);

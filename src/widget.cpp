@@ -37,6 +37,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     sceneDataAxesExtentsParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxesExtents"), QVector3D());
     sceneDataAxesOriginParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxesOrigin"), QVector3D());
     sceneDataTransformInverseParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataTransformInverse"), QMatrix4x4());
+    viewportSizeParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewportSize"), QVector2D());
 
     // Add a mouse handler and connect it up
     auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());
@@ -225,6 +226,7 @@ void MildredWidget::createSceneGraph()
     sphereMaterial->addParameter(sceneDataAxesExtentsParameter_);
     sphereMaterial->addParameter(sceneDataAxesOriginParameter_);
     sphereMaterial->addParameter(sceneDataTransformInverseParameter_);
+    sphereMaterial->addParameter(viewportSizeParameter_);
     sphereEntity_->addComponent(sphereMaterial);
     auto *sphereTransform = new Qt3DCore::QTransform();
     sphereTransform->setScale(50.0);
@@ -272,6 +274,7 @@ void MildredWidget::updateShaderParameters()
                                             zAxis_->toScaled(zAxis_->minimum()));
     sceneDataTransformInverseParameter_->setValue(
         (sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
+    viewportSizeParameter_->setValue(QVector2D(width(), height()));
 }
 
 //! Reset view
