@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project(mildred)
 
-set(DESCRIPTION "Qt3D example")
-set(AUTHOR "Qt Project")
+set(DESCRIPTION "Mildred - graphing / plotting leveraging Qt3D")
+set(AUTHOR "T. Youngs")
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "1")
 set(VERSION_PATCH "0")
@@ -16,6 +16,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Make sure CMake won't try to generate rules for moc (we will do it ourselves)
 set(CMAKE_AUTOMOC OFF)
+set(CMAKE_AUTOUIC ON)
 
 # Set policy for automatic linkage of Qt libs to project
 cmake_policy(SET CMP0020 NEW)
