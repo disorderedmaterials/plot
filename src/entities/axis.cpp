@@ -363,6 +363,8 @@ double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
         return metrics.displayVolumeExtent().y();
     else if (type_ == AxisType::Depth)
         return metrics.displayVolumeExtent().z();
+
+    throw(std::runtime_error("Return of scale for axis type not accounted for.\n"));
 }
 
 //! Map axis value to scaled global position

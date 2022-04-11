@@ -93,7 +93,7 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
 }
 
 /*
- * Properties
+ * General Properties
  */
 
 // Set ambient colour component

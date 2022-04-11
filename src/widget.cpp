@@ -437,6 +437,7 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
                                     RenderableMaterial::GeometryShaderType::LineTesselator);
     material->setAmbient(Qt::blue);
+    material->addParameter(new Qt3DRender::QParameter(QStringLiteral("lineWidth"), 1.5f));
     entity->setDataMaterial(material);
 
     return entity;

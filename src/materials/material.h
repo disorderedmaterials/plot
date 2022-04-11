@@ -29,7 +29,7 @@ class RenderableMaterial : public Qt3DRender::QMaterial
                                 FragmentShaderType fragmentShader);
 
     /*
-     * Properties
+     * General Properties
      */
     private:
     // Colour components
