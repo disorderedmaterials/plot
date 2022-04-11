@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "materials/monochrome_phong.h"
+#include "materials/material.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow() : QMainWindow()
@@ -34,7 +34,7 @@ MainWindow::MainWindow() : QMainWindow()
     }
     auto *squares = ui_.TestingWidget->addData1D("Squares");
     squares->setData(squaresX_, squaresValues_);
-    auto *c = new MonochromePhongMaterial(squares);
+    auto *c = new RenderableMaterial(squares);
     c->setAmbient(Qt::blue);
     squares->setDataMaterial(c);
 };

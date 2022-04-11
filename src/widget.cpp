@@ -1,6 +1,6 @@
 #include "widget.h"
 #include "entities/axis.h"
-#include "materials/monochrome_phong.h"
+#include "materials/material.h"
 #include <QResizeEvent>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
@@ -221,7 +221,7 @@ void MildredWidget::createSceneGraph()
     auto *sphereEntity_ = new Qt3DCore::QEntity(dataEntityParent_);
     auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
     sphereEntity_->addComponent(sphereMesh);
-    auto *sphereMaterial = new MonochromePhongMaterial(sphereEntity_);
+    auto *sphereMaterial = new RenderableMaterial(sphereEntity_);
     sphereMaterial->addParameter(sceneDataAxesParameter_);
     sphereMaterial->addParameter(sceneDataAxesExtentsParameter_);
     sphereMaterial->addParameter(sceneDataAxesOriginParameter_);

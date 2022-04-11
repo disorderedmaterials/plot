@@ -1,4 +1,4 @@
-#include "materials/monochrome_phong.h"
+#include "materials/material.h"
 #include <QVector3D>
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -7,7 +7,9 @@
 #include <Qt3DRender/QTechnique>
 #include <QtCore/QUrl>
 
-MonochromePhongMaterial::MonochromePhongMaterial(Qt3DCore::QNode *parent) : Qt3DRender::QMaterial(parent)
+RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType vertexShader,
+                                       GeometryShaderType geometryShader, FragmentShaderType fragmentShader)
+    : Qt3DRender::QMaterial(parent)
 {
     // Initialise parameters
     ambient_.setNamedColor("#000000");
@@ -33,14 +35,42 @@ MonochromePhongMaterial::MonochromePhongMaterial(Qt3DCore::QNode *parent) : Qt3D
     filterKey->setName(QStringLiteral("renderingStyle"));
     filterKey->setValue(QStringLiteral("forward"));
 
-    // Set up GL 3.1 shader and technique
+    // Set up GL 3.1 shader, render pass and technique
     auto *shader3 = new Qt3DRender::QShaderProgram(this);
-    shader3->setVertexShaderCode(
-        Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/standard.vert"))));
-    shader3->setFragmentShaderCode(
-        Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
-    shader3->setGeometryShaderCode(
-        Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_tesselator.geom"))));
+
+    switch (vertexShader)
+    {
+        case (VertexShaderType::Unclipped):
+            shader3->setVertexShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/unclipped.vert"))));
+            break;
+        case (VertexShaderType::ClippedToDataVolume):
+            shader3->setVertexShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/clipped.vert"))));
+            break;
+        default:
+            throw(std::runtime_error("Unhandled vertex shader type.\n"));
+    }
+    switch (geometryShader)
+    {
+        case (GeometryShaderType::None):
+            break;
+        case (GeometryShaderType::LineTesselator):
+            shader3->setGeometryShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_tesselator.geom"))));
+            break;
+        default:
+            throw(std::runtime_error("Unhandled geometry shader type.\n"));
+    }
+    switch (fragmentShader)
+    {
+        case (FragmentShaderType::Phong):
+            shader3->setFragmentShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
+            break;
+        default:
+            throw(std::runtime_error("Unhandled fragment shader type.\n"));
+    }
 
     auto *renderPass3 = new Qt3DRender::QRenderPass(this);
     renderPass3->setShaderProgram(shader3);
@@ -63,21 +93,21 @@ MonochromePhongMaterial::MonochromePhongMaterial(Qt3DCore::QNode *parent) : Qt3D
  */
 
 // Set ambient colour component
-void MonochromePhongMaterial::setAmbient(QColor ambient)
+void RenderableMaterial::setAmbient(QColor ambient)
 {
     ambient_ = ambient;
     ambientParameter_->setValue(ambient_);
 }
 
 // Set diffuse colour component
-void MonochromePhongMaterial::setDiffuse(QColor diffuse)
+void RenderableMaterial::setDiffuse(QColor diffuse)
 {
     diffuse_ = diffuse;
     diffuseParameter_->setValue(diffuse_);
 }
 
 // Set specular colour component
-void MonochromePhongMaterial::setSpecular(QColor specular)
+void RenderableMaterial::setSpecular(QColor specular)
 {
     specular_ = specular;
     specularParameter_->setValue(specular_);
