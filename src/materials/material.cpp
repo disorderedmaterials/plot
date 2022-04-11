@@ -64,6 +64,10 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
     }
     switch (fragmentShader)
     {
+        case (FragmentShaderType::Monochrome):
+            shader3->setFragmentShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/monochrome.frag"))));
+            break;
         case (FragmentShaderType::Phong):
             shader3->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
