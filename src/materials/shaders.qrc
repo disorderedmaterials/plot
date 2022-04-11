@@ -1,6 +1,9 @@
 <RCC>
   <qresource prefix="shaders">
+    <file>shaders/clipped.vert</file>
+    <file>shaders/unclipped.vert</file>
     <file>shaders/phong.frag</file>
-    <file>shaders/standard.vert</file>
+    <file>shaders/monochrome.frag</file>
+    <file>shaders/line_tesselator.geom</file>
   </qresource>
 </RCC>

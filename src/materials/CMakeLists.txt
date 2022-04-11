@@ -2,8 +2,8 @@
 set(shaders_RES_QRC shaders.qrc)
 qt6_add_resources(shaders_RES ${shaders_RES_QRC})
 
-add_library(materials ${materials_MOC_SRCS} ${shaders_RES} monochrome_phong.h
-                      monochrome_phong.cpp)
+add_library(materials ${materials_MOC_SRCS} ${shaders_RES} material.h
+                      material.cpp)
 
 target_include_directories(
   materials

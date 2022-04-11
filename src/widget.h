@@ -4,6 +4,7 @@
 #include "entities/axis.h"
 #include "entities/data1d.h"
 #include "framegraph.h"
+#include "materials/material.h"
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>
@@ -104,6 +105,7 @@ class MildredWidget : public QWidget
     Qt3DRender::QParameter *sceneDataAxesExtentsParameter_{nullptr};
     Qt3DRender::QParameter *sceneDataAxesOriginParameter_{nullptr};
     Qt3DRender::QParameter *sceneDataTransformInverseParameter_{nullptr};
+    Qt3DRender::QParameter *viewportSizeParameter_{nullptr};
 
     private:
     // Create basic scenegraph
@@ -143,6 +145,14 @@ class MildredWidget : public QWidget
     private:
     // Associated data entities (with identifying tag)
     std::vector<std::pair<std::string, DataEntity *>> dataEntities_;
+
+    private:
+    // Create material for specified entity
+    RenderableMaterial *createMaterial(
+        Qt3DCore::QEntity *parent,
+        RenderableMaterial::VertexShaderType vertexShader = RenderableMaterial::VertexShaderType::ClippedToDataVolume,
+        RenderableMaterial::GeometryShaderType geometryShader = RenderableMaterial::GeometryShaderType::None,
+        RenderableMaterial::FragmentShaderType fragmentShader = RenderableMaterial::FragmentShaderType::Phong);
 
     public:
     // Add new data entity for supplied data

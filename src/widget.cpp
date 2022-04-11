@@ -1,6 +1,6 @@
 #include "widget.h"
 #include "entities/axis.h"
-#include "materials/monochrome_phong.h"
+#include "materials/material.h"
 #include <QResizeEvent>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
@@ -37,6 +37,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     sceneDataAxesExtentsParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxesExtents"), QVector3D());
     sceneDataAxesOriginParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxesOrigin"), QVector3D());
     sceneDataTransformInverseParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataTransformInverse"), QMatrix4x4());
+    viewportSizeParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewportSize"), QVector2D());
 
     // Add a mouse handler and connect it up
     auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());
@@ -199,11 +200,38 @@ void MildredWidget::createSceneGraph()
      */
 
     auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
-    xAxis_ = new AxisEntity(AxisEntity::AxisType::Horizontal, metrics_, axesEntity);
+
+    auto *xAxisBarMaterial =
+        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
+    xAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
+    auto *xAxisLabelMaterial =
+        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
+    xAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
+    xAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Horizontal, metrics_, xAxisBarMaterial, xAxisLabelMaterial);
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-    yAxis_ = new AxisEntity(AxisEntity::AxisType::Vertical, metrics_, axesEntity);
+
+    auto *yAxisBarMaterial =
+        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
+    yAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
+    auto *yAxisLabelMaterial =
+        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
+    yAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
+    yAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Vertical, metrics_, yAxisBarMaterial, yAxisLabelMaterial);
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-    zAxis_ = new AxisEntity(AxisEntity::AxisType::Depth, metrics_, axesEntity);
+
+    auto *zAxisBarMaterial =
+        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
+    zAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
+    auto *zAxisLabelMaterial =
+        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
+    zAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
+    zAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Depth, metrics_, zAxisBarMaterial, zAxisLabelMaterial);
     connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
 
@@ -220,12 +248,7 @@ void MildredWidget::createSceneGraph()
     auto *sphereEntity_ = new Qt3DCore::QEntity(dataEntityParent_);
     auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
     sphereEntity_->addComponent(sphereMesh);
-    auto *sphereMaterial = new MonochromePhongMaterial(sphereEntity_);
-    sphereMaterial->addParameter(sceneDataAxesParameter_);
-    sphereMaterial->addParameter(sceneDataAxesExtentsParameter_);
-    sphereMaterial->addParameter(sceneDataAxesOriginParameter_);
-    sphereMaterial->addParameter(sceneDataTransformInverseParameter_);
-    sphereEntity_->addComponent(sphereMaterial);
+    createMaterial(sphereEntity_);
     auto *sphereTransform = new Qt3DCore::QTransform();
     sphereTransform->setScale(50.0);
     sphereTransform->setTranslation(QVector3D(530.0, 50, 0));
@@ -272,6 +295,7 @@ void MildredWidget::updateShaderParameters()
                                             zAxis_->toScaled(zAxis_->minimum()));
     sceneDataTransformInverseParameter_->setValue(
         (sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
+    viewportSizeParameter_->setValue(QVector2D(width(), height()));
 }
 
 //! Reset view
@@ -368,6 +392,30 @@ void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
  * Display Data
  */
 
+//! Create material for specified entity
+/*!
+ * Create and attach a new RenderableMaterial to the specified @param parent, with the specified @param vertexShader, @param
+ * geometryShader, and @param fragmentShader.
+ */
+RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, RenderableMaterial::VertexShaderType vertexShader,
+                                                  RenderableMaterial::GeometryShaderType geometryShader,
+                                                  RenderableMaterial::FragmentShaderType fragmentShader)
+{
+    auto *material = new RenderableMaterial(parent, vertexShader, geometryShader, fragmentShader);
+
+    // Attach necessary parameters
+    material->addParameter(sceneDataAxesParameter_);
+    material->addParameter(sceneDataAxesExtentsParameter_);
+    material->addParameter(sceneDataAxesOriginParameter_);
+    material->addParameter(sceneDataTransformInverseParameter_);
+    material->addParameter(viewportSizeParameter_);
+
+    // Add the material as a component on the parent
+    parent->addComponent(material);
+
+    return material;
+}
+
 // Add new 1-dimensional data entity for supplied data
 Data1DEntity *MildredWidget::addData1D(std::string_view tag)
 {
@@ -384,6 +432,13 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     auto *entity = new Data1DEntity(xAxis_, yAxis_, dataEntityParent_);
     connect(&metrics_, SIGNAL(metricsChanged()), entity, SLOT(updateRenderables()));
     dataEntities_.emplace_back(tag, entity);
+
+    // Add a material (testing for now)
+    auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
+                                    RenderableMaterial::GeometryShaderType::LineTesselator);
+    material->setAmbient(Qt::blue);
+    material->addParameter(new Qt3DRender::QParameter(QStringLiteral("lineWidth"), 1.5f));
+    entity->setDataMaterial(material);
 
     return entity;
 }

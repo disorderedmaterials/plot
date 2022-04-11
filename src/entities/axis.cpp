@@ -1,5 +1,6 @@
 #include "entities/axis.h"
 #include "classes/cuboid.h"
+#include "materials/material.h"
 
 //! Create a new AxisEntity
 /*!
@@ -8,9 +9,13 @@
  * The direction of the axis bar and tick marks in 3D space is set from the given @param type, as are the anchor point and
  * orientation of the axis title.
  */
-AxisEntity::AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::QNode *parent)
+AxisEntity::AxisEntity(Qt3DCore::QNode *parent, AxisType type, const MildredMetrics &metrics, RenderableMaterial *barMaterial,
+                       RenderableMaterial *labelMaterial)
     : Qt3DCore::QEntity(parent), metrics_(metrics), type_(type)
 {
+    assert(barMaterial);
+    assert(labelMaterial);
+
     // Create entities
     axisBarEntity_ = new LineEntity(this);
     ticksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
@@ -18,14 +23,12 @@ AxisEntity::AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::Q
     axisTitleEntity_ = new TextEntity(this, "Unnamed Axis");
     axisTitleEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::TopMiddle);
 
-    // Create components
-    axisBarMaterial_ = new Qt3DExtras::QDiffuseSpecularMaterial(this);
-    axisBarMaterial_->setAmbient(QColor(150, 150, 150, 255));
+    // Assign material components
+    axisBarMaterial_ = barMaterial;
     axisBarEntity_->addComponent(axisBarMaterial_);
     ticksEntity_->addComponent(axisBarMaterial_);
     subTicksEntity_->addComponent(axisBarMaterial_);
-    labelMaterial_ = new Qt3DExtras::QDiffuseSpecularMaterial(this);
-    labelMaterial_->setAmbient(QColor(0, 0, 0, 255));
+    labelMaterial_ = labelMaterial;
     axisTitleEntity_->addComponent(labelMaterial_);
 
     // Update data dependent on the axis type
@@ -360,6 +363,8 @@ double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
         return metrics.displayVolumeExtent().y();
     else if (type_ == AxisType::Depth)
         return metrics.displayVolumeExtent().z();
+
+    throw(std::runtime_error("Return of scale for axis type not accounted for.\n"));
 }
 
 //! Map axis value to scaled global position
@@ -571,10 +576,10 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
 /*!
  * Return the material used for the axis bar.
  */
-Qt3DExtras::QDiffuseSpecularMaterial *AxisEntity::axisBarMaterial() { return axisBarMaterial_; }
+RenderableMaterial *AxisEntity::axisBarMaterial() { return axisBarMaterial_; }
 
 //! Return label material
 /*!
  * Return the material used for axis labels (tick value labels and axis title).
  */
-Qt3DExtras::QDiffuseSpecularMaterial *AxisEntity::labelMaterial() { return labelMaterial_; }
+RenderableMaterial *AxisEntity::labelMaterial() { return labelMaterial_; }

@@ -7,6 +7,9 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 
+// Forward Declarations
+class RenderableMaterial;
+
 //! AxisEntity completely defines and renders an axis.
 /*!
  * AxisEntity defines a QEntity which represents a single axis, encompassing its numerical range and type and providing a
@@ -27,7 +30,8 @@ class AxisEntity : public Qt3DCore::QEntity
         Depth,
         Custom
     };
-    AxisEntity(AxisType type, const MildredMetrics &metrics, Qt3DCore::QNode *parent = nullptr);
+    AxisEntity(Qt3DCore::QNode *parent, AxisType type, const MildredMetrics &metrics, RenderableMaterial *barMaterial,
+               RenderableMaterial *labelMaterial);
     ~AxisEntity() = default;
 
     private:
@@ -145,11 +149,11 @@ class AxisEntity : public Qt3DCore::QEntity
      */
     private:
     // Materials
-    Qt3DExtras::QDiffuseSpecularMaterial *axisBarMaterial_{nullptr}, *labelMaterial_{nullptr};
+    RenderableMaterial *axisBarMaterial_{nullptr}, *labelMaterial_{nullptr};
 
     public:
     // Return axis bar material
-    Qt3DExtras::QDiffuseSpecularMaterial *axisBarMaterial();
+    RenderableMaterial *axisBarMaterial();
     // Return label material
-    Qt3DExtras::QDiffuseSpecularMaterial *labelMaterial();
+    RenderableMaterial *labelMaterial();
 };

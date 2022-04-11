@@ -3,14 +3,33 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 
-// Phong Material
-class MonochromePhongMaterial : public Qt3DRender::QMaterial
+// Renderable Material
+class RenderableMaterial : public Qt3DRender::QMaterial
 {
     public:
-    explicit MonochromePhongMaterial(Qt3DCore::QNode *parent = nullptr);
+    // Vertex Shader Types
+    enum class VertexShaderType
+    {
+        Unclipped,
+        ClippedToDataVolume
+    };
+    // Geometry Shader Types
+    enum class GeometryShaderType
+    {
+        None,
+        LineTesselator
+    };
+    // Fragment Shader Types
+    enum class FragmentShaderType
+    {
+        Monochrome,
+        Phong
+    };
+    explicit RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType vertexShader, GeometryShaderType geometryShader,
+                                FragmentShaderType fragmentShader);
 
     /*
-     * Properties
+     * General Properties
      */
     private:
     // Colour components
