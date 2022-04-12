@@ -1,5 +1,7 @@
 #include "entities/data3d.h"
 
+using namespace Mildred;
+
 //! Create a new Data3DEntity
 /*!
  * Construct a new Data3DEntity storing a reference to the supplied @param metrics and with the given @param parent.

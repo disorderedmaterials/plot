@@ -1,5 +1,7 @@
 #include "entities/axis.h"
 
+using namespace Mildred;
+
 //! Construct a new text entity
 /*!
  * Constructs a new @class TextEntity with the supplied text and default transform.

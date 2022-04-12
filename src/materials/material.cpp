@@ -7,6 +7,8 @@
 #include <Qt3DRender/QTechnique>
 #include <QtCore/QUrl>
 
+using namespace Mildred;
+
 RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType vertexShader,
                                        GeometryShaderType geometryShader, FragmentShaderType fragmentShader)
     : Qt3DRender::QMaterial(parent)

@@ -3,6 +3,8 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
 
+namespace Mildred
+{
 // Renderable Material
 class RenderableMaterial : public Qt3DRender::QMaterial
 {
@@ -53,3 +55,4 @@ class RenderableMaterial : public Qt3DRender::QMaterial
     // Set specular colour component
     void setSpecular(QColor specular);
 };
+} // namespace Mildred

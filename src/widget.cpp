@@ -11,11 +11,16 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
 
+// Initialise Qt resources
+void initialiseQtResources() { Q_INIT_RESOURCE(shaders); }
+
+using namespace Mildred;
+
 //! Constructs a Mildred widget which is a child of \param parent.
 MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
 {
-    // Initialise our resources
-    Q_INIT_RESOURCE(shaders);
+    // Initialise resources
+    initialiseQtResources();
 
     /*
      * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in

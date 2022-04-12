@@ -4,6 +4,8 @@
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
 
+namespace Mildred
+{
 //! LineEntity represents a renderable lines / wireframe object
 /*!
  * LineEntity encapsulates the buffers and attributes necessary to provide a line-drawn QEntity for use in a Qt3D scenegraph.
@@ -49,3 +51,4 @@ class LineEntity : public Qt3DCore::QEntity
     // Clear geometry
     void clear();
 };
+} // namespace Mildred

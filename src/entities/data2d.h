@@ -2,6 +2,8 @@
 
 #include "entities/data.h"
 
+namespace Mildred
+{
 //! Data2DEntity encapsulates entities representing a 2-dimensional dataset.
 /*!
  * Data2DEntity provides a general class to contain and display a single two-dimensional dataset.
@@ -34,3 +36,4 @@ class Data2DEntity : public DataEntity
     // Set display data
     void setData(std::vector<double> x, std::vector<double> y, std::vector<double> values);
 };
+} // namespace Mildred

@@ -7,6 +7,8 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 
+namespace Mildred
+{
 // Forward Declarations
 class RenderableMaterial;
 
@@ -157,3 +159,4 @@ class AxisEntity : public Qt3DCore::QEntity
     // Return label material
     RenderableMaterial *labelMaterial();
 };
+} // namespace Mildred

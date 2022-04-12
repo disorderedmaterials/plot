@@ -2,6 +2,8 @@
 #include "classes/cuboid.h"
 #include "materials/material.h"
 
+using namespace Mildred;
+
 //! Create a new AxisEntity
 /*!
  * Constructs a new AxisEntity of the specified @param type, and referencing the supplied @class MildredMetrics.

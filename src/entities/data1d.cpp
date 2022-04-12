@@ -1,6 +1,8 @@
 #include "entities/data1d.h"
 #include "renderers/1d/stylefactory.h"
 
+using namespace Mildred;
+
 //! Create a new Data1DEntity
 /*!
  * Construct a new Data1DEntity storing a reference to the supplied @param metrics and with the given @param parent.

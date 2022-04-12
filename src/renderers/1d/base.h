@@ -2,6 +2,8 @@
 
 #include "entities/data.h"
 
+namespace Mildred
+{
 //! DataRenderer1DBase is the base class for all 1-dimensional data renderers.
 /*!
  * DataRenderer1DBase provides a base class for all 1-dimensional data rendering styles.
@@ -29,3 +31,4 @@ class DataRenderer1D
     // Recreate entities from stored
     Cuboid recreate();
 };
+} // namespace Mildred

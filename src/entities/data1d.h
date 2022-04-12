@@ -3,6 +3,8 @@
 #include "entities/data.h"
 #include "renderers/1d/stylefactory.h"
 
+namespace Mildred
+{
 // Forward Declarations
 class AxisEntity;
 
@@ -53,3 +55,4 @@ class Data1DEntity : public DataEntity
     // Create renderables from current data
     void create() override;
 };
+} // namespace Mildred
