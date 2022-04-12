@@ -1,6 +1,8 @@
 #include "widget.h"
 #include "material.h"
 #include <QResizeEvent>
+#include <Qt3DInput/QKeyboardDevice>
+#include <Qt3DInput/QKeyboardHandler>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
@@ -35,7 +37,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     // Create our root entity
     rootEntity_ = Qt3DCore::QEntityPtr(new Qt3DCore::QEntity);
 
-    // Create a QRenderSettings and add it as a component to the root entity
+    // Grab the QRenderSettings from the window
     renderSettings_ = viewWindow_->renderSettings();
 
     // Create parameters

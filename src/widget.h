@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DInput/QKeyEvent>
 #include <Qt3DInput/QMouseEvent>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
@@ -153,6 +154,13 @@ class MildredWidget : public QWidget
     void mousePositionChanged(Qt3DInput::QMouseEvent *event);
     void mouseButtonPressed(Qt3DInput::QMouseEvent *event);
     void mouseButtonReleased(Qt3DInput::QMouseEvent *event);
+
+    /*
+     * Keyboard Handling / Interaction
+     */
+    private slots:
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
     /*
      * Display Data

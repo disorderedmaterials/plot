@@ -11,6 +11,7 @@ add_library(
   ${mildred_MOC_SRCS}
   ${shaders_RES}
   framegraph.cpp
+  keyboard.cpp
   material.cpp
   mouse.cpp
   scenegraph.cpp
