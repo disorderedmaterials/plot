@@ -1,5 +1,7 @@
 #include "classes/cuboid.h"
 
+using namespace Mildred;
+
 //! Construct a new Cuboid from the supplied positions
 Cuboid::Cuboid(QVector3D v1, QVector3D v2) : v1_(v1), v2_(v2) {}
 

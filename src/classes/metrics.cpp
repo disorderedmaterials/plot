@@ -1,6 +1,8 @@
 #include "classes/metrics.h"
 #include "entities/axis.h"
 
+using namespace Mildred;
+
 /*
  * Fonts
  */

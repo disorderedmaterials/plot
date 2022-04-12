@@ -1,3 +1,4 @@
+#include "framegraph.h"
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
@@ -9,7 +10,7 @@
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QViewport>
 
-#include "framegraph.h"
+using namespace Mildred;
 
 //! Create the framegraph
 /*!

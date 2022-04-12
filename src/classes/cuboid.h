@@ -2,6 +2,8 @@
 
 #include <QVector3D>
 
+namespace Mildred
+{
 //! Cuboid defines a region in 3D space
 /*!
  * The @class Cuboid class defines a cuboid in 3D space from its lower-left-back and upper-right-front coordinates.
@@ -39,3 +41,4 @@ class Cuboid
     // Return vector of extents
     QVector3D extents() const;
 };
+} // namespace Mildred

@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="MildredWidget" name="TestingWidget" native="true">
+     <widget class="Mildred::MildredWidget" name="TestingWidget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>5</horstretch>
@@ -219,7 +219,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MildredWidget</class>
+   <class>Mildred::MildredWidget</class>
    <extends>QWidget</extends>
    <header>widget.h</header>
    <container>1</container>

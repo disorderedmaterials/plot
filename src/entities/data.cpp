@@ -1,5 +1,7 @@
 #include "entities/data.h"
 
+using namespace Mildred;
+
 //! Create a new DataEntity
 /*!
  * Construct a new DataEntity storing a reference to the supplied @param metrics and with the given @param parent.

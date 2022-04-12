@@ -12,16 +12,16 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
+namespace Mildred
+{
 //! The Mildred widget is the core class of Mildred.
 /*!
  * The Mildred widget is a standard QWidget displaying a Qt3D-based subwidget providing full 2D (flat) and 3D data
- * visualisation of discrete data as represented by the XXX class. It is the parent object of all displayed entities, including
- * axes.
+ * visualisation of discrete data as represented by the renderable data classes. It is the parent object of all displayed
+ * entities, including axes.
  *
- *  Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
+ * Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
  * in order to have ready access to key metrics, e.g. the pixel scaling along each cardinal axis direction.
- *
- *
  */
 class MildredWidget : public QWidget
 {
@@ -169,3 +169,4 @@ class MildredWidget : public QWidget
     // Debug Objects
     void setSceneCuboidEnabled(bool enabled);
 };
+} // namespace Mildred

@@ -3,6 +3,8 @@
 #include <QFont>
 #include <QVector3D>
 
+namespace Mildred
+{
 // Forward Declarations
 class AxisEntity;
 
@@ -95,3 +97,4 @@ class MildredMetrics : public QObject
     signals:
     void metricsChanged();
 };
+} // namespace Mildred

@@ -1,5 +1,7 @@
 #include "renderers/1d/line.h"
 
+using namespace Mildred;
+
 LineRenderer1D::LineRenderer1D(Qt3DCore::QEntity *rootEntity) : DataRenderer1D(rootEntity)
 {
     lines_ = new LineEntity(rootEntity_);

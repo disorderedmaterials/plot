@@ -1,5 +1,7 @@
 #include "entities/line.h"
 
+using namespace Mildred;
+
 //! Construct a new LineEntity
 /*!
  * Creates an empty LineEntity with the specified drawing @param primitiveType. This function creates the necessary buffers and

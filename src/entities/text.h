@@ -7,6 +7,8 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QExtrudedTextMesh>
 
+namespace Mildred
+{
 //! TextEntity represents a 3D text entity
 /*!
  * TextEntity represents a renderable entity displaying a specified string with a given transform.
@@ -53,3 +55,4 @@ class TextEntity : public Qt3DCore::QEntity
     static Cuboid boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
                                  MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
 };
+} // namespace Mildred

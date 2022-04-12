@@ -5,6 +5,8 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
+namespace Mildred
+{
 //! MildredFrameGraph creates and manages a framegraph
 class MildredFrameGraph
 {
@@ -23,3 +25,4 @@ class MildredFrameGraph
     // Create and attach framegraph
     void create(Qt3DRender::QRenderSettings *parent, Qt3DExtras::Qt3DWindow *surface, Qt3DRender::QCamera *camera);
 };
+} // namespace Mildred

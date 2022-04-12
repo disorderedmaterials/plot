@@ -7,6 +7,8 @@
 #include <Qt3DCore/QTransform>
 #include <optional>
 
+namespace Mildred
+{
 //! DataEntity represents a renderable dataset.
 /*!
  * DataEntity provides the base class to all data renderables.
@@ -71,3 +73,4 @@ class DataEntity : public Qt3DCore::QEntity
     // Recreate renderables following metric / axis change
     void updateRenderables();
 };
+} // namespace Mildred
