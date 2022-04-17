@@ -5,12 +5,41 @@
 #include "entities/data1d.h"
 #include "framegraph.h"
 #include "materials/material.h"
-#include <QWidget>
+#include <QObject>
+#include <QOffscreenSurface>
+#include <QOpenGLBuffer>
+#include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
+#include <QOpenGLVertexArrayObject>
+#include <QResizeEvent>
+#include <QScopedPointer>
+#include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QEntityPtr>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/QInputSettings>
 #include <Qt3DInput/QMouseEvent>
+#include <Qt3DLogic/QFrameAction>
+#include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QMultiSampleAntiAliasing>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderCaptureReply>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/QRenderTargetOutput>
+#include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QViewport>
+#include <QtOpenGLWidgets/QOpenGLWidget>
 
 namespace Mildred
 {
@@ -23,37 +52,53 @@ namespace Mildred
  * Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
  * in order to have ready access to key metrics, e.g. the pixel scaling along each cardinal axis direction.
  */
-class MildredWidget : public QWidget
+class MildredWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
     public:
-    MildredWidget(QWidget *parent = nullptr);
-    ~MildredWidget() = default;
+    explicit MildredWidget(QWidget *parent = nullptr);
+    ~MildredWidget() override = default;
 
     /*
      * Qt3D Objects
      */
     private:
     // Qt3DWindow for our display
-    Qt3DExtras::Qt3DWindow *viewWindow_{nullptr};
+    //    Qt3DExtras::Qt3DWindow *viewWindow_{nullptr};
     // Container widget for our Qt3DWindow
-    QWidget *viewContainer_{nullptr};
+    //    QWidget *viewContainer_{nullptr};
+    // Qt3D Renderer Objects
+
     // Root entity containing framegraph and scenegraph
     Qt3DCore::QEntityPtr rootEntity_;
-    // Render settings
-    Qt3DRender::QRenderSettings *renderSettings_{nullptr};
-    // Camera
-    Qt3DRender::QCamera *camera_{nullptr};
+
     // Rendering framegraph
     MildredFrameGraph frameGraph_;
 
     /*
-     * QWidget
+     * QOpenGLWidget Overrides
      */
+    private:
+    QScopedPointer<QOpenGLShaderProgram> glShaderProgram_;
+    QOpenGLVertexArrayObject glVAO_;
+    QOpenGLBuffer glVBO_;
+    QVector<GLfloat> glVertexData_;
+    QOpenGLTexture *glTexture_{nullptr};
+    int glVertexAttributeLocation_{0};
+    int glTexCoordAttributeLocation_{0};
+    bool initialised_{false};
+
     protected:
-    // Widget resized
+    void showEvent(QShowEvent *e) override;
     void resizeEvent(QResizeEvent *event) override;
+
+    public:
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+
+    public slots:
+    void paintGL() override;
 
     /*
      * Metrics
@@ -80,6 +125,28 @@ class MildredWidget : public QWidget
     public slots:
     // Set whether view is flat
     void setFlatView(bool flat);
+
+    /*
+     * FrameGraph
+     */
+    private:
+    // Offscreen framegraph
+    QOffscreenSurface *offscreenSurface_{nullptr};
+    Qt3DCore::QAspectEngine *aspectEngine_{nullptr};
+    Qt3DRender::QRenderStateSet *renderStateSet_{nullptr};
+    Qt3DRender::QDepthTest *depthTest_{nullptr};
+    Qt3DRender::QMultiSampleAntiAliasing *multisampleAntialiasing_{nullptr};
+    Qt3DRender::QRenderTargetSelector *renderTargetSelector_{nullptr};
+    Qt3DRender::QRenderSurfaceSelector *renderSurfaceSelector_{nullptr};
+    Qt3DRender::QRenderTarget *renderTarget_{nullptr};
+    Qt3DRender::QRenderTargetOutput *colourOutput_{nullptr};
+    Qt3DRender::QTexture2DMultisample *colourTexture_{nullptr};
+    Qt3DRender::QRenderTargetOutput *depthOutput_{nullptr};
+    Qt3DRender::QTexture2DMultisample *depthTexture_{nullptr};
+    Qt3DRender::QRenderSettings *renderSettings_{nullptr};
+    Qt3DRender::QCamera *camera_{nullptr};
+    Qt3DLogic::QFrameAction *frameAction_{nullptr};
+    Qt3DInput::QInputSettings *inputSettings_{nullptr};
 
     /*
      * SceneGraph

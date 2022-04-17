@@ -1,15 +1,29 @@
 #include "widget.h"
 #include "entities/axis.h"
 #include "materials/material.h"
+#include <QOpenGLFunctions>
 #include <QResizeEvent>
+#include <Qt3DCore/QAspectEngine>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/QSphereMesh>
+#include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QMouseHandler>
+#include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QClipPlane>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QViewport>
 
 // Initialise Qt resources
 void initialiseQtResources() { Q_INIT_RESOURCE(shaders); }
@@ -17,25 +31,21 @@ void initialiseQtResources() { Q_INIT_RESOURCE(shaders); }
 using namespace Mildred;
 
 //! Constructs a Mildred widget which is a child of \param parent.
-MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
+MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     // Initialise resources
     initialiseQtResources();
 
-    /*
-     * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
-     * a container widget.
-     */
-    viewWindow_ = new Qt3DExtras::Qt3DWindow();
+    //    viewWindow_ = new Qt3DExtras::Qt3DWindow();
 
     // Create a container for the Qt3DWindow
-    viewContainer_ = createWindowContainer(viewWindow_, this);
+    //    viewContainer_ = createWindowContainer(viewWindow_, this);
 
     // Create our root entity
     rootEntity_ = Qt3DCore::QEntityPtr(new Qt3DCore::QEntity);
 
     // Create a QRenderSettings and add it as a component to the root entity
-    renderSettings_ = viewWindow_->renderSettings();
+    //    renderSettings_ = viewWindow_->renderSettings();
 
     // Create parameters
     sceneDataAxesParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxes"), QMatrix4x4());
@@ -55,29 +65,202 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     connect(mouseHandler, SIGNAL(released(Qt3DInput::QMouseEvent *)), this,
             SLOT(mouseButtonReleased(Qt3DInput::QMouseEvent *)));
 
+    /*
+     * The framegraph is constructed with the following structure:
+     *
+     *        [QRenderSettings]         Parent of first framegraph node
+     *               |
+     *        QSurfaceSelector          Sets the target surface for the renderer
+     *               |
+     *           QViewport              Defines the viewport on the target surface
+     *               |
+     *         QClearBuffers            Sets the targets to clear and the default attributes to clear to
+     *               |
+     *        QCameraSelector           Selects an existing camera to view the scenegraph
+     */
+
+    // Set up our offscreen rendering surface
+    int samples = QSurfaceFormat::defaultFormat().samples();
+    offscreenSurface_ = new QOffscreenSurface;
+    offscreenSurface_->setFormat(QSurfaceFormat::defaultFormat());
+    offscreenSurface_->create();
+
+    aspectEngine_ = new Qt3DCore::QAspectEngine;
+    aspectEngine_->registerAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Automatic));
+    aspectEngine_->registerAspect(new Qt3DInput::QInputAspect);
+    aspectEngine_->registerAspect(new Qt3DLogic::QLogicAspect);
+
+    // Setup color
+    colourOutput_ = new Qt3DRender::QRenderTargetOutput;
+    colourOutput_->setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color0);
+
+    // Create a color texture to render into
+    colourTexture_ = new Qt3DRender::QTexture2DMultisample;
+    colourTexture_->setSize(width(), height());
+    colourTexture_->setFormat(Qt3DRender::QAbstractTexture::RGB8_UNorm);
+    colourTexture_->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
+    colourTexture_->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
+
+    // Hook the texture up to our output, and the output up to this object
+    colourOutput_->setTexture(colourTexture_);
+    colourTexture_->setSamples(samples);
+    renderTarget_ = new Qt3DRender::QRenderTarget;
+    renderTarget_->addOutput(colourOutput_);
+
+    // Setup depth
+    depthOutput_ = new Qt3DRender::QRenderTargetOutput;
+    depthOutput_->setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Depth);
+
+    // Create depth texture
+    depthTexture_ = new Qt3DRender::QTexture2DMultisample;
+    depthTexture_->setSize(width(), height());
+    depthTexture_->setFormat(Qt3DRender::QAbstractTexture::DepthFormat);
+    depthTexture_->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
+    depthTexture_->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
+    depthTexture_->setComparisonFunction(Qt3DRender::QAbstractTexture::CompareLessEqual);
+    depthTexture_->setComparisonMode(Qt3DRender::QAbstractTexture::CompareRefToTexture);
+
+    // Hook up the depth texture
+    depthOutput_->setTexture(depthTexture_);
+    depthTexture_->setSamples(samples);
+    renderTarget_->addOutput(depthOutput_);
+
+    //    // Create our render state set
+    //    renderStateSet_ = new Qt3DRender::QRenderStateSet;
+    //    renderStateSet_->addRenderState(new Qt3DRender::QMultiSampleAntiAliasing);
+    //    // -- Depth test
+    //    depthTest_ = new Qt3DRender::QDepthTest;
+    //    depthTest_->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);
+    //    renderStateSet_->addRenderState(depthTest_);
+    //    // -- Enable six clip planes for the data viewing volume
+    //    for (auto n = 0; n < 6; ++n)
+    //    {
+    //        auto *cp = new Qt3DRender::QClipPlane;
+    //        cp->setPlaneIndex(n);
+    //        cp->setEnabled(true);
+    //        renderStateSet_->addRenderState(cp);
+    //    }
+    //    // -- Face culling
+    //    auto *cull = new Qt3DRender::QCullFace();
+    //    cull->setMode(Qt3DRender::QCullFace::NoCulling);
+    //    renderStateSet_->addRenderState(cull);
+    //
+    //    // Render target selector
+    //    renderTargetSelector_ = new Qt3DRender::QRenderTargetSelector;
+    //    renderTargetSelector_->setParent(renderStateSet_);
+    //    renderTargetSelector_->setTarget(renderTarget_);
+    //
+    //    // Render surface selector
+    //    renderSurfaceSelector_ = new Qt3DRender::QRenderSurfaceSelector;
+    //    renderSurfaceSelector_->setSurface(offscreenSurface_);
+    //    renderSurfaceSelector_->setParent(renderTargetSelector_);
+    //
+    //    // Viewport
+    //    auto *viewport = new Qt3DRender::QViewport(renderSurfaceSelector_);
+    //    viewport->setNormalizedRect({0.0, 0.0, 1.0, 1.0});
+    //
+    //    // Clear to background colour
+    //    auto *clearBuffers = new Qt3DRender::QClearBuffers(viewport);
+    //    clearBuffers->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
+    //    clearBuffers->setClearColor(QColor(255, 255, 255, 255));
+    //
+    //    // Construct a camera
+    //    camera_ = new Qt3DRender::QCamera;
+    //    //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    //    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
+    //    camera_->setPosition(QVector3D(0, 0, 1.0f));
+    //    camera_->setViewCenter(QVector3D(0, 0, -10.0));
+    //    auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
+    //    cameraSelector->setCamera(camera_);
+    //
+    //    auto *forwardRenderer_ = new Qt3DExtras::QForwardRenderer;
+    //    forwardRenderer_->setCamera(camera_);
+    //    forwardRenderer_->setSurface(offscreenSurface_);
+    //    forwardRenderer_->setParent(camera_);
+    //    forwardRenderer_->setClearColor("blue");
+    //
+    //    // Render settings, pointing to the top of the framegraph
+    //    renderSettings_ = new Qt3DRender::QRenderSettings;
+    //    renderSettings_->setActiveFrameGraph(renderStateSet_);
+
+    renderStateSet_ = new Qt3DRender::QRenderStateSet;
+    renderStateSet_->addRenderState(new Qt3DRender::QMultiSampleAntiAliasing);
+    depthTest_ = new Qt3DRender::QDepthTest;
+    renderStateSet_->addRenderState(depthTest_);
+    depthTest_->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);
+    renderTargetSelector_ = new Qt3DRender::QRenderTargetSelector;
+    renderTargetSelector_->setParent(renderStateSet_);
+    renderTargetSelector_->setTarget(renderTarget_);
+
+    renderSurfaceSelector_ = new Qt3DRender::QRenderSurfaceSelector;
+    renderSurfaceSelector_->setSurface(offscreenSurface_);
+    renderSurfaceSelector_->setParent(renderTargetSelector_);
+
+    // Viewport
+    auto *viewport = new Qt3DRender::QViewport(renderSurfaceSelector_);
+    viewport->setNormalizedRect({0.0, 0.0, 1.0, 1.0});
+
+    // Clear to background colour
+    auto *clearBuffers = new Qt3DRender::QClearBuffers(viewport);
+    clearBuffers->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
+    clearBuffers->setClearColor(QColor(255, 255, 255, 255));
+
     // Construct a camera
-    camera_ = new Qt3DRender::QCamera(rootEntity_.data());
+    camera_ = new Qt3DRender::QCamera;
     //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
     camera_->setPosition(QVector3D(0, 0, 1.0f));
     camera_->setViewCenter(QVector3D(0, 0, -10.0));
+    auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
+    cameraSelector->setCamera(camera_);
 
-    // Create the framegraph
-    frameGraph_.create(renderSettings_, viewWindow_, camera_);
+    //    auto *m_defaultCamera = new Qt3DRender::QCamera;
+    //    m_defaultCamera->setParent(renderSurfaceSelector_);
+
+    auto *m_forwardRenderer = new Qt3DExtras::QForwardRenderer;
+    m_forwardRenderer->setCamera(camera_);
+    m_forwardRenderer->setSurface(offscreenSurface_);
+    m_forwardRenderer->setParent(renderSurfaceSelector_);
+    renderSettings_ = new Qt3DRender::QRenderSettings;
+    renderSettings_->setActiveFrameGraph(renderStateSet_);
+    inputSettings_ = new Qt3DInput::QInputSettings;
+    inputSettings_->setEventSource(this);
+
+    //    d->m_activeFrameGraph = d->m_forwardRenderer;
+    m_forwardRenderer->setClearColor("white");
 
     // Set up basic scenegraph
     createSceneGraph();
 
+    // Create a frame action so we can receive "render complete" notifications
+    frameAction_ = new Qt3DLogic::QFrameAction;
+
     // Set the main root entity
-    viewWindow_->setRootEntity(rootEntity_.data());
+    //    setRootEntity(rootEntity_.data());
 
     // Connect the metrics object and update
     connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
 }
 
 /*
- * QWidget
+ * QOpenGLWidget Overrides
  */
+
+void MildredWidget::showEvent(QShowEvent *e)
+{
+    if (!initialised_)
+    {
+        rootEntity_->addComponent(renderSettings_);
+        rootEntity_->addComponent(inputSettings_);
+        rootEntity_->addComponent(frameAction_);
+        connect(frameAction_, &Qt3DLogic::QFrameAction::triggered, [this]() { this->update(); });
+        aspectEngine_->setRootEntity(rootEntity_);
+
+        initialised_ = true;
+    }
+
+    QWidget::showEvent(e);
+}
 
 //! Handle QWidget resize events
 /*!
@@ -99,7 +282,119 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
     sceneBoundingCuboidTransform_->setScale3D(QVector3D(width(), height(), width()));
 
     // Lastly, resize our view container
-    viewContainer_->resize(this->size());
+    //    viewContainer_->resize(this->size());
+
+    colourTexture_->setSize(width(), height());
+    depthTexture_->setSize(width(), height());
+    renderSurfaceSelector_->setExternalRenderTargetSize(QSize(width(), height()));
+}
+
+void MildredWidget::initializeGL()
+{
+    static const int coords[4][3] = {{+1, 0, 0}, {0, 0, 0}, {0, +1, 0}, {+1, +1, 0}};
+
+    for (auto i = 0; i < 4; ++i)
+    {
+        // vertex position
+        glVertexData_.append(coords[i][0]);
+        glVertexData_.append(coords[i][1]);
+        glVertexData_.append(coords[i][2]);
+        // texture coordinate
+        glVertexData_.append(i == 0 || i == 3);
+        glVertexData_.append(i == 0 || i == 1);
+    }
+
+    // Setup our vertex array object. We later only need to bind this
+    // to be able to draw.
+    glVAO_.create();
+    // The binder automatically binds the vao and unbinds it at the end
+    // of the function.
+    QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
+
+    // Setup our vertex buffer object.
+    glVBO_.create();
+    glVBO_.bind();
+    glVBO_.allocate(glVertexData_.constData(), glVertexData_.count() * sizeof(GLfloat));
+
+    glVBO_.bind();
+    auto *f = QOpenGLContext::currentContext()->functions();
+    f->glEnableVertexAttribArray(glVertexAttributeLocation_);
+    f->glEnableVertexAttribArray(glTexCoordAttributeLocation_);
+    f->glVertexAttribPointer(glVertexAttributeLocation_, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+    f->glVertexAttribPointer(glTexCoordAttributeLocation_, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
+                             reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    glVBO_.release();
+
+    glShaderProgram_.reset(new QOpenGLShaderProgram);
+    glShaderProgram_->addShaderFromSourceCode(QOpenGLShader::Vertex, "#version 150\n"
+                                                                     "in highp vec3 vertex;\n"
+                                                                     "in mediump vec2 texCoord;\n"
+                                                                     "out mediump vec2 texc;\n"
+                                                                     "uniform mediump mat4 matrix;\n"
+                                                                     "void main(void)\n"
+                                                                     "{\n"
+                                                                     "        gl_Position = matrix * vec4(vertex, 1.0);\n"
+                                                                     "        texc = texCoord;\n"
+                                                                     "}\n");
+    glShaderProgram_->addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                              "#version 150\n"
+                                              "uniform sampler2DMS texture;\n"
+                                              "in mediump vec2 texc;\n"
+                                              "uniform int samples;\n"
+                                              "void main(void)\n"
+                                              "{\n"
+                                              "   ivec2 tc = ivec2(floor(textureSize(texture) * texc));\n"
+                                              "   vec4 color = vec4(0.0);\n"
+                                              "   for(int i = 0; i < samples; i++) {\n"
+                                              "       color += texelFetch(texture, tc, i);\n"
+                                              "   }\n"
+                                              "   gl_FragColor = color / float(samples);\n"
+                                              "}\n");
+    glShaderProgram_->bindAttributeLocation("vertex", glVertexAttributeLocation_);
+    glShaderProgram_->bindAttributeLocation("texCoord", glTexCoordAttributeLocation_);
+    glShaderProgram_->link();
+
+    glShaderProgram_->bind();
+    glShaderProgram_->setUniformValue("texture", 0);
+    glShaderProgram_->setUniformValue("samples", QSurfaceFormat::defaultFormat().samples());
+    glShaderProgram_->release();
+}
+
+void MildredWidget::resizeGL(int w, int h)
+{
+    updateMetrics();
+
+    // Move the scene root position to be the centre of the XY plane and a suitable distance away
+    sceneRootTransform_->setTranslation(QVector3D(w / 2.0, h / 2.0, -w));
+
+    camera_->lens()->setOrthographicProjection(0, w, 0, h, 0.1f, width() * 2.0f);
+    camera_->setAspectRatio(float(w) / float(h));
+    colourTexture_->setSize(w, h);
+    depthTexture_->setSize(w, h);
+    renderSurfaceSelector_->setExternalRenderTargetSize(QSize(w, h));
+}
+
+void MildredWidget::paintGL()
+{
+    printf("jslkdjaslkd\n");
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glDisable(GL_BLEND);
+    glEnable(GL_MULTISAMPLE);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glShaderProgram_->bind();
+    {
+        QMatrix4x4 m;
+        m.ortho(0, 1, 1, 0, 1.0f, 3.0f);
+        m.translate(0.0f, 0.0f, -2.0f);
+
+        QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
+
+        glShaderProgram_->setUniformValue("matrix", m);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colourTexture_->handle().toUInt());
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+    glShaderProgram_->release();
 }
 
 /*
