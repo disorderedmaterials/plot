@@ -125,73 +125,32 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
     depthTexture_->setSamples(samples);
     renderTarget_->addOutput(depthOutput_);
 
-    //    // Create our render state set
-    //    renderStateSet_ = new Qt3DRender::QRenderStateSet;
-    //    renderStateSet_->addRenderState(new Qt3DRender::QMultiSampleAntiAliasing);
-    //    // -- Depth test
-    //    depthTest_ = new Qt3DRender::QDepthTest;
-    //    depthTest_->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);
-    //    renderStateSet_->addRenderState(depthTest_);
-    //    // -- Enable six clip planes for the data viewing volume
-    //    for (auto n = 0; n < 6; ++n)
-    //    {
-    //        auto *cp = new Qt3DRender::QClipPlane;
-    //        cp->setPlaneIndex(n);
-    //        cp->setEnabled(true);
-    //        renderStateSet_->addRenderState(cp);
-    //    }
-    //    // -- Face culling
-    //    auto *cull = new Qt3DRender::QCullFace();
-    //    cull->setMode(Qt3DRender::QCullFace::NoCulling);
-    //    renderStateSet_->addRenderState(cull);
-    //
-    //    // Render target selector
-    //    renderTargetSelector_ = new Qt3DRender::QRenderTargetSelector;
-    //    renderTargetSelector_->setParent(renderStateSet_);
-    //    renderTargetSelector_->setTarget(renderTarget_);
-    //
-    //    // Render surface selector
-    //    renderSurfaceSelector_ = new Qt3DRender::QRenderSurfaceSelector;
-    //    renderSurfaceSelector_->setSurface(offscreenSurface_);
-    //    renderSurfaceSelector_->setParent(renderTargetSelector_);
-    //
-    //    // Viewport
-    //    auto *viewport = new Qt3DRender::QViewport(renderSurfaceSelector_);
-    //    viewport->setNormalizedRect({0.0, 0.0, 1.0, 1.0});
-    //
-    //    // Clear to background colour
-    //    auto *clearBuffers = new Qt3DRender::QClearBuffers(viewport);
-    //    clearBuffers->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
-    //    clearBuffers->setClearColor(QColor(255, 255, 255, 255));
-    //
-    //    // Construct a camera
-    //    camera_ = new Qt3DRender::QCamera;
-    //    //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    //    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
-    //    camera_->setPosition(QVector3D(0, 0, 1.0f));
-    //    camera_->setViewCenter(QVector3D(0, 0, -10.0));
-    //    auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
-    //    cameraSelector->setCamera(camera_);
-    //
-    //    auto *forwardRenderer_ = new Qt3DExtras::QForwardRenderer;
-    //    forwardRenderer_->setCamera(camera_);
-    //    forwardRenderer_->setSurface(offscreenSurface_);
-    //    forwardRenderer_->setParent(camera_);
-    //    forwardRenderer_->setClearColor("blue");
-    //
-    //    // Render settings, pointing to the top of the framegraph
-    //    renderSettings_ = new Qt3DRender::QRenderSettings;
-    //    renderSettings_->setActiveFrameGraph(renderStateSet_);
-
+    // Create our render state set
     renderStateSet_ = new Qt3DRender::QRenderStateSet;
     renderStateSet_->addRenderState(new Qt3DRender::QMultiSampleAntiAliasing);
+    // -- Depth test
     depthTest_ = new Qt3DRender::QDepthTest;
-    renderStateSet_->addRenderState(depthTest_);
     depthTest_->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);
+    renderStateSet_->addRenderState(depthTest_);
+    // -- Enable six clip planes for the data viewing volume
+    for (auto n = 0; n < 6; ++n)
+    {
+        auto *cp = new Qt3DRender::QClipPlane;
+        cp->setPlaneIndex(n);
+        cp->setEnabled(true);
+        renderStateSet_->addRenderState(cp);
+    }
+    // -- Face culling
+    auto *cull = new Qt3DRender::QCullFace();
+    cull->setMode(Qt3DRender::QCullFace::NoCulling);
+    renderStateSet_->addRenderState(cull);
+
+    // Render target selector
     renderTargetSelector_ = new Qt3DRender::QRenderTargetSelector;
     renderTargetSelector_->setParent(renderStateSet_);
     renderTargetSelector_->setTarget(renderTarget_);
 
+    // Render surface selector
     renderSurfaceSelector_ = new Qt3DRender::QRenderSurfaceSelector;
     renderSurfaceSelector_->setSurface(offscreenSurface_);
     renderSurfaceSelector_->setParent(renderTargetSelector_);
@@ -214,20 +173,18 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
     auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
     cameraSelector->setCamera(camera_);
 
-    //    auto *m_defaultCamera = new Qt3DRender::QCamera;
-    //    m_defaultCamera->setParent(renderSurfaceSelector_);
+    auto *forwardRenderer_ = new Qt3DExtras::QForwardRenderer;
+    forwardRenderer_->setCamera(camera_);
+    forwardRenderer_->setSurface(offscreenSurface_);
+    forwardRenderer_->setParent(camera_);
+    forwardRenderer_->setClearColor("blue");
 
-    auto *m_forwardRenderer = new Qt3DExtras::QForwardRenderer;
-    m_forwardRenderer->setCamera(camera_);
-    m_forwardRenderer->setSurface(offscreenSurface_);
-    m_forwardRenderer->setParent(renderSurfaceSelector_);
+    // Render settings, pointing to the top of the framegraph
     renderSettings_ = new Qt3DRender::QRenderSettings;
     renderSettings_->setActiveFrameGraph(renderStateSet_);
+
     inputSettings_ = new Qt3DInput::QInputSettings;
     inputSettings_->setEventSource(this);
-
-    //    d->m_activeFrameGraph = d->m_forwardRenderer;
-    m_forwardRenderer->setClearColor("white");
 
     // Set up basic scenegraph
     createSceneGraph();
