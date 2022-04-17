@@ -385,7 +385,7 @@ void MildredWidget::paintGL()
     glShaderProgram_->bind();
     {
         QMatrix4x4 m;
-        m.ortho(0, 1, 1, 0, 1.0f, 3.0f);
+        m.ortho(0, 1, 0, 1, 1.0f, 3.0f);
         m.translate(0.0f, 0.0f, -2.0f);
 
         QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
