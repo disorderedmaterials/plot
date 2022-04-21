@@ -1,8 +1,6 @@
 parameters:
   - name: extraflags
     default: ''
-  - name: threading
-    default: true
   - name: qtver
     default: 6.2.2
 
