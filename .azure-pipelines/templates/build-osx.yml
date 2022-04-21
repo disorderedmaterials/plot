@@ -11,7 +11,7 @@ steps:
       set -ex
       # -- Qt
       sudo pip3 install conan aqtinstall
-      aqt install-qt --outputdir /tmp/qt mac desktop ${{ parameters.qtver }} -m qtcharts
+      aqt install-qt --outputdir /tmp/qt mac desktop ${{ parameters.qtver }} -m qt3d
     displayName: 'Install Dependencies'
   - bash: |
       set -ex

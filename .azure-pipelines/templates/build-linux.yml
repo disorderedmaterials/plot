@@ -15,7 +15,7 @@ steps:
       set -ex
       # -- Qt
       sudo pip3 install aqtinstall
-      aqt install --outputdir /tmp/qt ${{ parameters.qtver }} linux desktop -m qtcore qtgui qtwidgets qtopengl qtopenglwidgets qt3d
+      aqt install-qt --outputdir /tmp/qt ${{ parameters.qtver }} linux desktop -m qt3d
     displayName: 'Install Dependencies'
   - bash: |
       set -ex

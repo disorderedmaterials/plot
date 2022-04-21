@@ -10,7 +10,7 @@ steps:
       versionSpec: '3.x'
   - script: |
       python -m pip install aqtinstall
-      python -m aqt install-qt --outputdir $(Build.BinariesDirectory)\\Qt windows desktop ${{ parameters.qtver }} win64_msvc2019_64
+      python -m aqt install-qt --outputdir $(Build.BinariesDirectory)\\Qt windows desktop ${{ parameters.qtver }} win64_msvc2019_64 -m qt3d
     displayName: 'Install Qt'
   - powershell: |
       $ErrorActionPreference = 'Stop'
