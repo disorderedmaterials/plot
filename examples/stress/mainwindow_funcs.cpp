@@ -31,7 +31,7 @@ MainWindow::MainWindow() : QMainWindow()
             auto b = 2.0 * (double(random()) / RAND_MAX);
             auto c = 3.0 * (double(random()) / RAND_MAX);
             auto &y = yValues[nRows*row + column];
-            std::transform(xValues.begin(), xValues.end(), y.begin(), [a,b,c](const auto x) { return a*sin(x) + b*sin(x) - c*sin(x); });
+            std::transform(xValues.begin(), xValues.end(), y.begin(), [a,b,c](const auto x) { return 5.0 + a*sin(x) + b*sin(x) - c*sin(x); });
 
             // Add a renderable
             auto *renderable = graph->addData1D("Sines");
