@@ -6,6 +6,7 @@
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
 #include <QtCore/QUrl>
+#include <exception>
 
 using namespace Mildred;
 
