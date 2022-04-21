@@ -12,13 +12,13 @@ steps:
       set -ex
       Qt6_ROOT=/tmp/qt/${{ parameters.qtver }}/macos/
       # Get program version
-      MILDRED_VERSION=`grep "#define MILDREDVERSION" src/main/version.cpp | sed "s/.*\"\(.*\)\"/\1/g"`
+      MILDRED_VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
       ./prep-dmg -a Mildred-GUI -v ${MILDRED_VERSION} -b build/bin/dissolve-gui.app/Contents/MacOS/dissolve-gui -d ${Qt6_ROOT} -i icon/icon-1024x1024.png -p build/bin/dissolve-gui.app/Contents/Info.plist
     displayName: 'Prepare DMG Dirs'
   - bash: |
       set -ex
       # Get program version
-      MILDRED_VERSION=`grep "#define MILDREDVERSION" src/main/version.cpp | sed "s/.*\"\(.*\)\"/\1/g"`
+      MILDRED_VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
       # Fix icon link
       sed -i -e "s/Mildred.icns/Mildred-GUI.icns/g" Mildred-GUI-${MILDRED_VERSION}/Mildred-GUI.app/Contents/Info.plist
       # Create DMG

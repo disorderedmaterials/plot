@@ -25,7 +25,7 @@ steps:
       export PATH=$QT_BASE_DIR/bin:$PATH
       export QMAKE=$QT_BASE_DIR/bin/qmake
       # Extract the version from the source
-      export VERSION=`grep "#define MILDREDVERSION" src/main/version.cpp | sed "s/.*\"\(.*\)\"/\1/g"`
+      export VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
       # Get extra dependencies needed by the App Image
       sudo apt install libxkbcommon-x11-0 libxcb-render0 libxcb-render-util0 libxcb-shape0 libxcb-randr0 libxcb-xfixes0 libxcb-xkb1 libxcb-sync1 libxcb-shm0 libxcb-icccm4 libxcb-keysyms1 libxcb-image0 libxcb-util1 libfontconfig
       # Run on the targets
