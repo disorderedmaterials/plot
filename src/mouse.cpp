@@ -33,7 +33,6 @@ using namespace Mildred;
  */
 void MildredWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    printf("Kkkk\n");
     // Check previous position
     if (lastMousePosition_.isNull())
     {

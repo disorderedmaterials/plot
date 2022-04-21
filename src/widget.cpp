@@ -195,7 +195,6 @@ void MildredWidget::showEvent(QShowEvent *e)
 
 void MildredWidget::initializeGL()
 {
-    printf("INIT GL\n");
     static const int coords[4][3] = {{+1, 0, 0}, {0, 0, 0}, {0, +1, 0}, {+1, +1, 0}};
 
     for (auto i = 0; i < 4; ++i)
@@ -270,8 +269,6 @@ void MildredWidget::initializeGL()
 
 void MildredWidget::resizeGL(int w, int h)
 {
-    printf("RESIZE GL\n");
-
     // Resizing the widget demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of
     // the available drawing surface is used for visualisation.
     updateMetrics();
@@ -290,7 +287,6 @@ void MildredWidget::resizeGL(int w, int h)
 
 void MildredWidget::paintGL()
 {
-    printf("PAINT GL\n");
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glDisable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
