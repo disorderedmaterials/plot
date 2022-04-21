@@ -181,6 +181,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
 
     // Render settings, pointing to the top of the framegraph
     renderSettings_ = new Qt3DRender::QRenderSettings;
+    renderSettings_->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
     renderSettings_->setActiveFrameGraph(renderStateSet_);
 
     inputSettings_ = new Qt3DInput::QInputSettings;
@@ -188,9 +189,6 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
 
     // Set up basic scenegraph
     createSceneGraph();
-
-    // Create a frame action so we can receive "render complete" notifications
-    frameAction_ = new Qt3DLogic::QFrameAction;
 
     // Set the main root entity
     //    setRootEntity(rootEntity_.data());
@@ -209,9 +207,8 @@ void MildredWidget::showEvent(QShowEvent *e)
     {
         rootEntity_->addComponent(renderSettings_);
         rootEntity_->addComponent(inputSettings_);
-        rootEntity_->addComponent(frameAction_);
-        connect(frameAction_, &Qt3DLogic::QFrameAction::triggered, [this]() { this->update(); });
         aspectEngine_->setRootEntity(rootEntity_);
+
         initialised_ = true;
     }
 

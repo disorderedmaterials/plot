@@ -144,7 +144,6 @@ class MildredWidget : public QOpenGLWidget
     Qt3DRender::QTexture2DMultisample *depthTexture_{nullptr};
     Qt3DRender::QRenderSettings *renderSettings_{nullptr};
     Qt3DRender::QCamera *camera_{nullptr};
-    Qt3DLogic::QFrameAction *frameAction_{nullptr};
     Qt3DInput::QInputSettings *inputSettings_{nullptr};
 
     /*
