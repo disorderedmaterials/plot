@@ -1,0 +1,81 @@
+trigger:
+  branches:
+    include:
+    - develop
+  paths:
+    include:
+    - src/*
+    - ci/*
+    - cmake/*
+    - examples/*
+    - CMakeLists.txt
+    - conanfile.txt
+    - .azure-pipelines/*
+    - .clang-format
+    exclude:
+    - .azure-pipelines/pr.yml
+    - .azure-pipelines/release.yml
+
+pr: none
+
+stages:
+  - template: templates/code-quality-checks.yml
+
+  # Build and Package Executables
+  - stage: 'build'
+    displayName: 'Build'
+    jobs:
+      - job: 'linux'
+        displayName: 'Ubuntu'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - template: templates/set-short-hash.yml
+          - template: templates/build-linux.yml
+          - template: templates/package-linux.yml
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "packages/"
+              ArtifactName: 'linux-artifacts'
+            displayName: 'Publish Linux Artifacts'
+      - job: 'osx'
+        displayName: 'OSX'
+        pool:
+          vmImage: 'macOS-10.15'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - template: templates/set-short-hash.yml
+          - template: templates/build-osx.yml
+          - template: templates/package-osx.yml
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "packages/"
+              ArtifactName: 'osx-artifacts'
+            displayName: 'Publish OSX Artifacts'
+      - job: 'windows'
+        displayName: 'Windows'
+        pool:
+          vmImage: 'windows-2022'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - template: templates/set-short-hash.yml
+          - template: templates/build-windows.yml
+          - template: templates/package-windows.yml
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "packages/"
+              ArtifactName: 'windows-artifacts'
+            displayName: 'Publish Windows Artifacts'
+
+  # Deploy
+  - stage: 'release'
+    displayName: 'Create Release'
+    jobs:
+      - template: templates/create-release.yml
+        parameters:
+          continuous: true
+

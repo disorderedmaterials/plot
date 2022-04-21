@@ -1,0 +1,24 @@
+parameters:
+  - name: extraflags
+    default: ''
+  - name: qtver
+    default: 6.2.2
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+  - script: |
+      python -m pip install aqtinstall
+      python -m aqt install-qt --outputdir $(Build.BinariesDirectory)\\Qt windows desktop ${{ parameters.qtver }} win64_msvc2019_64
+    displayName: 'Install Qt'
+  - powershell: |
+      $ErrorActionPreference = 'Stop'
+      $env:Qt6_DIR = "$(Build.BinariesDirectory)\Qt\${{ parameters.qtver }}\msvc2019_64"
+      $env:PATH += ";$env:Qt6_DIR" + "\bin"
+      echo $env:Qt6_DIR
+      mkdir build
+      cd build
+      cmake ../ -G "Visual Studio 17 2022" -A "x64" -DBUILD_EXAMPLES:bool=true -DCMAKE_BUILD_TYPE:STRING="Release" ${{ parameters.extraflags }}
+      cmake --build . --config Release
+    displayName: 'Build'

@@ -1,0 +1,25 @@
+parameters:
+  - name: extraflags
+    default: ''
+  - name: threading
+    default: true
+  - name: qtver
+    default: 6.2.2
+
+steps:
+  - bash: |
+      set -ex
+      # -- Qt
+      sudo pip3 install conan aqtinstall
+      aqt install-qt --outputdir /tmp/qt mac desktop ${{ parameters.qtver }} -m qtcharts
+    displayName: 'Install Dependencies'
+  - bash: |
+      set -ex
+      Qt6_DIR=/tmp/qt/${{ parameters.qtver }}/macos/lib/cmake/Qt6
+      QT_BASE_DIR=/tmp/qt/${{ parameters.qtver }}/macos
+      QTVER=${{ parameters.qtver }}
+      mkdir build
+      cd build
+      cmake ../ -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }} -DQT_BASE_DIR=$QT_BASE_DIR
+      make
+    displayName: 'Build'
