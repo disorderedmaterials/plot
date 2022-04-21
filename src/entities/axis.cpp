@@ -155,7 +155,7 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     // Check data range
     if (maximum_ < 0.0)
     {
-        printf("Axis range is inappropriate for a log scale ({} < x < {}). Axis will not be drawn.\n", minimum_, maximum_);
+        printf("Axis range is inappropriate for a log scale (%g < x < %g). Axis will not be drawn.\n", minimum_, maximum_);
         return {};
     }
 
