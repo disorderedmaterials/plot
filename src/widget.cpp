@@ -183,11 +183,24 @@ void MildredWidget::showEvent(QShowEvent *e)
 {
     if (!initialised_)
     {
+        colourTexture_->setSize(width(), height());
+        depthTexture_->setSize(width(), height());
+        renderSurfaceSelector_->setExternalRenderTargetSize(QSize(width(), height()));
+
+        updateMetrics();
+        updateTransforms();
+        updateShaderParameters();
+
         rootEntity_->addComponent(renderSettings_);
         rootEntity_->addComponent(inputSettings_);
         aspectEngine_->setRootEntity(rootEntity_);
-
         initialised_ = true;
+
+        // In order to reliably get an initial image on show, we need to update/process twice
+        update();
+        aspectEngine_->processFrame();
+        update();
+        aspectEngine_->processFrame();
     }
 
     QWidget::showEvent(e);
