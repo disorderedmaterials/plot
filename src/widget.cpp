@@ -214,6 +214,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     xAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     xAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Horizontal, metrics_, xAxisBarMaterial, xAxisLabelMaterial);
+    xAxis_->setTitleText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
 
     auto *yAxisBarMaterial =
@@ -225,6 +226,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     yAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     yAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Vertical, metrics_, yAxisBarMaterial, yAxisLabelMaterial);
+    yAxis_->setTitleText("Y");
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
 
     auto *zAxisBarMaterial =
@@ -236,6 +238,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     zAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     zAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Depth, metrics_, zAxisBarMaterial, zAxisLabelMaterial);
+    zAxis_->setTitleText("Z");
     connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
 
