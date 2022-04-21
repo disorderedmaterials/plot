@@ -40,7 +40,7 @@ find_package(
              3DExtras
              3DRender
              3DExtras
-  REQUIRED)
+             REQUIRED)
 
 # Make sure CMake won't try to generate rules for moc (we will do it ourselves)
 set(CMAKE_AUTOMOC OFF)
