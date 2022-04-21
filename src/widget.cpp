@@ -9,7 +9,6 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QInputAspect>
-#include <Qt3DInput/QMouseHandler>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
@@ -34,6 +33,9 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
     // Initialise resources
     initialiseQtResources();
 
+    // Enable mouse tracking
+    setMouseTracking(true);
+
     // Create our root entity
     rootEntity_ = Qt3DCore::QEntityPtr(new Qt3DCore::QEntity);
 
@@ -43,17 +45,6 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
     sceneDataAxesOriginParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxesOrigin"), QVector3D());
     sceneDataTransformInverseParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataTransformInverse"), QMatrix4x4());
     viewportSizeParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewportSize"), QVector2D());
-
-    // Add a mouse handler and connect it up
-    auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_.data());
-    auto *mouseDevice = new Qt3DInput::QMouseDevice(rootEntity_.data());
-    mouseHandler->setSourceDevice(mouseDevice);
-    rootEntity_->addComponent(mouseHandler);
-    connect(mouseHandler, SIGNAL(positionChanged(Qt3DInput::QMouseEvent *)), this,
-            SLOT(mousePositionChanged(Qt3DInput::QMouseEvent *)));
-    connect(mouseHandler, SIGNAL(pressed(Qt3DInput::QMouseEvent *)), this, SLOT(mouseButtonPressed(Qt3DInput::QMouseEvent *)));
-    connect(mouseHandler, SIGNAL(released(Qt3DInput::QMouseEvent *)), this,
-            SLOT(mouseButtonReleased(Qt3DInput::QMouseEvent *)));
 
     /*
      * The framegraph is constructed with the following structure:
@@ -543,82 +534,6 @@ void MildredWidget::resetView()
 
     updateShaderParameters();
 }
-
-/*
- * Mouse Handling
- */
-
-//! React to mouse movement
-/*!
- * React to mouse move events signalled by a Qt3DMouseHandler attached to the Qt3D surface, potentially affecting changes to the
- * axes ranges or view volume, depending on the current view type and options.
- *
- * Active mouse buttons modify the effect of the event, and which also depends on the current view mode and depressed modifier
- * keys.
- *
- * | Button | View Type | Modifier | Action |
- * | :----: | :-------: | :------: | ------ |
- * | Left   | Flat / 2D | None     | Update current coordinate under the mouse. |
- * | ^      | ^         | Ctrl     |        |
- * | ^      | ^         | Shift    |        |
- * | ^      | 3D        | None     | None   |
- * | ^      | ^         | Ctrl     |        |
- * | ^      | ^         | Shift    |        |
- * | Middle | Flat / 2D | None     | Translate view in the XY plane, modifying the corresponding ranges of the x and y axes |
- * | ^      | ^         | Ctrl     |        |
- * | ^      | ^         | Shift    |        |
- * | ^      | 3D        | None     |        |
- * | ^      | ^         | Ctrl     |        |
- * | ^      | ^         | Shift    |        |
- * | Right  | Flat / 2D | None     | None   |
- * | ^      | ^         | Ctrl     |        |
- * | ^      | ^         | Shift    |        |
- * | ^      | 3D        | None     | Rotate view volume around its centroid. |
- * | ^      | ^         | Ctrl     |        |
- * | ^      | ^         | Shift    |        |
- */
-void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
-{
-    // Check previous position
-    if (lastMousePosition_.isNull())
-    {
-        lastMousePosition_ = QPoint(event->x(), event->y());
-        return;
-    }
-
-    // Right button - Rotate scene volume (3D)
-    if (event->buttons() & Qt3DInput::QMouseEvent::RightButton)
-    {
-        // Rotations only allowed for 3D view
-        if (!flatView_)
-        {
-            viewRotationMatrix_ *=
-                QQuaternion::fromEulerAngles(event->y() - lastMousePosition_.y(), event->x() - lastMousePosition_.x(), 0.0);
-            sceneRootTransform_->setRotation(viewRotationMatrix_);
-        }
-    }
-
-    // Middle button - translate axis ranges (2D)
-    if (event->buttons() & Qt3DInput::QMouseEvent::MiddleButton)
-    {
-        if (flatView_)
-        {
-            xAxis_->shiftLimits(-xAxis_->range() *
-                                (double(event->x() - lastMousePosition_.x()) / metrics_.displayVolumeExtent().x()));
-            yAxis_->shiftLimits(yAxis_->range() *
-                                (double(event->y() - lastMousePosition_.y()) / metrics_.displayVolumeExtent().y()));
-            updateTransforms();
-        }
-    }
-
-    updateShaderParameters();
-
-    lastMousePosition_ = QPoint(event->x(), event->y());
-}
-
-void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
-
-void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
 
 /*
  * Display Data

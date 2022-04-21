@@ -2,7 +2,7 @@
 set(mildred_MOC_HDRS widget.h)
 qt6_wrap_cpp(mildred_MOC_SRCS ${mildred_MOC_HDRS})
 
-add_library(mildred ${mildred_MOC_SRCS} framegraph.cpp widget.cpp framegraph.h)
+add_library(mildred ${mildred_MOC_SRCS} framegraph.cpp mouse.cpp widget.cpp framegraph.h)
 
 include_directories(mildred PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(

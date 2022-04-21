@@ -14,13 +14,13 @@
 #include <QOpenGLVertexArrayObject>
 #include <QResizeEvent>
 #include <QScopedPointer>
+#include <QTimer>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QInputSettings>
-#include <Qt3DInput/QMouseEvent>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
@@ -181,13 +181,28 @@ class MildredWidget : public QOpenGLWidget
      * Mouse Handling / Interaction
      */
     private:
-    // Last recorded mouse position
-    QPoint lastMousePosition_;
+    // Coordinates of mouse down
+    QPointF pressedMousePosition_;
+    // Coordinates of mouse cursor
+    QPointF lastMousePosition_;
+    // Mouse release timer for detection of context menu requests
+    QTimer mouseReleaseTimer_;
+    // Current state of mouse buttons
+    Qt::MouseButtons buttonState_;
+    // Modifier state on mouse down
+    Qt::KeyboardModifiers mouseDownModifiers_;
 
-    private slots:
-    void mousePositionChanged(Qt3DInput::QMouseEvent *event);
-    void mouseButtonPressed(Qt3DInput::QMouseEvent *event);
-    void mouseButtonReleased(Qt3DInput::QMouseEvent *event);
+    private:
+    // Mouse press event
+    void mousePressEvent(QMouseEvent *event) override;
+    // Mouse release event
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    // Mouse move event
+    void mouseMoveEvent(QMouseEvent *event) override;
+    // Mouse wheel event
+    void wheelEvent(QWheelEvent *event) override;
+    // Mouse double click event
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     /*
      * Display Data
