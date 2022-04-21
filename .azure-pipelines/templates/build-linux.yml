@@ -9,7 +9,7 @@ steps:
       set -ex
       # -- General
       sudo apt-get update -q
-      sudo apt-get install ninja-build python3-setuptools uuid uuid-dev
+      sudo apt-get install ninja-build python3-setuptools uuid uuid-dev libglu1-mesa-dev freeglut3-dev
     displayName: 'Install Build Prerequisites'
   - bash: |
       set -ex
