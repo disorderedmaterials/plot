@@ -82,6 +82,12 @@ class MildredWidget : public QWidget
     void setFlatView(bool flat);
 
     /*
+     * FrameGraph
+     */
+    private:
+    MildredFrameGraph framegraph_;
+
+    /*
      * SceneGraph
      */
     private:
