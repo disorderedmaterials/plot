@@ -7,7 +7,6 @@
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QMouseHandler>
@@ -16,7 +15,6 @@
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QClipPlane>
-#include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QRenderAspect>
@@ -36,16 +34,8 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
     // Initialise resources
     initialiseQtResources();
 
-    //    viewWindow_ = new Qt3DExtras::Qt3DWindow();
-
-    // Create a container for the Qt3DWindow
-    //    viewContainer_ = createWindowContainer(viewWindow_, this);
-
     // Create our root entity
     rootEntity_ = Qt3DCore::QEntityPtr(new Qt3DCore::QEntity);
-
-    // Create a QRenderSettings and add it as a component to the root entity
-    //    renderSettings_ = viewWindow_->renderSettings();
 
     // Create parameters
     sceneDataAxesParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataAxes"), QMatrix4x4());
@@ -189,9 +179,6 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
 
     // Set up basic scenegraph
     createSceneGraph();
-
-    // Set the main root entity
-    //    setRootEntity(rootEntity_.data());
 
     // Connect the metrics object and update
     connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));

@@ -61,22 +61,6 @@ class MildredWidget : public QOpenGLWidget
     ~MildredWidget() override = default;
 
     /*
-     * Qt3D Objects
-     */
-    private:
-    // Qt3DWindow for our display
-    //    Qt3DExtras::Qt3DWindow *viewWindow_{nullptr};
-    // Container widget for our Qt3DWindow
-    //    QWidget *viewContainer_{nullptr};
-    // Qt3D Renderer Objects
-
-    // Root entity containing framegraph and scenegraph
-    Qt3DCore::QEntityPtr rootEntity_;
-
-    // Rendering framegraph
-    MildredFrameGraph frameGraph_;
-
-    /*
      * QOpenGLWidget Overrides
      */
     private:
@@ -84,7 +68,6 @@ class MildredWidget : public QOpenGLWidget
     QOpenGLVertexArrayObject glVAO_;
     QOpenGLBuffer glVBO_;
     QVector<GLfloat> glVertexData_;
-    QOpenGLTexture *glTexture_{nullptr};
     int glVertexAttributeLocation_{0};
     int glTexCoordAttributeLocation_{0};
     bool initialised_{false};
@@ -145,6 +128,8 @@ class MildredWidget : public QOpenGLWidget
     Qt3DRender::QRenderSettings *renderSettings_{nullptr};
     Qt3DRender::QCamera *camera_{nullptr};
     Qt3DInput::QInputSettings *inputSettings_{nullptr};
+    // Root entity containing framegraph and scenegraph
+    Qt3DCore::QEntityPtr rootEntity_;
 
     /*
      * SceneGraph
