@@ -212,42 +212,15 @@ void MildredWidget::showEvent(QShowEvent *e)
         rootEntity_->addComponent(frameAction_);
         connect(frameAction_, &Qt3DLogic::QFrameAction::triggered, [this]() { this->update(); });
         aspectEngine_->setRootEntity(rootEntity_);
-
         initialised_ = true;
     }
 
     QWidget::showEvent(e);
 }
 
-//! Handle QWidget resize events
-/*!
- * Resizing the widget demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of the
- * available drawing surface is used for visualisation.
- */
-void MildredWidget::resizeEvent(QResizeEvent *event)
-{
-    updateMetrics();
-
-    // Move the scene root position to be the centre of the XY plane and a suitable distance away
-    sceneRootTransform_->setTranslation(QVector3D(width() / 2.0, height() / 2.0, -width()));
-
-    // Reset projection for new viewport
-    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, width() * 2.0f);
-    camera_->setAspectRatio(float(width()) / float(height()));
-
-    // Debug objects
-    sceneBoundingCuboidTransform_->setScale3D(QVector3D(width(), height(), width()));
-
-    // Lastly, resize our view container
-    //    viewContainer_->resize(this->size());
-
-    colourTexture_->setSize(width(), height());
-    depthTexture_->setSize(width(), height());
-    renderSurfaceSelector_->setExternalRenderTargetSize(QSize(width(), height()));
-}
-
 void MildredWidget::initializeGL()
 {
+    printf("INIT GL\n");
     static const int coords[4][3] = {{+1, 0, 0}, {0, 0, 0}, {0, +1, 0}, {+1, +1, 0}};
 
     for (auto i = 0; i < 4; ++i)
@@ -283,16 +256,19 @@ void MildredWidget::initializeGL()
     glVBO_.release();
 
     glShaderProgram_.reset(new QOpenGLShaderProgram);
-    glShaderProgram_->addShaderFromSourceCode(QOpenGLShader::Vertex, "#version 150\n"
-                                                                     "in highp vec3 vertex;\n"
-                                                                     "in mediump vec2 texCoord;\n"
-                                                                     "out mediump vec2 texc;\n"
-                                                                     "uniform mediump mat4 matrix;\n"
-                                                                     "void main(void)\n"
-                                                                     "{\n"
-                                                                     "        gl_Position = matrix * vec4(vertex, 1.0);\n"
-                                                                     "        texc = texCoord;\n"
-                                                                     "}\n");
+    glShaderProgram_->addShaderFromSourceCode(
+        QOpenGLShader::Vertex,
+        "#version 150\n"
+        "in highp vec3 vertex;\n"
+        "in mediump vec2 texCoord;\n"
+        "out mediump vec2 texc;\n"
+        "uniform mediump mat4 matrix;\n"
+        "void main(void)\n"
+        "{\n"
+        "        gl_Position = matrix * vec4(vertex, 1.0);\n"
+        //                                                                     "        gl_Position = vec4(vertex, 1.0);\n"
+        "        texc = texCoord;\n"
+        "}\n");
     glShaderProgram_->addShaderFromSourceCode(QOpenGLShader::Fragment,
                                               "#version 150\n"
                                               "uniform sampler2DMS texture;\n"
@@ -319,6 +295,10 @@ void MildredWidget::initializeGL()
 
 void MildredWidget::resizeGL(int w, int h)
 {
+    printf("RESIZE GL\n");
+
+    // Resizing the widget demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of
+    // the available drawing surface is used for visualisation.
     updateMetrics();
 
     // Move the scene root position to be the centre of the XY plane and a suitable distance away
@@ -326,6 +306,8 @@ void MildredWidget::resizeGL(int w, int h)
 
     camera_->lens()->setOrthographicProjection(0, w, 0, h, 0.1f, width() * 2.0f);
     camera_->setAspectRatio(float(w) / float(h));
+
+    // Resize our textures and the offscreen target
     colourTexture_->setSize(w, h);
     depthTexture_->setSize(w, h);
     renderSurfaceSelector_->setExternalRenderTargetSize(QSize(w, h));
@@ -333,16 +315,24 @@ void MildredWidget::resizeGL(int w, int h)
 
 void MildredWidget::paintGL()
 {
-    printf("jslkdjaslkd\n");
+    printf("PAINT GL\n");
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glDisable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, width(), height());
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(0.0, width(), 0.0, height(), -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
     glShaderProgram_->bind();
     {
         QMatrix4x4 m;
-        m.ortho(0, 1, 0, 1, 1.0f, 3.0f);
+        m.ortho(0, 1.0, 0., 1.0, 1.0f, 3.0f);
         m.translate(0.0f, 0.0f, -2.0f);
 
         QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
@@ -351,6 +341,7 @@ void MildredWidget::paintGL()
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colourTexture_->handle().toUInt());
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
+
     glShaderProgram_->release();
 }
 

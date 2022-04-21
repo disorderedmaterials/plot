@@ -91,13 +91,12 @@ class MildredWidget : public QOpenGLWidget
 
     protected:
     void showEvent(QShowEvent *e) override;
-    void resizeEvent(QResizeEvent *event) override;
 
     public:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
 
-    public slots:
+    public:
     void paintGL() override;
 
     /*
