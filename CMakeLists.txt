@@ -55,6 +55,7 @@ if(WIN32)
   # Add defines for Windows systems - NOMINMAX to prevent conflicts with
   # std::min() and std::max()
   add_definitions(-DNOMINMAX)
+  add_definitions(/Zc:__cplusplus)
 endif(WIN32)
 
 # -- Unix
