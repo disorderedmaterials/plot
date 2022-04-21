@@ -283,6 +283,9 @@ void MildredWidget::resizeGL(int w, int h)
     colourTexture_->setSize(w, h);
     depthTexture_->setSize(w, h);
     renderSurfaceSelector_->setExternalRenderTargetSize(QSize(w, h));
+
+    updateTransforms();
+    updateShaderParameters();
 }
 
 void MildredWidget::paintGL()
