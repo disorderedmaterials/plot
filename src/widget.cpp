@@ -5,7 +5,6 @@
 #include <QResizeEvent>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QInputAspect>
@@ -425,9 +424,10 @@ void MildredWidget::createSceneGraph()
     sceneBoundingCuboidEntity_->addComponent(cuboidMesh);
     sceneBoundingCuboidTransform_ = new Qt3DCore::QTransform(sceneBoundingCuboidEntity_);
     sceneBoundingCuboidEntity_->addComponent(sceneBoundingCuboidTransform_);
-    auto *cuboidMaterial = new Qt3DExtras::QDiffuseSpecularMaterial(sceneBoundingCuboidEntity_);
+    auto *cuboidMaterial =
+        createMaterial(sceneBoundingCuboidEntity_, RenderableMaterial::VertexShaderType::Unclipped,
+                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Phong);
     cuboidMaterial->setAmbient(QColor(255, 0, 0, 100));
-    cuboidMaterial->setAlphaBlendingEnabled(true);
     sceneBoundingCuboidEntity_->addComponent(cuboidMaterial);
 
     /*
