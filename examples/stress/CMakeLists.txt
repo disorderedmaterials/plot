@@ -24,3 +24,7 @@ target_include_directories(
 
 target_link_libraries(${target_name} PRIVATE # External libs
                                              mildred)
+
+set_target_properties(${target_name} PROPERTIES RUNTIME ${target_name})
+
+install(TARGETS ${target_name} RUNTIME)

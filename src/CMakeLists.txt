@@ -18,6 +18,10 @@ target_link_libraries(
           Qt6::Widgets Qt6::Core Qt6::OpenGLWidgets Qt6::3DCore Qt6::3DRender
           Qt6::3DExtras)
 
+set_target_properties(mildred PROPERTIES PUBLIC_HEADER widget.h)
+
+install(TARGETS mildred)
+
 add_subdirectory(classes)
 add_subdirectory(entities)
 add_subdirectory(materials)
