@@ -13,6 +13,7 @@ steps:
       Qt6_ROOT=/tmp/qt/${{ parameters.qtver }}/macos/
       # Get program version
       MILDRED_VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
+      ls -R build/
       ./prep-dmg -a Mildred -v ${MILDRED_VERSION} -b build/bin/mildred.app/Contents/MacOS/mildred -d ${Qt6_ROOT} -p build/bin/mildred.app/Contents/Info.plist
     displayName: 'Prepare DMG Dirs'
   - bash: |
