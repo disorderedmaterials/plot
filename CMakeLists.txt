@@ -35,6 +35,7 @@ find_package(
   COMPONENTS Core
              Gui
              Widgets
+             OpenGLWidgets
              3DCore
              3DExtras
              3DRender
