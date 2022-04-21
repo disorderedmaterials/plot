@@ -1,0 +1,63 @@
+trigger:
+  branches:
+    include:
+      - release/*
+
+pr: none
+
+stages:
+  - template: templates/code-quality-checks.yml
+
+  # Build and Package Library and Tests
+  - stage: 'build'
+    displayName: 'Build and Package'
+    jobs:
+      - job: 'linux'
+        displayName: 'Ubuntu'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - template: templates/build-linux.yml
+          - template: templates/package-linux.yml
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "packages/"
+              ArtifactName: 'linux-artifacts'
+            displayName: 'Publish Linux Artifacts'
+      - job: 'osx'
+        displayName: 'OSX'
+        pool:
+          vmImage: 'macOS-10.15'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - template: templates/build-osx.yml
+          - template: templates/package-osx.yml
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "packages/"
+              ArtifactName: 'osx-artifacts'
+            displayName: 'Publish OSX Artifacts'
+      - job: 'windows'
+        displayName: 'Windows'
+        pool:
+          vmImage: 'windows-2022'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - template: templates/build-windows.yml
+          - template: templates/package-windows.yml
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "packages/"
+              ArtifactName: 'windows-artifacts'
+            displayName: 'Publish Windows Artifacts'
+
+  # Create Release
+  - stage: 'release'
+    displayName: 'Create Release'
+    condition: not(endsWith(variables['Build.SourceBranch'], 'pre'))
+    jobs:
+      - template: templates/create-release.yml

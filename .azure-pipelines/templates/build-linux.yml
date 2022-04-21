@@ -1,0 +1,31 @@
+parameters:
+  - name: extraflags
+    default: ''
+  - name: qtver
+    default: 6.2.2
+
+steps:
+  - bash: |
+      set -ex
+      # -- General
+      sudo apt-get update -q
+      sudo apt-get install ninja-build python3-setuptools uuid uuid-dev
+    displayName: 'Install Build Prerequisites'
+  - bash: |
+      set -ex
+      # -- Qt
+      sudo pip3 install aqtinstall
+      aqt install --outputdir /tmp/qt ${{ parameters.qtver }} linux desktop -m qtcore qtgui qtwidgets qtopengl qtopenglwidgets qt3d
+    displayName: 'Install Dependencies'
+  - bash: |
+      set -ex
+      Qt6_DIR=/tmp/qt/${{ parameters.qtver }}/gcc_64/lib/cmake/Qt6
+      QT_BASE_DIR=/tmp/qt/${{ parameters.qtver }}/gcc_64
+      export QTDIR=$QT_BASE_DIR
+      export PATH=$QT_BASE_DIR/bin:$PATH
+      export LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
+      mkdir build
+      cd build
+      cmake ../ -G "Ninja" -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }}
+      ninja
+    displayName: 'Build'
