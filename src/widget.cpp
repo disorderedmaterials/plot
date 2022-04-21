@@ -5,7 +5,6 @@
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
