@@ -11,7 +11,13 @@
 #include <Qt3DRender/QPointLight>
 
 // Initialise Qt resources
-void initialiseQtResources() { Q_INIT_RESOURCE(shaders); }
+void initialiseQtResources()
+{
+    static auto initialised = false;
+    if (!initialised)
+        Q_INIT_RESOURCE(shaders);
+    initialised = true;
+}
 
 using namespace Mildred;
 
