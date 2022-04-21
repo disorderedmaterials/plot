@@ -15,7 +15,7 @@ steps:
     displayName: 'Install Prerequisites'
   - bash: |
       set -ex
-      ./prep-appimage -a Mildred -v continuous -b build/bin/dissolve
+      ./prep-appimage -a Mildred -v continuous -b build/bin/basic -b build/bin/stress
     displayName: 'Prepare AppDirs'
   - bash: |
       set -ex
