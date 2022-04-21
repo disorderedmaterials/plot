@@ -7,7 +7,7 @@ MainWindow::MainWindow() : QMainWindow()
 {
     ui_.setupUi(this);
 
-    const auto nRows = 5, nColumns = 5, nPoints = 1000;
+    const auto nRows = 10, nColumns = 10, nPoints = 1000;
     const auto delta = 0.01;
 
     // Create some data before we add the graphs
