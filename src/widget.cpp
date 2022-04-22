@@ -9,6 +9,7 @@
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
+#include <stdexcept>
 
 // Initialise Qt resources
 void initialiseQtResources()

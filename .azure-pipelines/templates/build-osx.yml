@@ -1,8 +1,6 @@
 parameters:
   - name: extraflags
     default: ''
-  - name: threading
-    default: true
   - name: qtver
     default: 6.2.2
 
@@ -11,15 +9,17 @@ steps:
       set -ex
       # -- Qt
       sudo pip3 install conan aqtinstall
-      aqt install-qt --outputdir /tmp/qt mac desktop ${{ parameters.qtver }} -m qtcharts
+      aqt install-qt --outputdir /tmp/qt mac desktop ${{ parameters.qtver }} -m qt3d
     displayName: 'Install Dependencies'
   - bash: |
       set -ex
+      VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
       Qt6_DIR=/tmp/qt/${{ parameters.qtver }}/macos/lib/cmake/Qt6
       QT_BASE_DIR=/tmp/qt/${{ parameters.qtver }}/macos
       QTVER=${{ parameters.qtver }}
       mkdir build
       cd build
-      cmake ../ -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }} -DQT_BASE_DIR=$QT_BASE_DIR
+      cmake ../ -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }} -DQT_BASE_DIR=$QT_BASE_DIR -DCMAKE_INSTALL_PREFIX:path=./Mildred-${VERSION}
       make
+      make install
     displayName: 'Build'

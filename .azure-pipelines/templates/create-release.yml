@@ -21,42 +21,7 @@ jobs:
           specificBuildWithTriggering: true
           downloadType: 'single'
           artifactName: 'linux-cli-artifacts'
-        displayName: 'Download Linux CLI Artifacts'
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'current'
-          specificBuildWithTriggering: true
-          downloadType: 'single'
-          artifactName: 'linux-gui-artifacts'
-        displayName: 'Download Linux GUI Artifacts'
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'current'
-          specificBuildWithTriggering: true
-          downloadType: 'single'
-          artifactName: 'linux-mpi-artifacts'
-        displayName: 'Download Linux MPI Artifacts'
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'current'
-          specificBuildWithTriggering: true
-          downloadType: 'single'
-          artifactName: 'singularity-cli-artifacts'
-        displayName: 'Download Singularity CLI Artifacts'
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'current'
-          specificBuildWithTriggering: true
-          downloadType: 'single'
-          artifactName: 'singularity-gui-artifacts'
-        displayName: 'Download Singularity GUI Artifacts'
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'current'
-          specificBuildWithTriggering: true
-          downloadType: 'single'
-          artifactName: 'singularity-mpi-artifacts'
-        displayName: 'Download Singularity MPI Artifacts'
+        displayName: 'Download Linux Artifacts'
       - task: DownloadBuildArtifacts@0
         inputs:
           buildType: 'current'
@@ -73,14 +38,8 @@ jobs:
         displayName: 'Download Windows Artifacts'
       - bash: |
           set -ex
-          VERSION=`grep "#define MILDREDVERSION" src/main/version.cpp | sed "s/.*\"\(.*\)\"/\1/g"`
-          cd ./examples
-          ./package-examples -v ${VERSION}
-        displayName: 'Create Example Data Archives'
-      - bash: |
-          set -ex
-          VERSION=`grep "#define MILDREDVERSION" src/main/version.cpp | sed "s/.*\"\(.*\)\"/\1/g"`
-          ./update-release -r disorderedmaterials/dissolve -t ${VERSION} -n "${VERSION}" -f ReleaseNotes.md $(System.ArtifactsDirectory)/linux-*-artifacts/* $(System.ArtifactsDirectory)/singularity-*-artifacts/* $(System.ArtifactsDirectory)/windows-artifacts/*.exe $(System.ArtifactsDirectory)/windows-artifacts/*.zip $(System.ArtifactsDirectory)/osx-artifacts/*dmg examples/*zip examples/*.tar.gz
+          VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
+          ./update-release -r disorderedmaterials/plot -t ${VERSION} -n "${VERSION}" -f ReleaseNotes.md $(System.ArtifactsDirectory)/linux-*-artifacts/* $(System.ArtifactsDirectory)/windows-artifacts/* $(System.ArtifactsDirectory)/osx-artifacts/*
         condition: eq('${{ parameters.continuous }}', false)
         env:
           GITHUB_TOKEN: $(REPO_SECRET)
@@ -89,23 +48,16 @@ jobs:
           set -ex
           SHORTHASH=`git rev-parse --short HEAD`
           DATE=`date`
-          VERSION=`grep "#define MILDREDVERSION" src/main/version.cpp | sed "s/.*\"\(.*\)\"/\1/g"`
-          ./update-release -r disorderedmaterials/dissolve -t continuous -n "Continuous Build (${VERSION} @ ${SHORTHASH})" -b "Continuous release from current \`develop\` branch at ${SHORTHASH}. Built ${DATE}." -p -e -u $(System.ArtifactsDirectory)/linux-*-artifacts/* $(System.ArtifactsDirectory)/singularity-*-artifacts/* $(System.ArtifactsDirectory)/windows-artifacts/*.exe $(System.ArtifactsDirectory)/windows-artifacts/*.zip $(System.ArtifactsDirectory)/osx-artifacts/*dmg examples/*zip examples/*.tar.gz
+          VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
+          ./update-release -r disorderedmaterials/plot -t continuous -n "Continuous Build (${VERSION} @ ${SHORTHASH})" -b "Continuous release from current \`develop\` branch at ${SHORTHASH}. Built ${DATE}." -p -e -u $(System.ArtifactsDirectory)/linux-*-artifacts/* $(System.ArtifactsDirectory)/windows-artifacts/* $(System.ArtifactsDirectory)/osx-artifacts/*
         condition: eq('${{ parameters.continuous }}', true)
         env:
           GITHUB_TOKEN: $(REPO_SECRET)
         displayName: 'Create Release (GitHub)'
       - bash: |
           set -ex
-          ./ci/scripts/list-releases -r disorderedmaterials/dissolve -u -v $(Build.SourceBranchName)
+          ./ci/scripts/list-releases -r disorderedmaterials/plot -u -v $(Build.SourceBranchName)
         condition: eq('${{ parameters.continuous }}', false)
         env:
           GITHUB_TOKEN: $(REPO_SECRET)
         displayName: 'Update Web Release Info'
-      - template: install-nix.yml
-      - template: push-harbor.yml
-        parameters:
-          ${{ if eq('${{ parameters.continuous }}', true) }}:
-            tag: "continuous"
-          ${{ if eq('${{ parameters.continuous }}', false) }}:
-            tag: "latest"
