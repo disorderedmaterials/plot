@@ -3,7 +3,6 @@
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QClipPlane>
-#include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderStateSet>

@@ -5,21 +5,8 @@
 #include <QResizeEvent>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QSphereMesh>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DLogic/QLogicAspect>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QClearBuffers>
-#include <Qt3DRender/QClipPlane>
-#include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPointLight>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QRenderSurfaceSelector>
-#include <Qt3DRender/QViewport>
 #include <stdexcept>
 
 // Initialise Qt resources
