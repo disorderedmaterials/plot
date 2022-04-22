@@ -20,6 +20,7 @@
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QViewport>
+#include <stdexcept>
 
 // Initialise Qt resources
 void initialiseQtResources()

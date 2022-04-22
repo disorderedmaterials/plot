@@ -1,5 +1,6 @@
 #include "classes/metrics.h"
 #include "entities/axis.h"
+#include <stdexcept>
 
 using namespace Mildred;
 
