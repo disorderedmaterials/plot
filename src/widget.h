@@ -178,6 +178,12 @@ class MildredWidget : public QOpenGLWidget
     void updateShaderParameters();
     // Reset view
     void resetView();
+    // Axis Titles
+    void setXAxisTitle(const QString &title);
+    void setYAxisTitle(const QString &title);
+    void setZAxisTitle(const QString &title);
+    // Debug Objects
+    void setSceneCuboidEnabled(bool enabled);
 
     /*
      * Mouse Handling / Interaction
@@ -224,16 +230,5 @@ class MildredWidget : public QOpenGLWidget
     public:
     // Add new data entity for supplied data
     Data1DEntity *addData1D(std::string_view tag);
-
-    /*
-     * Slots
-     */
-    public slots:
-    // Axis Titles
-    void setXAxisTitle(const QString &title);
-    void setYAxisTitle(const QString &title);
-    void setZAxisTitle(const QString &title);
-    // Debug Objects
-    void setSceneCuboidEnabled(bool enabled);
 };
 } // namespace Mildred

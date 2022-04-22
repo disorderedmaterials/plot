@@ -13,6 +13,7 @@ add_library(
   framegraph.cpp
   material.cpp
   mouse.cpp
+  scenegraph.cpp
   widget.cpp
   material.h
   version.h)
