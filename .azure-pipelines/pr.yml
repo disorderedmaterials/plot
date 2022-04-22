@@ -29,8 +29,8 @@ stages:
           - template: templates/set-short-hash.yml
           - template: templates/build-linux.yml
           - template: templates/package-zip.yml
-              parameters:
-                suffix: 'linux'
+            parameters:
+              suffix: 'linux'
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: "packages/"
@@ -46,8 +46,8 @@ stages:
           - template: templates/set-short-hash.yml
           - template: templates/build-osx.yml
           - template: templates/package-zip.yml
-              parameters:
-                suffix: 'osx'
+            parameters:
+              suffix: 'osx'
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: "packages/"
@@ -63,9 +63,9 @@ stages:
           - template: templates/set-short-hash.yml
           - template: templates/build-windows.yml
           - template: templates/package-zip.yml
-              parameters:
-                suffix: 'win64'
-                zipcommand: "7z a"
+            parameters:
+              suffix: 'win64'
+              zipcommand: "7z a"
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: "packages/"
