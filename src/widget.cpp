@@ -181,8 +181,7 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
     if (it != dataEntities_.end())
     {
-        printf("Data with tag '%s' already exists, so can't add it again. Returning the existing data instead.\n",
-               it->first.c_str());
+        printf("Data with tag '%s' already exists, so can't add it again.\n", it->first.c_str());
         throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
     }
 
