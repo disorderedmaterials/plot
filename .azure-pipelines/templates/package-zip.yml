@@ -1,0 +1,17 @@
+parameters:
+  - name: suffix
+    default: 'unknown'
+  - name: zipcommand
+    default: "zip -9rv"
+
+steps:
+  - bash: |
+      set -ex
+      export VERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
+      INSTALL_DIR="build/Mildred-${VERSION}"
+      echo "Install dir is: ${INSTALL_DIR}"
+      mkdir packages
+      cd build
+      ${{ parameters.zipcommand }} Mildred-${VERSION}-${{ parameters.suffix }}.zip Mildred-${VERSION}
+      mv Mildred-${VERSION}-${{ parameters.suffix }}.zip ../packages
+    displayName: 'Create Archive'
