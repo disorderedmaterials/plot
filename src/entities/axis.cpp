@@ -1,6 +1,6 @@
 #include "entities/axis.h"
 #include "classes/cuboid.h"
-#include "materials/material.h"
+#include "material.h"
 #include <stdexcept>
 
 using namespace Mildred;

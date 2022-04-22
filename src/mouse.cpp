@@ -73,4 +73,3 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
 
 void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
-

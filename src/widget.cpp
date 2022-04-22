@@ -1,6 +1,6 @@
 #include "widget.h"
 #include "entities/axis.h"
-#include "materials/material.h"
+#include "material.h"
 #include <QResizeEvent>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>

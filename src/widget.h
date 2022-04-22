@@ -4,7 +4,10 @@
 #include "entities/axis.h"
 #include "entities/data1d.h"
 #include "framegraph.h"
-#include "materials/material.h"
+#include "material.h"
+#include <QResizeEvent>
+#include <QScopedPointer>
+#include <QTimer>
 #include <QWidget>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>

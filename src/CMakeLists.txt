@@ -11,9 +11,11 @@ add_library(
   ${mildred_MOC_SRCS}
   ${shaders_RES}
   framegraph.cpp
+  material.cpp
   mouse.cpp
   widget.cpp
   framegraph.h
+  material.h
   version.h)
 
 include_directories(mildred PRIVATE ${PROJECT_SOURCE_DIR}/src)
@@ -24,7 +26,7 @@ target_include_directories(
 
 target_link_libraries(
   mildred
-  PUBLIC ${WHOLE_ARCHIVE_FLAG} classes entities materials renderers1d
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} classes entities renderers1d
   PRIVATE # External libs
           Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras
           OpenGL::GL)
@@ -35,5 +37,4 @@ install(TARGETS mildred)
 
 add_subdirectory(classes)
 add_subdirectory(entities)
-add_subdirectory(materials)
 add_subdirectory(renderers)
