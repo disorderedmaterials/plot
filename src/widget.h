@@ -3,7 +3,7 @@
 #include "classes/metrics.h"
 #include "entities/axis.h"
 #include "entities/data1d.h"
-#include "materials/material.h"
+#include "material.h"
 #include <QObject>
 #include <QOffscreenSurface>
 #include <QOpenGLBuffer>

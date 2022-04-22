@@ -6,8 +6,16 @@ qt6_wrap_cpp(mildred_MOC_SRCS ${mildred_MOC_HDRS})
 set(shaders_RES_QRC shaders.qrc)
 qt6_add_resources(shaders_RES ${shaders_RES_QRC})
 
-add_library(mildred ${mildred_MOC_SRCS} ${shaders_RES} framegraph.cpp mouse.cpp
-                    widget.cpp version.h)
+add_library(
+  mildred
+  ${mildred_MOC_SRCS}
+  ${shaders_RES}
+  framegraph.cpp
+  material.cpp
+  mouse.cpp
+  widget.cpp
+  material.h
+  version.h)
 
 include_directories(mildred PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(
@@ -17,7 +25,7 @@ target_include_directories(
 
 target_link_libraries(
   mildred
-  PUBLIC ${WHOLE_ARCHIVE_FLAG} classes entities materials renderers1d
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} classes entities renderers1d
   PRIVATE # External libs
           Qt6::Widgets
           Qt6::Core
@@ -33,5 +41,4 @@ install(TARGETS mildred)
 
 add_subdirectory(classes)
 add_subdirectory(entities)
-add_subdirectory(materials)
 add_subdirectory(renderers)

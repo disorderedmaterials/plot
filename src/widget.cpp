@@ -1,6 +1,6 @@
 #include "widget.h"
 #include "entities/axis.h"
-#include "materials/material.h"
+#include "material.h"
 #include <QOpenGLFunctions>
 #include <QResizeEvent>
 #include <Qt3DCore/QAspectEngine>

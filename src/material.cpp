@@ -1,4 +1,4 @@
-#include "materials/material.h"
+#include "material.h"
 #include <QVector3D>
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QGraphicsApiFilter>
