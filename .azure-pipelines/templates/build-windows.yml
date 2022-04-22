@@ -14,7 +14,7 @@ steps:
     displayName: 'Install Qt'
   - powershell: |
       $ErrorActionPreference = 'Stop'
-      $VERSION = cat src/version.h | Select-String '^#define MILDREDVERSION "(.*)"$' | ForEach-Object{$_.Matches.Groups[1].Value)
+      $VERSION = cat src/version.h | Select-String '^#define MILDREDVERSION "(.*)"$' | ForEach-Object{$_.Matches.Groups[1].Value}
       echo $VERSION
       $env:Qt6_DIR = "$(Build.BinariesDirectory)\Qt\${{ parameters.qtver }}\msvc2019_64"
       $env:PATH += ";$env:Qt6_DIR" + "\bin"
