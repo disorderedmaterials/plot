@@ -131,6 +131,10 @@ class MildredWidget : public QOpenGLWidget
     // Root entity containing framegraph and scenegraph
     Qt3DCore::QEntityPtr rootEntity_;
 
+    private:
+    // Create framegraph
+    void createFrameGraph();
+
     /*
      * SceneGraph
      */
