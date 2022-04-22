@@ -21,7 +21,7 @@ steps:
       echo $env:Qt6_DIR
       mkdir build
       cd build
-      cmake ../ -G "Visual Studio 17 2022" -A "x64" -DBUILD_EXAMPLES:bool=true -DCMAKE_BUILD_TYPE:STRING="Release" ${{ parameters.extraflags }} -DCMAKE_INSTALL_DIR:path=./Mildred-${VERSION}
+      cmake ../ -G "Visual Studio 17 2022" -A "x64" -DBUILD_EXAMPLES:bool=true -DCMAKE_BUILD_TYPE:STRING="Release" ${{ parameters.extraflags }} -DCMAKE_INSTALL_PREFIX:path=./Mildred-${VERSION}
       cmake --build . --config Release
       cmake --install
     displayName: 'Build'

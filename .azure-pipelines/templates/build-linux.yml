@@ -27,7 +27,7 @@ steps:
       export LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
       mkdir build
       cd build
-      cmake ../ -G "Ninja" -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }} -DCMAKE_INSTALL_DIR:path=./Mildred-${VERSION}
+      cmake ../ -G "Ninja" -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }} -DCMAKE_INSTALL_PREFIX:path=./Mildred-${VERSION}
       ninja
       ninja install
     displayName: 'Build'
