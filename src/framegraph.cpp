@@ -146,7 +146,4 @@ void MildredWidget::createFrameGraph()
     renderSettings_ = new Qt3DRender::QRenderSettings;
     renderSettings_->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
     renderSettings_->setActiveFrameGraph(renderStateSet_);
-
-    inputSettings_ = new Qt3DInput::QInputSettings;
-    inputSettings_->setEventSource(this);
 }

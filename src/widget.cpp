@@ -79,7 +79,6 @@ void MildredWidget::showEvent(QShowEvent *e)
         updateShaderParameters();
 
         rootEntity_->addComponent(renderSettings_);
-        rootEntity_->addComponent(inputSettings_);
         aspectEngine_->setRootEntity(rootEntity_);
         initialised_ = true;
 
