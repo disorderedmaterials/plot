@@ -3,8 +3,7 @@
 #include "classes/metrics.h"
 #include "entities/axis.h"
 #include "entities/data1d.h"
-#include "framegraph.h"
-#include "materials/material.h"
+#include "material.h"
 #include <QObject>
 #include <QOffscreenSurface>
 #include <QOpenGLBuffer>
@@ -127,9 +126,12 @@ class MildredWidget : public QOpenGLWidget
     Qt3DRender::QTexture2DMultisample *depthTexture_{nullptr};
     Qt3DRender::QRenderSettings *renderSettings_{nullptr};
     Qt3DRender::QCamera *camera_{nullptr};
-    Qt3DInput::QInputSettings *inputSettings_{nullptr};
     // Root entity containing framegraph and scenegraph
     Qt3DCore::QEntityPtr rootEntity_;
+
+    private:
+    // Create framegraph
+    void createFrameGraph();
 
     /*
      * SceneGraph
@@ -176,6 +178,12 @@ class MildredWidget : public QOpenGLWidget
     void updateShaderParameters();
     // Reset view
     void resetView();
+    // Axis Titles
+    void setXAxisTitle(const QString &title);
+    void setYAxisTitle(const QString &title);
+    void setZAxisTitle(const QString &title);
+    // Debug Objects
+    void setSceneCuboidEnabled(bool enabled);
 
     /*
      * Mouse Handling / Interaction
@@ -222,16 +230,5 @@ class MildredWidget : public QOpenGLWidget
     public:
     // Add new data entity for supplied data
     Data1DEntity *addData1D(std::string_view tag);
-
-    /*
-     * Slots
-     */
-    public slots:
-    // Axis Titles
-    void setXAxisTitle(const QString &title);
-    void setYAxisTitle(const QString &title);
-    void setZAxisTitle(const QString &title);
-    // Debug Objects
-    void setSceneCuboidEnabled(bool enabled);
 };
 } // namespace Mildred

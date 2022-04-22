@@ -5,5 +5,7 @@
     <file>shaders/phong.frag</file>
     <file>shaders/monochrome.frag</file>
     <file>shaders/line_tesselator.geom</file>
+    <file>shaders/texture.frag</file>
+    <file>shaders/texture.vert</file>
   </qresource>
 </RCC>

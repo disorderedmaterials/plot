@@ -1,25 +1,9 @@
 #include "widget.h"
 #include "entities/axis.h"
-#include "materials/material.h"
+#include "material.h"
 #include <QOpenGLFunctions>
 #include <QResizeEvent>
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QSphereMesh>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DLogic/QLogicAspect>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QClearBuffers>
-#include <Qt3DRender/QClipPlane>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QPointLight>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QRenderSurfaceSelector>
-#include <Qt3DRender/QViewport>
 #include <stdexcept>
 
 // Initialise Qt resources
@@ -52,127 +36,8 @@ MildredWidget::MildredWidget(QWidget *parent) : QOpenGLWidget(parent)
     sceneDataTransformInverseParameter_ = new Qt3DRender::QParameter(QStringLiteral("sceneDataTransformInverse"), QMatrix4x4());
     viewportSizeParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewportSize"), QVector2D());
 
-    /*
-     * The framegraph is constructed with the following structure:
-     *
-     *        [QRenderSettings]         Parent of first framegraph node
-     *               |
-     *        QSurfaceSelector          Sets the target surface for the renderer
-     *               |
-     *           QViewport              Defines the viewport on the target surface
-     *               |
-     *         QClearBuffers            Sets the targets to clear and the default attributes to clear to
-     *               |
-     *        QCameraSelector           Selects an existing camera to view the scenegraph
-     */
-
-    // Set up our offscreen rendering surface
-    int samples = QSurfaceFormat::defaultFormat().samples();
-    offscreenSurface_ = new QOffscreenSurface;
-    offscreenSurface_->setFormat(QSurfaceFormat::defaultFormat());
-    offscreenSurface_->create();
-
-    aspectEngine_ = new Qt3DCore::QAspectEngine;
-    aspectEngine_->registerAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Automatic));
-    aspectEngine_->registerAspect(new Qt3DInput::QInputAspect);
-    aspectEngine_->registerAspect(new Qt3DLogic::QLogicAspect);
-
-    // Setup color
-    colourOutput_ = new Qt3DRender::QRenderTargetOutput;
-    colourOutput_->setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color0);
-
-    // Create a color texture to render into
-    colourTexture_ = new Qt3DRender::QTexture2DMultisample;
-    colourTexture_->setSize(width(), height());
-    colourTexture_->setFormat(Qt3DRender::QAbstractTexture::RGB8_UNorm);
-    colourTexture_->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
-    colourTexture_->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
-
-    // Hook the texture up to our output, and the output up to this object
-    colourOutput_->setTexture(colourTexture_);
-    colourTexture_->setSamples(samples);
-    renderTarget_ = new Qt3DRender::QRenderTarget;
-    renderTarget_->addOutput(colourOutput_);
-
-    // Setup depth
-    depthOutput_ = new Qt3DRender::QRenderTargetOutput;
-    depthOutput_->setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Depth);
-
-    // Create depth texture
-    depthTexture_ = new Qt3DRender::QTexture2DMultisample;
-    depthTexture_->setSize(width(), height());
-    depthTexture_->setFormat(Qt3DRender::QAbstractTexture::DepthFormat);
-    depthTexture_->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
-    depthTexture_->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
-    depthTexture_->setComparisonFunction(Qt3DRender::QAbstractTexture::CompareLessEqual);
-    depthTexture_->setComparisonMode(Qt3DRender::QAbstractTexture::CompareRefToTexture);
-
-    // Hook up the depth texture
-    depthOutput_->setTexture(depthTexture_);
-    depthTexture_->setSamples(samples);
-    renderTarget_->addOutput(depthOutput_);
-
-    // Create our render state set
-    renderStateSet_ = new Qt3DRender::QRenderStateSet;
-    renderStateSet_->addRenderState(new Qt3DRender::QMultiSampleAntiAliasing);
-    // -- Depth test
-    depthTest_ = new Qt3DRender::QDepthTest;
-    depthTest_->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);
-    renderStateSet_->addRenderState(depthTest_);
-    // -- Enable six clip planes for the data viewing volume
-    for (auto n = 0; n < 6; ++n)
-    {
-        auto *cp = new Qt3DRender::QClipPlane;
-        cp->setPlaneIndex(n);
-        cp->setEnabled(true);
-        renderStateSet_->addRenderState(cp);
-    }
-    // -- Face culling
-    auto *cull = new Qt3DRender::QCullFace();
-    cull->setMode(Qt3DRender::QCullFace::NoCulling);
-    renderStateSet_->addRenderState(cull);
-
-    // Render target selector
-    renderTargetSelector_ = new Qt3DRender::QRenderTargetSelector;
-    renderTargetSelector_->setParent(renderStateSet_);
-    renderTargetSelector_->setTarget(renderTarget_);
-
-    // Render surface selector
-    renderSurfaceSelector_ = new Qt3DRender::QRenderSurfaceSelector;
-    renderSurfaceSelector_->setSurface(offscreenSurface_);
-    renderSurfaceSelector_->setParent(renderTargetSelector_);
-
-    // Viewport
-    auto *viewport = new Qt3DRender::QViewport(renderSurfaceSelector_);
-    viewport->setNormalizedRect({0.0, 0.0, 1.0, 1.0});
-
-    // Clear to background colour
-    auto *clearBuffers = new Qt3DRender::QClearBuffers(viewport);
-    clearBuffers->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
-    clearBuffers->setClearColor(QColor(255, 255, 255, 255));
-
-    // Construct a camera
-    camera_ = new Qt3DRender::QCamera;
-    //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
-    camera_->setPosition(QVector3D(0, 0, 1.0f));
-    camera_->setViewCenter(QVector3D(0, 0, -10.0));
-    auto *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffers);
-    cameraSelector->setCamera(camera_);
-
-    auto *forwardRenderer_ = new Qt3DExtras::QForwardRenderer;
-    forwardRenderer_->setCamera(camera_);
-    forwardRenderer_->setSurface(offscreenSurface_);
-    forwardRenderer_->setParent(camera_);
-    forwardRenderer_->setClearColor("blue");
-
-    // Render settings, pointing to the top of the framegraph
-    renderSettings_ = new Qt3DRender::QRenderSettings;
-    renderSettings_->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
-    renderSettings_->setActiveFrameGraph(renderStateSet_);
-
-    inputSettings_ = new Qt3DInput::QInputSettings;
-    inputSettings_->setEventSource(this);
+    // Create framegraph
+    createFrameGraph();
 
     // Set up basic scenegraph
     createSceneGraph();
@@ -198,7 +63,6 @@ void MildredWidget::showEvent(QShowEvent *e)
         updateShaderParameters();
 
         rootEntity_->addComponent(renderSettings_);
-        rootEntity_->addComponent(inputSettings_);
         aspectEngine_->setRootEntity(rootEntity_);
         initialised_ = true;
 
@@ -249,33 +113,8 @@ void MildredWidget::initializeGL()
     glVBO_.release();
 
     glShaderProgram_.reset(new QOpenGLShaderProgram);
-    glShaderProgram_->addShaderFromSourceCode(
-        QOpenGLShader::Vertex,
-        "#version 150\n"
-        "in highp vec3 vertex;\n"
-        "in mediump vec2 texCoord;\n"
-        "out mediump vec2 texc;\n"
-        "uniform mediump mat4 matrix;\n"
-        "void main(void)\n"
-        "{\n"
-        "        gl_Position = matrix * vec4(vertex, 1.0);\n"
-        //                                                                     "        gl_Position = vec4(vertex, 1.0);\n"
-        "        texc = texCoord;\n"
-        "}\n");
-    glShaderProgram_->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                              "#version 150\n"
-                                              "uniform sampler2DMS texture;\n"
-                                              "in mediump vec2 texc;\n"
-                                              "uniform int samples;\n"
-                                              "void main(void)\n"
-                                              "{\n"
-                                              "   ivec2 tc = ivec2(floor(textureSize(texture) * texc));\n"
-                                              "   vec4 color = vec4(0.0);\n"
-                                              "   for(int i = 0; i < samples; i++) {\n"
-                                              "       color += texelFetch(texture, tc, i);\n"
-                                              "   }\n"
-                                              "   gl_FragColor = color / float(samples);\n"
-                                              "}\n");
+    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/shaders/texture.vert");
+    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/shaders/texture.frag");
     glShaderProgram_->bindAttributeLocation("vertex", glVertexAttributeLocation_);
     glShaderProgram_->bindAttributeLocation("texCoord", glTexCoordAttributeLocation_);
     glShaderProgram_->link();
@@ -378,186 +217,6 @@ void MildredWidget::setFlatView(bool flat)
 }
 
 /*
- * SceneGraph
- */
-
-//! Creates the scene graph for the display.
-/*!
- * The Qt3D scene graph is created with the following layout.
- *
- *          [RootEntity]               Top-level root entity
- *               |
- *         sceneRootEntity_
- *          |           |
- * sceneRootTransform_  |              Translates to distant rotation point and applies 3D view rotation
- *                      |
- *              sceneObjectsEntity_    Contains all viewable objects for plotting
- *               |         |    |
- * sceneObjectsTransform_  |    |      Places scene objects so that global 0,0,0 is lower left corner to the viewer
- *                         |    |
- *                 axesEntity   |      Contains the individual AxesEntities
- *                     |        |
- *           xAxis_,yAxis_...   |      Individual axis entities
- *                              |
- *                      dataEntity     Parent entity for all displayed data series
- *                       |      |
- *      dataOriginTransform_    *      Sets the coordinate system so that 0,0,0 is at the axes origin
- */
-void MildredWidget::createSceneGraph()
-{
-    auto *lightEntity = new Qt3DCore::QEntity(rootEntity_.data());
-
-    auto *light = new Qt3DRender::QPointLight(lightEntity);
-    light->setColor("white");
-    light->setIntensity(1);
-    lightEntity->addComponent(light);
-
-    auto *lightTransform = new Qt3DCore::QTransform(lightEntity);
-    lightTransform->setTranslation(lightPosition_);
-    lightEntity->addComponent(lightTransform);
-
-    sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_.data());
-    sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
-    sceneRootEntity_->addComponent(sceneRootTransform_);
-
-    auto *sceneObjectsEntity_ = new Qt3DCore::QEntity(sceneRootEntity_);
-    sceneObjectsTransform_ = new Qt3DCore::QTransform(sceneObjectsEntity_);
-    sceneObjectsEntity_->addComponent(sceneObjectsTransform_);
-
-    // Debug
-    sceneBoundingCuboidEntity_ = new Qt3DCore::QEntity(sceneRootEntity_);
-    sceneBoundingCuboidEntity_->setEnabled(false);
-    auto *cuboidMesh = new Qt3DExtras::QCuboidMesh(sceneBoundingCuboidEntity_);
-    sceneBoundingCuboidEntity_->addComponent(cuboidMesh);
-    sceneBoundingCuboidTransform_ = new Qt3DCore::QTransform(sceneBoundingCuboidEntity_);
-    sceneBoundingCuboidEntity_->addComponent(sceneBoundingCuboidTransform_);
-    auto *cuboidMaterial =
-        createMaterial(sceneBoundingCuboidEntity_, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Phong);
-    cuboidMaterial->setAmbient(QColor(255, 0, 0, 100));
-    sceneBoundingCuboidEntity_->addComponent(cuboidMaterial);
-
-    /*
-     * Axes Leaf
-     */
-
-    auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
-
-    auto *xAxisBarMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
-    xAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
-    auto *xAxisLabelMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
-    xAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
-    xAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Horizontal, metrics_, xAxisBarMaterial, xAxisLabelMaterial);
-    xAxis_->setTitleText("X");
-    connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-
-    auto *yAxisBarMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
-    yAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
-    auto *yAxisLabelMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
-    yAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
-    yAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Vertical, metrics_, yAxisBarMaterial, yAxisLabelMaterial);
-    yAxis_->setTitleText("Y");
-    connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-
-    auto *zAxisBarMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
-    zAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
-    auto *zAxisLabelMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
-    zAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
-    zAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Depth, metrics_, zAxisBarMaterial, zAxisLabelMaterial);
-    zAxis_->setTitleText("Z");
-    connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
-    zAxis_->setEnabled(false);
-
-    /*
-     * Data Space Leaf
-     */
-
-    dataRootEntity_ = new Qt3DCore::QEntity(sceneObjectsEntity_);
-    dataEntityParent_ = new Qt3DCore::QEntity(dataRootEntity_);
-    dataOriginTransform_ = new Qt3DCore::QTransform(dataEntityParent_);
-    dataEntityParent_->addComponent(dataOriginTransform_);
-
-    // TEST
-    auto *sphereEntity_ = new Qt3DCore::QEntity(dataEntityParent_);
-    auto *sphereMesh = new Qt3DExtras::QSphereMesh(sphereEntity_);
-    sphereEntity_->addComponent(sphereMesh);
-    createMaterial(sphereEntity_);
-    auto *sphereTransform = new Qt3DCore::QTransform();
-    sphereTransform->setScale(50.0);
-    sphereTransform->setTranslation(QVector3D(530.0, 50, 0));
-    sphereEntity_->addComponent(sphereTransform);
-}
-
-//! Return x axis entity
-const AxisEntity *MildredWidget::xAxis() const { return xAxis_; }
-
-//! Return y axis entity
-const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
-
-//! Return z axis entity
-const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
-
-//! Update transforms from metrics
-/*!
- * The metrics defined in the @class MildredMetrics object contains the offsets in 3D space for the axes origin and general
- * graphing volume. This slot is connected internally to signals in the @class MildredMetrics object to ensure correct update of
- * the view when the metrics have been recalculated.
- */
-void MildredWidget::updateTransforms()
-{
-    if (sceneObjectsTransform_)
-        sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin() -
-                                               QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
-    if (dataOriginTransform_)
-        dataOriginTransform_->setTranslation(
-            -(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) + zAxis_->toScaled(zAxis_->minimum())));
-}
-
-//! Update shader parameters
-/*!
- * Update shader parameters from current view information.
- */
-void MildredWidget::updateShaderParameters()
-{
-    sceneDataAxesParameter_->setValue(QMatrix4x4(xAxis_->direction().x(), xAxis_->direction().y(), xAxis_->direction().z(), 0.0,
-                                                 yAxis_->direction().x(), yAxis_->direction().y(), yAxis_->direction().z(), 0.0,
-                                                 zAxis_->direction().x(), zAxis_->direction().y(), zAxis_->direction().z(), 0.0,
-                                                 0.0, 0.0, 0.0, 1.0));
-    sceneDataAxesExtentsParameter_->setValue(metrics_.displayVolumeExtent());
-    sceneDataAxesOriginParameter_->setValue(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) +
-                                            zAxis_->toScaled(zAxis_->minimum()));
-    sceneDataTransformInverseParameter_->setValue(
-        (sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
-    viewportSizeParameter_->setValue(QVector2D(width(), height()));
-}
-
-//! Reset view
-/*!
- * Resets the main scene view rotation to the identity matrix
- */
-void MildredWidget::resetView()
-{
-    assert(sceneRootTransform_);
-
-    viewRotationMatrix_ = QQuaternion();
-    sceneRootTransform_->setRotation(viewRotationMatrix_);
-
-    updateShaderParameters();
-}
-
-/*
  * Display Data
  */
 
@@ -592,8 +251,7 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
     if (it != dataEntities_.end())
     {
-        printf("Data with tag '%s' already exists, so can't add it again. Returning the existing data instead.\n",
-               it->first.c_str());
+        printf("Data with tag '%s' already exists, so can't add it again.\n", it->first.c_str());
         throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
     }
 
@@ -610,51 +268,4 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     entity->setDataMaterial(material);
 
     return entity;
-}
-
-/*
- * Slots
- */
-
-//! Change the text of the x-axis title.
-/*!
- * Set the displayed text of the x-axis title to @param title. Metrics are updated after the change.
- */
-void MildredWidget::setXAxisTitle(const QString &title)
-{
-    assert(xAxis_);
-    xAxis_->setTitleText(title);
-    updateMetrics();
-}
-
-//! Change the text of the y-axis title.
-/*!
- * Set the displayed text of the y-axis title to @param title. Metrics are updated after the change.
- */
-void MildredWidget::setYAxisTitle(const QString &title)
-{
-    assert(yAxis_);
-    yAxis_->setTitleText(title);
-    updateMetrics();
-}
-
-//! Change the text of the z-axis title.
-/*!
- * Set the displayed text of the z-axis title to @param title. Metrics are updated after the change.
- */
-void MildredWidget::setZAxisTitle(const QString &title)
-{
-    assert(zAxis_);
-    zAxis_->setTitleText(title);
-    updateMetrics();
-}
-
-//! Change the visibility of the scene debug cuboid.
-/*!
- * Sets whether the scene debug cuboid is enabled (visible), and which illustrates the current view volume extent.
- */
-void MildredWidget::setSceneCuboidEnabled(bool enabled)
-{
-    assert(sceneBoundingCuboidEntity_);
-    sceneBoundingCuboidEntity_->setEnabled(enabled);
 }
