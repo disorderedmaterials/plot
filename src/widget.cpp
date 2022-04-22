@@ -113,33 +113,8 @@ void MildredWidget::initializeGL()
     glVBO_.release();
 
     glShaderProgram_.reset(new QOpenGLShaderProgram);
-    glShaderProgram_->addShaderFromSourceCode(
-        QOpenGLShader::Vertex,
-        "#version 150\n"
-        "in highp vec3 vertex;\n"
-        "in mediump vec2 texCoord;\n"
-        "out mediump vec2 texc;\n"
-        "uniform mediump mat4 matrix;\n"
-        "void main(void)\n"
-        "{\n"
-        "        gl_Position = matrix * vec4(vertex, 1.0);\n"
-        //                                                                     "        gl_Position = vec4(vertex, 1.0);\n"
-        "        texc = texCoord;\n"
-        "}\n");
-    glShaderProgram_->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                              "#version 150\n"
-                                              "uniform sampler2DMS texture;\n"
-                                              "in mediump vec2 texc;\n"
-                                              "uniform int samples;\n"
-                                              "void main(void)\n"
-                                              "{\n"
-                                              "   ivec2 tc = ivec2(floor(textureSize(texture) * texc));\n"
-                                              "   vec4 color = vec4(0.0);\n"
-                                              "   for(int i = 0; i < samples; i++) {\n"
-                                              "       color += texelFetch(texture, tc, i);\n"
-                                              "   }\n"
-                                              "   gl_FragColor = color / float(samples);\n"
-                                              "}\n");
+    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/shaders/texture.vert");
+    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/shaders/texture.frag");
     glShaderProgram_->bindAttributeLocation("vertex", glVertexAttributeLocation_);
     glShaderProgram_->bindAttributeLocation("texCoord", glTexCoordAttributeLocation_);
     glShaderProgram_->link();
