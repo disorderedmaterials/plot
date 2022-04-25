@@ -121,9 +121,9 @@ class MildredWidget : public QOpenGLWidget
     Qt3DRender::QRenderSurfaceSelector *renderSurfaceSelector_{nullptr};
     Qt3DRender::QRenderTarget *renderTarget_{nullptr};
     Qt3DRender::QRenderTargetOutput *colourOutput_{nullptr};
-    Qt3DRender::QTexture2DMultisample *colourTexture_{nullptr};
+    Qt3DRender::QTexture2D *colourTexture_{nullptr};
     Qt3DRender::QRenderTargetOutput *depthOutput_{nullptr};
-    Qt3DRender::QTexture2DMultisample *depthTexture_{nullptr};
+    Qt3DRender::QTexture2D *depthTexture_{nullptr};
     Qt3DRender::QRenderSettings *renderSettings_{nullptr};
     Qt3DRender::QCamera *camera_{nullptr};
     // Root entity containing framegraph and scenegraph

@@ -54,7 +54,7 @@ void MildredWidget::createFrameGraph()
     colourOutput_->setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Color0);
 
     // Create a color texture to render into
-    colourTexture_ = new Qt3DRender::QTexture2DMultisample;
+    colourTexture_ = new Qt3DRender::QTexture2D;
     colourTexture_->setSize(width(), height());
     colourTexture_->setFormat(Qt3DRender::QAbstractTexture::RGB8_UNorm);
     colourTexture_->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
@@ -71,7 +71,7 @@ void MildredWidget::createFrameGraph()
     depthOutput_->setAttachmentPoint(Qt3DRender::QRenderTargetOutput::Depth);
 
     // Create depth texture
-    depthTexture_ = new Qt3DRender::QTexture2DMultisample;
+    depthTexture_ = new Qt3DRender::QTexture2D;
     depthTexture_->setSize(width(), height());
     depthTexture_->setFormat(Qt3DRender::QAbstractTexture::DepthFormat);
     depthTexture_->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
@@ -90,7 +90,6 @@ void MildredWidget::createFrameGraph()
 
     // Create our render state set
     renderStateSet_ = new Qt3DRender::QRenderStateSet;
-    renderStateSet_->addRenderState(new Qt3DRender::QMultiSampleAntiAliasing);
     // -- Depth test
     depthTest_ = new Qt3DRender::QDepthTest;
     depthTest_->setDepthFunction(Qt3DRender::QDepthTest::LessOrEqual);

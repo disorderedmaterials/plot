@@ -121,7 +121,6 @@ void MildredWidget::initializeGL()
 
     glShaderProgram_->bind();
     glShaderProgram_->setUniformValue("plotTexture", 0);
-    glShaderProgram_->setUniformValue("samples", QSurfaceFormat::defaultFormat().samples());
     glShaderProgram_->release();
 }
 
@@ -170,7 +169,7 @@ void MildredWidget::paintGL()
         QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
 
         glShaderProgram_->setUniformValue("matrix", m);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colourTexture_->handle().toUInt());
+        glBindTexture(GL_TEXTURE_2D, colourTexture_->handle().toUInt());
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
 
