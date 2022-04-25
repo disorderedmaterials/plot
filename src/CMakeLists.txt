@@ -10,12 +10,14 @@ add_library(
   mildred
   ${mildred_MOC_SRCS}
   ${shaders_RES}
+  displaygroup.cpp
   framegraph.cpp
   material.cpp
   mouse.cpp
   scenegraph.cpp
   widget.cpp
   framegraph.h
+  displaygroup.h
   material.h
   version.h)
 

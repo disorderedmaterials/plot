@@ -199,3 +199,15 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
 
     return entity;
 }
+
+/*
+ * Grouping
+ */
+
+// Create new display group
+DisplayGroup *MildredWidget::addDisplayGroup()
+{
+    auto newGroup = displayGroups_.emplace_back(std::make_shared<DisplayGroup>());
+
+    return newGroup.get();
+}

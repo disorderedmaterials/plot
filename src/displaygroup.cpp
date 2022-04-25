@@ -1,0 +1,112 @@
+#include "displaygroup.h"
+
+using namespace Mildred;
+
+/*
+ * Targets
+ */
+
+// Add target data entity to group
+void DisplayGroup::addTarget(Mildred::DataEntity *entity)
+{
+    auto it = std::find(targets_.begin(), targets_.end(), entity);
+    if (it != targets_.end())
+        return;
+
+    targets_.emplace_back(entity);
+
+    // TODO Update entity stuff
+}
+
+// Remove data entity from group
+void DisplayGroup::removeTarget(DataEntity *entity)
+{
+    auto it = std::remove(targets_.begin(), targets_.end(), entity);
+    if (it != targets_.end())
+        targets_.erase(it);
+
+    // TODO update all entities
+}
+
+/*
+ * Colouring
+ */
+
+// Stock Colours
+QColor StockColors[] = {
+    QColor(0, 0, 0),       /* BlackStockColour */
+    QColor(200, 0, 0),     /* RedStockColour */
+    QColor(0, 200, 0),     /* GreenStockColour */
+    QColor(0, 0, 200),     /* BlueStockColour */
+    QColor(200, 0, 200),   /* PurpleStockColour */
+    QColor(0, 200, 200),   /* CyanStockColour */
+    QColor(255, 128, 0),   /* OrangeStockColour */
+    QColor(255, 100, 255), /* PinkStockColour */
+    QColor(255, 100, 100), /* LightRedStockColour */
+    QColor(100, 255, 100), /* LightGreenStockColour */
+    QColor(100, 100, 255), /* LightBlueStockColour */
+    QColor(128, 128, 128), /* SilverStockColour */
+    QColor(128, 128, 50)   /* GoldStockColour */
+};
+
+// Set colour policy for the group
+void DisplayGroup::setColourPolicy(DisplayGroup::ColourPolicy policy)
+{
+    if (colourPolicy_ == policy)
+        return;
+
+    colourPolicy_ = policy;
+
+    // TODO Update assigned entities
+}
+
+// Return colour policy for the group
+DisplayGroup::ColourPolicy DisplayGroup::colourPolicy() const { return colourPolicy_; }
+
+// Set single colour
+void DisplayGroup::setSingleColour(QColor colour)
+{
+    singleColour_ = colour;
+
+    if (colourPolicy_ == ColourPolicy::Single)
+        apply();
+}
+
+// Return single colour
+QColor DisplayGroup::singleColour() const { return singleColour_; }
+
+// Set stock colour
+void DisplayGroup::setStockColour(StockColour colour)
+{
+    stockColour_ = colour;
+
+    if (colourPolicy_ == ColourPolicy::Stock)
+        apply();
+}
+
+// Return stock colour
+DisplayGroup::StockColour DisplayGroup::stockColour() const { return stockColour_; }
+
+/*
+ * Update
+ */
+
+// Apply colours and transforms to all targeted entities
+void DisplayGroup::apply()
+{
+    for (auto &entity : targets_)
+    {
+        // Colour
+        switch (colourPolicy_)
+        {
+            case (ColourPolicy::None):
+                break;
+            case (ColourPolicy::Stock):
+
+                break;
+                //            case (ColourPolicy::Single):
+                //            case (ColourPolicy::Varying):
+                //            case (ColourPolicy::Gradient):
+        }
+    }
+}
