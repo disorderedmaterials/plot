@@ -120,7 +120,7 @@ void MildredWidget::initializeGL()
     glShaderProgram_->link();
 
     glShaderProgram_->bind();
-    glShaderProgram_->setUniformValue("texture", 0);
+    glShaderProgram_->setUniformValue("plotTexture", 0);
     glShaderProgram_->setUniformValue("samples", QSurfaceFormat::defaultFormat().samples());
     glShaderProgram_->release();
 }
