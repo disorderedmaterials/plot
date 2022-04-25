@@ -78,50 +78,50 @@ void MildredWidget::showEvent(QShowEvent *e)
 
 void MildredWidget::initializeGL()
 {
-    static const int coords[4][3] = {{+1, 0, 0}, {0, 0, 0}, {0, +1, 0}, {+1, +1, 0}};
-
-    for (auto i = 0; i < 4; ++i)
-    {
-        // vertex position
-        glVertexData_.append(coords[i][0]);
-        glVertexData_.append(coords[i][1]);
-        glVertexData_.append(coords[i][2]);
-        // texture coordinate
-        glVertexData_.append(i == 0 || i == 3);
-        glVertexData_.append(i == 0 || i == 1);
-    }
-
-    // Setup our vertex array object. We later only need to bind this
-    // to be able to draw.
-    glVAO_.create();
-    // The binder automatically binds the vao and unbinds it at the end
-    // of the function.
-    QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
-
-    // Setup our vertex buffer object.
-    glVBO_.create();
-    glVBO_.bind();
-    glVBO_.allocate(glVertexData_.constData(), glVertexData_.count() * sizeof(GLfloat));
-
-    glVBO_.bind();
-    auto *f = QOpenGLContext::currentContext()->functions();
-    f->glEnableVertexAttribArray(glVertexAttributeLocation_);
-    f->glEnableVertexAttribArray(glTexCoordAttributeLocation_);
-    f->glVertexAttribPointer(glVertexAttributeLocation_, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
-    f->glVertexAttribPointer(glTexCoordAttributeLocation_, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
-                             reinterpret_cast<void *>(3 * sizeof(GLfloat)));
-    glVBO_.release();
-
-    glShaderProgram_.reset(new QOpenGLShaderProgram);
-    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/shaders/texture.vert");
-    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/shaders/texture.frag");
-    glShaderProgram_->bindAttributeLocation("vertex", glVertexAttributeLocation_);
-    glShaderProgram_->bindAttributeLocation("texCoord", glTexCoordAttributeLocation_);
-    glShaderProgram_->link();
-
-    glShaderProgram_->bind();
-    glShaderProgram_->setUniformValue("plotTexture", 0);
-    glShaderProgram_->release();
+//    static const int coords[4][3] = {{+1, 0, 0}, {0, 0, 0}, {0, +1, 0}, {+1, +1, 0}};
+//
+//    for (auto i = 0; i < 4; ++i)
+//    {
+//        // vertex position
+//        glVertexData_.append(coords[i][0]);
+//        glVertexData_.append(coords[i][1]);
+//        glVertexData_.append(coords[i][2]);
+//        // texture coordinate
+//        glVertexData_.append(i == 0 || i == 3);
+//        glVertexData_.append(i == 0 || i == 1);
+//    }
+//
+//    // Setup our vertex array object. We later only need to bind this
+//    // to be able to draw.
+//    glVAO_.create();
+//    // The binder automatically binds the vao and unbinds it at the end
+//    // of the function.
+//    QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
+//
+//    // Setup our vertex buffer object.
+//    glVBO_.create();
+//    glVBO_.bind();
+//    glVBO_.allocate(glVertexData_.constData(), glVertexData_.count() * sizeof(GLfloat));
+//
+//    glVBO_.bind();
+//    auto *f = QOpenGLContext::currentContext()->functions();
+//    f->glEnableVertexAttribArray(glVertexAttributeLocation_);
+//    f->glEnableVertexAttribArray(glTexCoordAttributeLocation_);
+//    f->glVertexAttribPointer(glVertexAttributeLocation_, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+//    f->glVertexAttribPointer(glTexCoordAttributeLocation_, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
+//                             reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+//    glVBO_.release();
+//
+//    glShaderProgram_.reset(new QOpenGLShaderProgram);
+//    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/shaders/texture.vert");
+//    glShaderProgram_->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/shaders/texture.frag");
+//    glShaderProgram_->bindAttributeLocation("vertex", glVertexAttributeLocation_);
+//    glShaderProgram_->bindAttributeLocation("texCoord", glTexCoordAttributeLocation_);
+//    glShaderProgram_->link();
+//
+//    glShaderProgram_->bind();
+//    glShaderProgram_->setUniformValue("plotTexture", 0);
+//    glShaderProgram_->release();
 }
 
 void MildredWidget::resizeGL(int w, int h)
@@ -156,24 +156,54 @@ void MildredWidget::paintGL()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(0.0, width(), 0.0, height(), -1.0, 1.0);
+    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glShaderProgram_->bind();
-    {
-        QMatrix4x4 m;
-        m.ortho(0, 1.0, 0., 1.0, 1.0f, 3.0f);
-        m.translate(0.0f, 0.0f, -2.0f);
+//    glShaderProgram_->bind();
+//    {
+//        QMatrix4x4 m;
+//        m.ortho(0, 1.0, 0., 1.0, 1.0f, 3.0f);
+//        m.translate(0.0f, 0.0f, -2.0f);
+//
+//        QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
+//
+//        glShaderProgram_->setUniformValue("matrix", m);
+//        glBindTexture(GL_TEXTURE_2D, colourTexture_->handle().toUInt());
+//        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+//    }
+//
+//    glShaderProgram_->release();
 
-        QOpenGLVertexArrayObject::Binder vaoBinder(&glVAO_);
+    // TEST TRIANGLE
+    glDisable(GL_MULTISAMPLE);
+    glEnable(GL_COLOR_MATERIAL);
+    glColor3f(1.0, 0.0, 0.0);
 
-        glShaderProgram_->setUniformValue("matrix", m);
-        glBindTexture(GL_TEXTURE_2D, colourTexture_->handle().toUInt());
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    }
+    glBegin(GL_TRIANGLES);
+    glVertex2f(0.0, 0.0);
+    glVertex2f(1.0, 0.0);
+    glVertex2f(1.0, 1.0);
+    glEnd();
 
-    glShaderProgram_->release();
+    // TEST STUFF
+    glDisable(GL_COLOR_MATERIAL);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0,1.0,1.0);
+
+    glActiveTexture(GL_TEXTURE0);
+
+    glBindTexture(GL_TEXTURE_2D, colourTexture_->handle().toUInt());
+    glDisable(GL_CULL_FACE);
+
+    glBegin(GL_TRIANGLES);
+    glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1.0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
 }
 
 /*
