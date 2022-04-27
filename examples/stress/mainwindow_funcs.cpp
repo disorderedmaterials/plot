@@ -2,10 +2,7 @@
 #include "ui_mainwindow.h"
 #include "widget.h"
 #include <QGridLayout>
-<<<<<<< HEAD
-=======
 #include <random>
->>>>>>> df244bb (CI Updates 1 (#24))
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -36,15 +33,9 @@ MainWindow::MainWindow() : QMainWindow()
             auto *graph = new Mildred::MildredWidget;
 
             // Create some data
-<<<<<<< HEAD
-            auto a = double(random()) / RAND_MAX;
-            auto b = 2.0 * (double(random()) / RAND_MAX);
-            auto c = 3.0 * (double(random()) / RAND_MAX);
-=======
             auto a = dist(gen);
             auto b = 2.0 * dist(gen);
             auto c = 3.0 * dist(gen);
->>>>>>> df244bb (CI Updates 1 (#24))
             auto &y = yValues[nRows * row + column];
             std::transform(xValues.begin(), xValues.end(), y.begin(),
                            [a, b, c](const auto x) { return 5.0 + a * sin(x) + b * sin(x) - c * sin(x); });

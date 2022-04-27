@@ -1,10 +1,6 @@
 #include "widget.h"
-#include "entities/axis.h"
 #include "material.h"
 #include <QResizeEvent>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
@@ -102,6 +98,10 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 
     // Debug objects
     sceneBoundingCuboidTransform_->setScale3D(QVector3D(width(), height(), width()));
+
+    // Update parameters and transforms
+    updateTransforms();
+    updateShaderParameters();
 
     // Lastly, resize our view container
     viewContainer_->resize(this->size());
