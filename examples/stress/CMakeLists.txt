@@ -1,4 +1,4 @@
-set(target_name basic)
+set(target_name stress)
 #
 # User Interface Files set(x_UIs ) qt6_wrap_ui(x_UIS_H ${x_UIS})
 #

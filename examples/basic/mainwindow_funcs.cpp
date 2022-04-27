@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "materials/material.h"
+#include "material.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow() : QMainWindow()

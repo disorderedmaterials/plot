@@ -39,7 +39,7 @@ find_package(
              3DExtras
              3DRender
              3DExtras
-  REQUIRED)
+             REQUIRED)
 
 # Make sure CMake won't try to generate rules for moc (we will do it ourselves)
 set(CMAKE_AUTOMOC OFF)
@@ -54,6 +54,7 @@ if(WIN32)
   # Add defines for Windows systems - NOMINMAX to prevent conflicts with
   # std::min() and std::max()
   add_definitions(-DNOMINMAX)
+  add_definitions(/Zc:__cplusplus)
 endif(WIN32)
 
 # -- Unix
