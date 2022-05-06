@@ -92,6 +92,9 @@ class MildredWidget : public QOpenGLWidget
     // Update metrics for current surface size
     void updateMetrics();
 
+    public:
+    double testPixelRatio_{1.0};
+
     /*
      * Appearance
      */

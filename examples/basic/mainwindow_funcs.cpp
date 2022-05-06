@@ -6,6 +6,8 @@ MainWindow::MainWindow() : QMainWindow()
 {
     ui_.setupUi(this);
 
+    ui_.TestingWidget->testPixelRatio_ = devicePixelRatio();
+
     // View
     connect(ui_.ResetViewButton, SIGNAL(clicked(bool)), ui_.TestingWidget, SLOT(resetView()));
     connect(ui_.ShowSceneCuboidCheck, SIGNAL(clicked(bool)), ui_.TestingWidget, SLOT(setSceneCuboidEnabled(bool)));
