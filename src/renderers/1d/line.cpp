@@ -38,9 +38,8 @@ Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xA
     auto xit = x.cbegin(), vit = values.cbegin();
     while (xit != x.end())
     {
-        auto v = xAxis->toScaled(*xit) + valueAxis->toScaled(*vit);
-        cuboid.expand(v);
-        lines_->addVertex(v);
+        cuboid.expand({float(*xit), float(*vit), 0.0});
+        lines_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit));
         ++xit;
         ++vit;
     }

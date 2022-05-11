@@ -20,7 +20,7 @@ DataEntity::DataEntity(Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent)
  */
 
 //! Return extreme limits for displayed data
-std::optional<Cuboid> DataEntity::extrema() const { return extrema_; }
+Cuboid DataEntity::extrema() const { return extrema_; }
 
 /*
  * Components

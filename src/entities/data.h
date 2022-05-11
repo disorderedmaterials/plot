@@ -31,12 +31,12 @@ class DataEntity : public Qt3DCore::QEntity
     protected:
     // Display name for entity
     std::string displayName_;
-    // Extrema of displayed data in three-dimensional space
-    std::optional<Cuboid> extrema_;
+    // Extrema of data points in three-dimensional space
+    Cuboid extrema_;
 
     public:
-    // Return extreme limits for displayed data
-    std::optional<Cuboid> extrema() const;
+    // Return extrema of data points in three-dimensional space
+    Cuboid extrema() const;
 
     /*
      * Entities
