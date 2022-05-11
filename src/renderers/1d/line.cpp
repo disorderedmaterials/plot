@@ -2,7 +2,7 @@
 
 using namespace Mildred;
 
-LineRenderer1D::LineRenderer1D(Qt3DCore::QEntity *rootEntity, ColourDefinition &colour) : DataRenderer1D(rootEntity, colour)
+LineRenderer1D::LineRenderer1D(Qt3DCore::QEntity *rootEntity) : DataRenderer1D(rootEntity)
 {
     lines_ = new LineEntity(rootEntity_);
 }
@@ -18,13 +18,14 @@ LineRenderer1D::~LineRenderer1D()
  */
 
 // Create entities from the supplied metrics and data
-Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xAxis, const std::vector<double> &values,
-                              const AxisEntity *valueAxis)
+Cuboid LineRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+                              const std::vector<double> &values, const AxisEntity *valueAxis)
 {
     assert(lines_);
     lines_->clear();
 
     Cuboid cuboid;
+    colour_ = colour;
 
     // Check array sizes
     if (x.size() != values.size())

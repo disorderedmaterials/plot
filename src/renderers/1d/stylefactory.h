@@ -18,6 +18,6 @@ enum class Style
 };
 
 // Produce renderer for the specified style
-std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity, ColourDefinition &colour);
+std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity);
 } // namespace StyleFactory1D
 } // namespace Mildred

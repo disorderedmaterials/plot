@@ -15,7 +15,7 @@ void DisplayGroup::addTarget(Mildred::DataEntity *entity)
 
     targets_.emplace_back(entity);
 
-    // TODO Update entity stuff
+    applyToEntity(entity, targets_.size() - 1);
 }
 
 // Remove data entity from group
@@ -33,7 +33,7 @@ void DisplayGroup::removeTarget(DataEntity *entity)
  */
 
 // Stock Colours
-QColor StockColors[] = {
+QColor StockColours[] = {
     QColor(0, 0, 0),       /* BlackStockColour */
     QColor(200, 0, 0),     /* RedStockColour */
     QColor(0, 200, 0),     /* GreenStockColour */
@@ -57,7 +57,7 @@ void DisplayGroup::setColourPolicy(DisplayGroup::ColourPolicy policy)
 
     colourPolicy_ = policy;
 
-    // TODO Update assigned entities
+    apply();
 }
 
 // Return colour policy for the group
@@ -87,26 +87,50 @@ void DisplayGroup::setStockColour(StockColour colour)
 // Return stock colour
 DisplayGroup::StockColour DisplayGroup::stockColour() const { return stockColour_; }
 
+// Set gradient to apply
+void DisplayGroup::setGradient(const ColourDefinition &gradient)
+{
+    gradient_ = gradient;
+
+    if (colourPolicy_ == ColourPolicy::Gradient)
+        apply();
+}
+
+// Return gradient to apply
+const ColourDefinition &DisplayGroup::gradient() const { return gradient_; }
+
 /*
  * Update
  */
 
+// Apply colours and transforms to specified entity
+void DisplayGroup::applyToEntity(DataEntity *entity, int groupIndex)
+{
+    // Colour
+    switch (colourPolicy_)
+    {
+        case (ColourPolicy::None):
+            entity->removeColourOverride();
+            break;
+        case (ColourPolicy::Stock):
+            entity->setColourOverride(ColourDefinition(StockColours[stockColour_]));
+            break;
+        case (ColourPolicy::Single):
+            entity->setColourOverride(ColourDefinition(singleColour_));
+            break;
+        case (ColourPolicy::Varying):
+            entity->setColourOverride(ColourDefinition(StockColours[groupIndex % nStockColours]));
+            break;
+        case (ColourPolicy::Gradient):
+            entity->setColourOverride(gradient_);
+            break;
+    }
+}
+
 // Apply colours and transforms to all targeted entities
 void DisplayGroup::apply()
 {
+    auto index = 0;
     for (auto &entity : targets_)
-    {
-        // Colour
-        switch (colourPolicy_)
-        {
-            case (ColourPolicy::None):
-                break;
-            case (ColourPolicy::Stock):
-
-                break;
-                //            case (ColourPolicy::Single):
-                //            case (ColourPolicy::Varying):
-                //            case (ColourPolicy::Gradient):
-        }
-    }
+        applyToEntity(entity, index++);
 }

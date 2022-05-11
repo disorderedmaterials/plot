@@ -63,6 +63,8 @@ class DisplayGroup
     QColor singleColour_{Qt::black};
     // Stock colour to apply, if ColourPolicy == Stock
     StockColour stockColour_{Black};
+    // Gradient to apply, if ColourPolicy == Gradient
+    ColourDefinition gradient_;
 
     public:
     // Set colour policy for the group
@@ -77,11 +79,17 @@ class DisplayGroup
     void setStockColour(StockColour colour);
     // Return stock colour
     StockColour stockColour() const;
+    // Set gradient to apply
+    void setGradient(const ColourDefinition &gradient);
+    // Return gradient to apply
+    const ColourDefinition &gradient() const;
 
     /*
      * Update
      */
     private:
+    // Apply colours and transforms to specified entity
+    void applyToEntity(DataEntity *entity, int groupIndex);
     // Apply colours and transforms to all targeted entities
     void apply();
 };
