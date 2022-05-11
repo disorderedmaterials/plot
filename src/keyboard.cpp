@@ -10,6 +10,8 @@ void MildredWidget::keyReleaseEvent(QKeyEvent *event)
     switch (event->key())
     {
         case (Qt::Key_A):
+            // Adjust axis limits to show all data
+            showAllData();
             break;
         default:
             break;

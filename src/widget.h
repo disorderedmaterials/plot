@@ -136,6 +136,8 @@ class MildredWidget : public QWidget
     void updateShaderParameters();
     // Reset view
     void resetView();
+    // Show all data in view
+    void showAllData();
     // Axis Titles
     void setXAxisTitle(const QString &title);
     void setYAxisTitle(const QString &title);

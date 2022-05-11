@@ -172,6 +172,32 @@ void MildredWidget::resetView()
     updateShaderParameters();
 }
 
+//! Show all data in view
+/*!
+ * Reset axis limits to show all visible data
+ */
+void MildredWidget::showAllData()
+{
+    Cuboid extrema;
+    for (auto &[name, entity] : dataEntities_)
+        extrema.expand(entity->extrema());
+
+    // Don't allow zero range on any axis
+    // TODO Checking on absolute value is going to be unsuited to all eventualities
+    if (extrema.xExtent() < 1.0e-8)
+        extrema.expandX(1.0);
+    if (extrema.yExtent() < 1.0e-8)
+        extrema.expandY(1.0);
+    if (extrema.zExtent() < 1.0e-8)
+        extrema.expandZ(1.0);
+
+    xAxis_->setLimits(extrema.lowerLeftBack().x(), extrema.upperRightFront().x());
+    yAxis_->setLimits(extrema.lowerLeftBack().y(), extrema.upperRightFront().y());
+    zAxis_->setLimits(extrema.lowerLeftBack().z(), extrema.upperRightFront().z());
+
+    updateTransforms();
+}
+
 //! Change the text of the x-axis title.
 /*!
  * Set the displayed text of the x-axis title to @param title. Metrics are updated after the change.
