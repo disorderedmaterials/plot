@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QColor>
+#include <array>
 #include <vector>
 
 namespace Mildred
