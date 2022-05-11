@@ -195,7 +195,7 @@ void MildredWidget::showAllData()
     yAxis_->setLimits(extrema.lowerLeftBack().y(), extrema.upperRightFront().y());
     zAxis_->setLimits(extrema.lowerLeftBack().z(), extrema.upperRightFront().z());
 
-    updateTransforms();
+    updateMetrics();
 }
 
 //! Change the text of the x-axis title.
