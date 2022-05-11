@@ -20,7 +20,7 @@ enum class Style
 
 enum class ErrorBarStyle
 {
-    StdDev
+    ErrorBar
 }
 
 // Produce renderer for the specified style
