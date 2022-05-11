@@ -68,9 +68,9 @@ void MildredWidget::createSceneGraph()
 
     auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
 
-    auto *xAxisBarMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
+    auto *xAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                                            RenderableMaterial::GeometryShaderType::LineTesselator,
+                                            RenderableMaterial::FragmentShaderType::Monochrome);
     xAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
     auto *xAxisLabelMaterial =
         createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
@@ -80,9 +80,9 @@ void MildredWidget::createSceneGraph()
     xAxis_->setTitleText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
 
-    auto *yAxisBarMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
+    auto *yAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                                            RenderableMaterial::GeometryShaderType::LineTesselator,
+                                            RenderableMaterial::FragmentShaderType::Monochrome);
     yAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
     auto *yAxisLabelMaterial =
         createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
@@ -92,9 +92,9 @@ void MildredWidget::createSceneGraph()
     yAxis_->setTitleText("Y");
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
 
-    auto *zAxisBarMaterial =
-        createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
-                       RenderableMaterial::GeometryShaderType::LineTesselator, RenderableMaterial::FragmentShaderType::Phong);
+    auto *zAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
+                                            RenderableMaterial::GeometryShaderType::LineTesselator,
+                                            RenderableMaterial::FragmentShaderType::Monochrome);
     zAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
     auto *zAxisLabelMaterial =
         createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
