@@ -6,10 +6,10 @@ namespace Mildred
 namespace StyleFactory1D
 {
 // Produce renderer for the specified style
-std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity)
+std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity, ColourDefinition &colour)
 {
     if (style == Style::Line)
-        return std::make_shared<LineRenderer1D>(rootEntity);
+        return std::make_shared<LineRenderer1D>(rootEntity, colour);
 }
 } // namespace StyleFactory1D
 } // namespace Mildred

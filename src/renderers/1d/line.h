@@ -12,7 +12,7 @@ namespace Mildred
 class LineRenderer1D : public DataRenderer1D
 {
     public:
-    LineRenderer1D(Qt3DCore::QEntity *rootEntity);
+    LineRenderer1D(Qt3DCore::QEntity *rootEntity, ColourDefinition &colour);
     ~LineRenderer1D();
 
     /*

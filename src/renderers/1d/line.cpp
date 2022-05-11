@@ -2,7 +2,7 @@
 
 using namespace Mildred;
 
-LineRenderer1D::LineRenderer1D(Qt3DCore::QEntity *rootEntity) : DataRenderer1D(rootEntity)
+LineRenderer1D::LineRenderer1D(Qt3DCore::QEntity *rootEntity, ColourDefinition &colour) : DataRenderer1D(rootEntity, colour)
 {
     lines_ = new LineEntity(rootEntity_);
 }
@@ -40,7 +40,7 @@ Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xA
     {
         auto v = xAxis->toScaled(*xit) + valueAxis->toScaled(*vit);
         cuboid.expand(v);
-        lines_->addVertex(v);
+        lines_->addVertex(v, colour_.colour(*vit));
         ++xit;
         ++vit;
     }

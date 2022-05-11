@@ -1,5 +1,6 @@
 #pragma once
 
+#include "classes/colourdefinition.h"
 #include "classes/cuboid.h"
 #include "classes/metrics.h"
 #include "entities/axis.h"
@@ -57,6 +58,10 @@ class DataEntity : public Qt3DCore::QEntity
     Qt3DCore::QTransform *positionalTransform_{nullptr};
     // Material for data entity
     Qt3DRender::QMaterial *dataEntityMaterial_{nullptr};
+
+    protected:
+    // Colour definition for entity
+    ColourDefinition colour_;
 
     public:
     // Set data entity material

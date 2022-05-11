@@ -10,7 +10,7 @@ using namespace Mildred;
 Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent)
     : DataEntity(parent), xAxis_(xAxis), valueAxis_(valueAxis)
 {
-    dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
+    dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_, colour_);
 }
 
 /*

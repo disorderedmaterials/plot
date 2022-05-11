@@ -11,7 +11,7 @@ namespace Mildred
 class DataRenderer1D
 {
     public:
-    DataRenderer1D(Qt3DCore::QEntity *rootEntity) : rootEntity_(rootEntity){};
+    DataRenderer1D(Qt3DCore::QEntity *rootEntity, ColourDefinition &colour) : rootEntity_(rootEntity), colour_(colour){};
     virtual ~DataRenderer1D() = default;
 
     /*
@@ -24,6 +24,10 @@ class DataRenderer1D
     /*
      * Rendering
      */
+    protected:
+    // Colour definition
+    ColourDefinition &colour_;
+
     public:
     // Create entities from the supplied axes and data
     virtual Cuboid create(const std::vector<double> &x, const AxisEntity *xAxis, const std::vector<double> &values,
