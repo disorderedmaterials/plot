@@ -1,5 +1,6 @@
 #include "colourdefinition.h"
 #include <algorithm>
+#include <stdexcept>
 
 using namespace Mildred;
 
