@@ -39,9 +39,8 @@ Cuboid LineRenderer1D::create(const ColourDefinition &colour, const std::vector<
     auto xit = x.cbegin(), vit = values.cbegin();
     while (xit != x.end())
     {
-        auto v = xAxis->toScaled(*xit) + valueAxis->toScaled(*vit);
-        cuboid.expand(v);
-        lines_->addVertex(v, colour_.colour(*vit));
+        cuboid.expand({float(*xit), float(*vit), 0.0});
+        lines_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit), colour_.colour(*vit));
         ++xit;
         ++vit;
     }

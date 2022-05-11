@@ -12,6 +12,7 @@ add_library(
   ${shaders_RES}
   displaygroup.cpp
   framegraph.cpp
+  keyboard.cpp
   material.cpp
   mouse.cpp
   scenegraph.cpp

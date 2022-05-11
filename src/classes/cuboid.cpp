@@ -70,6 +70,27 @@ void Cuboid::translate(QVector3D v)
     v2_ += v;
 }
 
+//! Expand x extent of cuboid by given amount
+void Cuboid::expandX(double delta)
+{
+    v1_.setX(v1_.x() - delta * 0.5);
+    v2_.setX(v2_.x() + delta * 0.5);
+}
+
+//! Expand y extent of cuboid by given amount
+void Cuboid::expandY(double delta)
+{
+    v1_.setY(v1_.y() - delta * 0.5);
+    v2_.setY(v2_.y() + delta * 0.5);
+}
+
+//! Expand z extent of cuboid by given amount
+void Cuboid::expandZ(double delta)
+{
+    v1_.setZ(v1_.z() - delta * 0.5);
+    v2_.setZ(v2_.z() + delta * 0.5);
+}
+
 //! Return x extent of cuboid
 float Cuboid::xExtent() const { return v2_.x() - v1_.x(); }
 

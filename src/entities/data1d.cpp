@@ -23,7 +23,7 @@ void Data1DEntity::clearData()
     x_.clear();
     values_.clear();
     errors_.clear();
-    extrema_.reset();
+    extrema_.zero();
 }
 
 //! Set display data (1D)

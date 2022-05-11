@@ -32,6 +32,12 @@ class Cuboid
     void expand(const Cuboid &cuboid);
     // Translate the cuboid by the supplied vector
     void translate(QVector3D v);
+    // Expand x extent of cuboid by given amount
+    void expandX(double delta);
+    // Expand y extent of cuboid by given amount
+    void expandY(double delta);
+    // Expand z extent of cuboid by given amount
+    void expandZ(double delta);
     // Return x extent of cuboid
     float xExtent() const;
     // Return y extent of cuboid
