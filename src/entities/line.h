@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
@@ -27,6 +28,8 @@ class LineEntity : public Qt3DCore::QEntity
     Qt3DCore::QAttribute vertexAttribute_;
     Qt3DCore::QBuffer indexBuffer_;
     Qt3DCore::QAttribute indexAttribute_;
+    Qt3DCore::QBuffer colourBuffer_;
+    Qt3DCore::QAttribute colourAttribute_;
 
     /*
      * Convenience Functions
@@ -36,10 +39,13 @@ class LineEntity : public Qt3DCore::QEntity
     QVector<QVector3D> cachedVertices_;
     // Cached indices
     QVector<unsigned int> cachedIndices_;
+    // Cached colours
+    QVector<QColor> cachedVertexColours_;
 
     public:
     // Append vertices to cached data
     void addVertex(QVector3D v);
+    void addVertex(QVector3D v, QColor colour);
     void addVertices(const std::vector<QVector3D> &vertices);
     // Append indices to cached data
     void addIndex(unsigned int i);

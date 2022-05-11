@@ -25,7 +25,8 @@ class RenderableMaterial : public Qt3DRender::QMaterial
     enum class FragmentShaderType
     {
         Monochrome,
-        Phong
+        Phong,
+        PerVertexPhong
     };
     explicit RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType vertexShader, GeometryShaderType geometryShader,
                                 FragmentShaderType fragmentShader);

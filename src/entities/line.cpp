@@ -9,7 +9,8 @@ using namespace Mildred;
  */
 LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
     : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this), vertexBuffer_(&geometry_),
-      vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_)
+      vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_), colourBuffer_(&geometry_),
+      colourAttribute_(&geometry_)
 {
     // Set up the vertex attribute
     vertexAttribute_.setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
@@ -26,9 +27,18 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
     indexAttribute_.setBuffer(&indexBuffer_);
     indexAttribute_.setCount(0);
 
+    // Set up the index attribute
+    colourAttribute_.setName(Qt3DCore::QAttribute::defaultColorAttributeName());
+    colourAttribute_.setVertexBaseType(Qt3DCore::QAttribute::Float);
+    colourAttribute_.setVertexSize(4);
+    colourAttribute_.setBuffer(&colourBuffer_);
+    colourAttribute_.setByteStride(4 * sizeof(float));
+    colourAttribute_.setCount(0);
+
     // Set up geometry and renderer
     geometry_.addAttribute(&vertexAttribute_);
     geometry_.addAttribute(&indexAttribute_);
+    geometry_.addAttribute(&colourAttribute_);
 
     geometryRenderer_.setGeometry(&geometry_);
     geometryRenderer_.setPrimitiveType(primitiveType);
@@ -47,6 +57,17 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
  * until a call to the finalise() method is made.
  */
 void LineEntity::addVertex(QVector3D v) { cachedVertices_.emplace_back(v); }
+
+//! Append vertex and colour to cached data
+/*!
+ * Append the vertex @param v to the cached vertices, with the specific @param colour. The buffer objects (and hence the display
+ * primitive) are not regenerated until a call to the finalise() method is made.
+ */
+void LineEntity::addVertex(QVector3D v, QColor colour)
+{
+    cachedVertices_.emplace_back(v);
+    cachedVertexColours_.emplace_back(colour);
+}
 
 //! Append verteices to cached data
 /*!
@@ -103,7 +124,6 @@ void LineEntity::finalise()
     }
     vertexBuffer_.setData(vertexBytes);
     vertexAttribute_.setCount(cachedVertices_.size());
-    cachedVertices_.clear();
 
     // Convert index data into a QByteArray
     QByteArray indexBytes;
@@ -113,7 +133,29 @@ void LineEntity::finalise()
         *indices++ = i;
     indexBuffer_.setData(indexBytes);
     indexAttribute_.setCount(cachedIndices_.size());
+
+    // Convert colour cache into a QByteArray
+    if (cachedVertices_.size() == cachedVertexColours_.size())
+    {
+        QByteArray colourBytes;
+        colourBytes.resize(cachedVertexColours_.size() * 4 * sizeof(float));
+        auto *colours = reinterpret_cast<float *>(colourBytes.data());
+        for (const auto &c : cachedVertexColours_)
+        {
+            *colours++ = c.redF();
+            *colours++ = c.greenF();
+            *colours++ = c.blueF();
+            *colours++ = c.alphaF();
+        }
+        colourBuffer_.setData(colourBytes);
+        colourAttribute_.setCount(cachedVertexColours_.size());
+    }
+    else
+        colourAttribute_.setCount(0);
+
+    cachedVertices_.clear();
     cachedIndices_.clear();
+    cachedVertexColours_.clear();
 }
 
 //! Clear geometry
@@ -125,6 +167,8 @@ void LineEntity::clear()
 {
     vertexAttribute_.setCount(0);
     indexAttribute_.setCount(0);
+    colourAttribute_.setCount(0);
     cachedVertices_.clear();
     cachedIndices_.clear();
+    cachedVertexColours_.clear();
 }

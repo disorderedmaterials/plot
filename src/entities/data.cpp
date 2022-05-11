@@ -26,6 +26,27 @@ std::optional<Cuboid> DataEntity::extrema() const { return extrema_; }
  * Components
  */
 
+// Return colour definition to use
+ColourDefinition DataEntity::colourDefinition() const { return colourOverride_.value_or(colour_); }
+
+// Return local colour definition for entity
+ColourDefinition &DataEntity::colour() { return colour_; }
+const ColourDefinition &DataEntity::colour() const { return colour_; }
+
+// Set override colour definition (e.g. from group)
+void DataEntity::setColourOverride(const ColourDefinition &colour)
+{
+    colourOverride_ = colour;
+    create();
+}
+
+// Remove colour definition override
+void DataEntity::removeColourOverride()
+{
+    colourOverride_ = std::nullopt;
+    create();
+}
+
 // Set data entity material
 void DataEntity::setDataMaterial(Qt3DRender::QMaterial *material)
 {

@@ -3,10 +3,15 @@
 // Input variables
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec4 vertexColor;
 
-// Output variables
-out vec3 worldPosition;
-out vec3 worldNormal;
+// Output Vertex Data
+out worldData
+{
+  vec3 position;
+  vec3 normal;
+  vec4 color;
+} world;
 
 // Standard uniform variables per-primitive
 uniform mat4 modelMatrix;
@@ -19,8 +24,9 @@ void main()
   vec4 vertexPosition4 = vec4(vertexPosition, 1.0);
 
   // Transform vertex data to world space
-  worldPosition = vec3(modelMatrix * vertexPosition4);
-  worldNormal = modelNormalMatrix * vertexNormal;
+  world.position = vec3(modelMatrix * vertexPosition4);
+  world.normal = modelNormalMatrix * vertexNormal;
+  world.color = vertexColor;
 
   // Unclip vertices
   // -- X axis
