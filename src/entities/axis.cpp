@@ -206,6 +206,17 @@ double AxisEntity::minimum() const { return minimum_; }
 // Return the maximum display value of the axis
 double AxisEntity::maximum() const { return maximum_; }
 
+// Set limits of axis
+void AxisEntity::setLimits(double minValue, double maxValue)
+{
+    minimum_ = std::min(minValue, maxValue);
+    maximum_ = std::max(minValue, maxValue);
+
+    recreate();
+
+    emit(rangeChanged());
+}
+
 //! Return range of axis
 /*!
  * Return the value range of the axis, i.e. the numerical difference between the minimum and maximum values.

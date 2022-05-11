@@ -70,6 +70,8 @@ class AxisEntity : public Qt3DCore::QEntity
     double minimum() const;
     // Return the maximum display value of the axis
     double maximum() const;
+    // Set limits of axis
+    void setLimits(double minValue, double maxValue);
     // Return range of axis
     double range() const;
     // Shift limits of axis
