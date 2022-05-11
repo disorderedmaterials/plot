@@ -75,6 +75,10 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
             shader3->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
             break;
+        case (FragmentShaderType::PerVertexPhong):
+            shader3->setFragmentShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phongpervertex.frag"))));
+            break;
         default:
             throw(std::runtime_error("Unhandled fragment shader type.\n"));
     }
