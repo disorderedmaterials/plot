@@ -1,7 +1,5 @@
 set(target_name stress)
-#
-# User Interface Files set(x_UIs ) qt6_wrap_ui(x_UIS_H ${x_UIS})
-#
+
 # Meta-Objects
 set(${target_name}_MOC_HDRS mainwindow.h)
 qt6_wrap_cpp(${target_name}_MOC_SRCS ${${target_name}_MOC_HDRS})
