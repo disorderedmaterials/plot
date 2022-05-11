@@ -184,11 +184,11 @@ void MildredWidget::showAllData()
 
     // Don't allow zero range on any axis
     // TODO Checking on absolute value is going to be unsuited to all eventualities
-    if (extrema.xExtent() < 1.0e-8)
+    if (!extrema.validXExtent() || extrema.xExtent() < 1.0e-8)
         extrema.expandX(1.0);
-    if (extrema.yExtent() < 1.0e-8)
+    if (!extrema.validYExtent() || extrema.yExtent() < 1.0e-8)
         extrema.expandY(1.0);
-    if (extrema.zExtent() < 1.0e-8)
+    if (!extrema.validZExtent() || extrema.zExtent() < 1.0e-8)
         extrema.expandZ(1.0);
 
     xAxis_->setLimits(extrema.lowerLeftBack().x(), extrema.upperRightFront().x());
