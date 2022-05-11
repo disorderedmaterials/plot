@@ -33,4 +33,28 @@ class DataRenderer1D
     virtual void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
                         const std::vector<double> &values, const AxisEntity *valueAxis) = 0;
 };
+
+//! ErrorRenderer1DBase is the base class for all 1-dimensional error data renderers.
+/*!
+ * ErrorRenderer1DBase provides a base class for all 1-dimensional error data rendering styles.
+ */
+class ErrorRenderer1DBase
+{
+
+    public:
+    ErrorRenderer1DBase(Qt3DCore::QEntity *rootEntity) : rootEntity_(rootEntity){};
+    virtual ~ErrorRenderer1DBase() = default;
+
+    /*
+     * Entities
+     */
+    protected:
+    // Root entity
+    Qt3DCore::QEntity *rootEntity_{nullptr};
+    /*
+     * Rendering
+     */
+
+};
+
 } // namespace Mildred
