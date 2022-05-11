@@ -101,7 +101,6 @@ std::pair<double, double> AxisEntity::calculateTickStartAndDelta() const
             break;
 
     } while ((nTicks > maxTicks) || (nTicks < minTicks));
-
     return {tickStart, tickDelta};
 }
 
@@ -119,8 +118,19 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLinearTicks(double tick
 
     auto count = 0;
     auto delta = tickDelta / (nSubTicks_ + 1);
-    auto value = tickStart;
+    auto value = tickStart - delta;
     std::vector<std::pair<double, bool>> ticks;
+
+    // Go backwards from the first major tick, filling in minor ticks.
+    while (value >= minimum_)
+    {
+        auto x = toGlobal(value);
+        ticks.emplace_back(value, false);
+        value -= delta;
+    }
+
+    value = tickStart;
+
     while (value <= maximum_)
     {
         // Add tick here, only if value >= minimum_

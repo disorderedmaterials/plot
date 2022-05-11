@@ -2,7 +2,8 @@
 set(classes_MOC_HDRS metrics.h)
 qt6_wrap_cpp(classes_MOC_SRCS ${classes_MOC_HDRS})
 
-add_library(classes ${classes_MOC_SRCS} cuboid.h cuboid.cpp metrics.cpp)
+add_library(classes ${classes_MOC_SRCS} colourdefinition.cpp cuboid.cpp
+                    metrics.cpp colourdefinition.h cuboid.h)
 
 target_include_directories(
   classes

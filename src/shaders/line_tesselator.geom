@@ -3,6 +3,21 @@
 layout (lines) in;
 layout (triangle_strip, max_vertices = 4) out;
 
+// Input Vertex Data
+in worldData
+{
+    vec3 position;
+    vec3 normal;
+    vec4 color;
+} vertices[];
+
+// Output Fragment Data
+out fragData
+{
+    vec3 normal;
+    vec4 color;
+} frag;
+
 uniform vec2 viewportSize;
 uniform float lineWidth = 1.5;
 
@@ -24,15 +39,23 @@ void main()
     // Emit the four corners of our two triangles
     gl_Position = p1 + vec4(offset.xy * p1.w, 0.0, 0.0);
     applyClipping(0);
+    frag.color = vertices[0].color;
+    frag.normal = vertices[1].normal;
     EmitVertex();
     gl_Position = p1 - vec4(offset.xy * p1.w, 0.0, 0.0);
     applyClipping(0);
+    frag.color = vertices[0].color;
+    frag.normal = vertices[0].normal;
     EmitVertex();
     gl_Position = p2 + vec4(offset.xy * p2.w, 0.0, 0.0);
     applyClipping(1);
+    frag.color = vertices[1].color;
+    frag.normal = vertices[1].normal;
     EmitVertex();
     gl_Position = p2 - vec4(offset.xy * p2.w, 0.0, 0.0);
     applyClipping(1);
+    frag.color = vertices[1].color;
+    frag.normal = vertices[1].normal;
     EmitVertex();
 
     EndPrimitive();

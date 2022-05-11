@@ -24,7 +24,7 @@ class LineRenderer1D : public DataRenderer1D
 
     public:
     // Create entities from the supplied metrics and data
-    Cuboid create(const std::vector<double> &x, const AxisEntity *xAxis, const std::vector<double> &values,
-                  const AxisEntity *valueAxis) override;
+    Cuboid create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+                  const std::vector<double> &values, const AxisEntity *valueAxis) override;
 };
 } // namespace Mildred

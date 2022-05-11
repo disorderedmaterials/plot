@@ -1,5 +1,6 @@
 #pragma once
 
+#include "classes/colourdefinition.h"
 #include "classes/cuboid.h"
 #include "classes/metrics.h"
 #include "entities/axis.h"
@@ -58,7 +59,24 @@ class DataEntity : public Qt3DCore::QEntity
     // Material for data entity
     Qt3DRender::QMaterial *dataEntityMaterial_{nullptr};
 
+    protected:
+    // Local colour definition for entity
+    ColourDefinition colour_;
+    // Colour definition override
+    std::optional<ColourDefinition> colourOverride_;
+
+    protected:
+    // Return colour definition to use
+    ColourDefinition colourDefinition() const;
+
     public:
+    // Return local colour definition for entity
+    ColourDefinition &colour();
+    const ColourDefinition &colour() const;
+    // Set override colour definition (e.g. from group)
+    void setColourOverride(const ColourDefinition &colour);
+    // Remove colour definition override
+    void removeColourOverride();
     // Set data entity material
     void setDataMaterial(Qt3DRender::QMaterial *material);
 

@@ -49,5 +49,5 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values)
 void Data1DEntity::create()
 {
     assert(dataRenderer_);
-    extrema_ = dataRenderer_->create(x_, xAxis_, values_, valueAxis_);
+    extrema_ = dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "classes/metrics.h"
+#include "displaygroup.h"
 #include "entities/axis.h"
 #include "entities/data1d.h"
 #include "framegraph.h"
@@ -182,5 +183,16 @@ class MildredWidget : public QWidget
     public:
     // Add new data entity for supplied data
     Data1DEntity *addData1D(std::string_view tag);
+
+    /*
+     * Grouping
+     */
+    private:
+    // Defined display groups
+    std::vector<std::shared_ptr<DisplayGroup>> displayGroups_;
+
+    public:
+    // Create new display group
+    DisplayGroup *addDisplayGroup();
 };
 } // namespace Mildred

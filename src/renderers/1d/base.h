@@ -24,10 +24,14 @@ class DataRenderer1D
     /*
      * Rendering
      */
+    protected:
+    // Colour definition
+    ColourDefinition colour_;
+
     public:
     // Create entities from the supplied axes and data
-    virtual Cuboid create(const std::vector<double> &x, const AxisEntity *xAxis, const std::vector<double> &values,
-                          const AxisEntity *valueAxis) = 0;
+    virtual Cuboid create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+                          const std::vector<double> &values, const AxisEntity *valueAxis) = 0;
     // Recreate entities from stored
     Cuboid recreate();
 };

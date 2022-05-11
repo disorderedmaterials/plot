@@ -10,6 +10,7 @@ add_library(
   mildred
   ${mildred_MOC_SRCS}
   ${shaders_RES}
+  displaygroup.cpp
   framegraph.cpp
   keyboard.cpp
   material.cpp
@@ -17,6 +18,7 @@ add_library(
   scenegraph.cpp
   widget.cpp
   framegraph.h
+  displaygroup.h
   material.h
   version.h)
 
@@ -28,7 +30,7 @@ target_include_directories(
 
 target_link_libraries(
   mildred
-  PUBLIC ${WHOLE_ARCHIVE_FLAG} classes entities renderers1d
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} entities renderers1d classes
   PRIVATE # External libs
           Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras
           OpenGL::GL)

@@ -18,13 +18,14 @@ LineRenderer1D::~LineRenderer1D()
  */
 
 // Create entities from the supplied metrics and data
-Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xAxis, const std::vector<double> &values,
-                              const AxisEntity *valueAxis)
+Cuboid LineRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+                              const std::vector<double> &values, const AxisEntity *valueAxis)
 {
     assert(lines_);
     lines_->clear();
 
     Cuboid cuboid;
+    colour_ = colour;
 
     // Check array sizes
     if (x.size() != values.size())
@@ -39,7 +40,7 @@ Cuboid LineRenderer1D::create(const std::vector<double> &x, const AxisEntity *xA
     while (xit != x.end())
     {
         cuboid.expand({float(*xit), float(*vit), 0.0});
-        lines_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit));
+        lines_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit), colour_.colour(*vit));
         ++xit;
         ++vit;
     }
