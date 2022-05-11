@@ -190,12 +190,10 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     connect(&metrics_, SIGNAL(metricsChanged()), entity, SLOT(updateRenderables()));
     dataEntities_.emplace_back(tag, entity);
 
-    // Add a material (testing for now)
+    // Add a material
     auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
                                     RenderableMaterial::GeometryShaderType::LineTesselator,
                                     RenderableMaterial::FragmentShaderType::PerVertexPhong);
-    material->setAmbient(Qt::blue);
-    material->addParameter(new Qt3DRender::QParameter(QStringLiteral("lineWidth"), 1.5f));
     entity->setDataMaterial(material);
 
     return entity;
