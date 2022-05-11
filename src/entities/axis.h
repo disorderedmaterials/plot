@@ -76,6 +76,8 @@ class AxisEntity : public Qt3DCore::QEntity
     double range() const;
     // Shift limits of axis
     void shiftLimits(double delta);
+    // Return whether the axis is logarithmic
+    bool isLogarithmic() const;
     // Set title text
     void setTitleText(const QString &text);
     // Return title text
@@ -86,6 +88,8 @@ class AxisEntity : public Qt3DCore::QEntity
     void setMinimum(double value);
     // Set axis maximum
     void setMaximum(double value);
+    // Set whether the axis is logarithmic
+    void setLogarithmic(bool b);
 
     signals:
     void rangeChanged();

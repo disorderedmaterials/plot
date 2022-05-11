@@ -250,6 +250,9 @@ void AxisEntity::shiftLimits(double delta)
     emit(rangeChanged());
 }
 
+//! Return whether the axis is logarithmic
+bool AxisEntity::isLogarithmic() const { return logarithmic_; }
+
 //! Set title text
 /*!
  * Sets the display title of the axis to @param text, modifying the underlying @class TextEntity object.
@@ -312,6 +315,26 @@ void AxisEntity::setMaximum(double value)
     }
     else
         maximum_ = value;
+
+    recreate();
+
+    emit(rangeChanged());
+}
+
+//! Set whether the axis is logarithmic
+/*!
+ * Set whether the axis is linear (false) or logarithmic (true).
+ *
+ * If the style of axis is changed, the axis entities are recreated.
+ *
+ * Emits rangeChanged().
+ */
+void AxisEntity::setLogarithmic(bool b)
+{
+    if (logarithmic_ == b)
+        return;
+
+    logarithmic_ = b;
 
     recreate();
 
