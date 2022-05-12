@@ -245,12 +245,18 @@ double AxisEntity::range() const { return maximum_ - minimum_; }
  */
 void AxisEntity::shiftLimits(double delta)
 {
+    // If we are logarithmic and the shift would cause a negative minimum_, ignore the request
+    if (logarithmic_ && (minimum_ + delta) <= 0.0)
+        return;
+
     minimum_ += delta;
     maximum_ += delta;
 
     recreate();
 
-    emit(rangeChanged());
+    // Only need to emit a range changed if we're logarithmic
+    if (logarithmic_)
+        emit(rangeChanged());
 }
 
 //! Return whether the axis is logarithmic
