@@ -79,6 +79,7 @@ void MildredWidget::createSceneGraph()
     xAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Horizontal, metrics_, xAxisBarMaterial, xAxisLabelMaterial);
     xAxis_->setTitleText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
+    connect(xAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
 
     auto *yAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,
@@ -91,6 +92,7 @@ void MildredWidget::createSceneGraph()
     yAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Vertical, metrics_, yAxisBarMaterial, yAxisLabelMaterial);
     yAxis_->setTitleText("Y");
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
+    connect(yAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
 
     auto *zAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,
@@ -103,6 +105,7 @@ void MildredWidget::createSceneGraph()
     zAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Depth, metrics_, zAxisBarMaterial, zAxisLabelMaterial);
     zAxis_->setTitleText("Z");
     connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
+    connect(zAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
 
     /*
