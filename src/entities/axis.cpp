@@ -188,9 +188,6 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     std::vector<std::pair<double, bool>> ticks;
     while (value > minimum_)
     {
-        // Calculate current value
-        value = intMantissa * pow(10.0, power);
-
         // Generate a tick
         ticks.emplace_back(value, intMantissa == 1);
 
@@ -201,6 +198,9 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
             intMantissa = 9;
             --power;
         }
+
+        // Calculate new value
+        value = intMantissa * pow(10.0, power);
     }
 
     return ticks;
