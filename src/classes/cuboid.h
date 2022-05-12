@@ -17,21 +17,29 @@ class Cuboid
 
     private:
     // Extreme corners of cuboid at the lower left back and upper right front
-    QVector3D v1_{0.0, 0.0, 0.0}, v2_{0.0, 0.0, 0.0};
+    std::optional<double> v1x_, v1y_, v1z_, v2x_, v2y_, v2z_;
 
     public:
-    // Reset the cuboid to zero size
-    void zero();
+    // Reset the cuboid to null size
+    void reset();
     // Return the lower left back coordinate
     QVector3D lowerLeftBack() const;
     // Return the upper right front coordinate
     QVector3D upperRightFront() const;
+    // Expand cuboid to encompass supplied (optional) coordinates
+    void expand(std::optional<double> x, std::optional<double> y, std::optional<double> z);
     // Expand cuboid to encompass supplied point
     void expand(const QVector3D &v);
     // Expand cuboid to encompass supplied cuboid
     void expand(const Cuboid &cuboid);
     // Translate the cuboid by the supplied vector
     void translate(QVector3D v);
+    // Return whether a valid extent in x exists
+    bool validXExtent() const;
+    // Return whether a valid extent in y exists
+    bool validYExtent() const;
+    // Return whether a valid extent in z exists
+    bool validZExtent() const;
     // Expand x extent of cuboid by given amount
     void expandX(double delta);
     // Expand y extent of cuboid by given amount
