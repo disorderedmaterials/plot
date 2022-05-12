@@ -116,13 +116,13 @@ void MildredWidget::createSceneGraph()
 }
 
 //! Return x axis entity
-const AxisEntity *MildredWidget::xAxis() const { return xAxis_; }
+AxisEntity *MildredWidget::xAxis() { return xAxis_; }
 
 //! Return y axis entity
-const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
+AxisEntity *MildredWidget::yAxis() { return yAxis_; }
 
 //! Return z axis entity
-const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
+AxisEntity *MildredWidget::zAxis() { return zAxis_; }
 
 //! Update transforms from metrics
 /*!
