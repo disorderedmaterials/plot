@@ -1,4 +1,4 @@
-set(target_name stress)
+set(target_name log-axes)
 
 # Meta-Objects
 set(${target_name}_MOC_HDRS mainwindow.h)

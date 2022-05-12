@@ -79,6 +79,7 @@ void MildredWidget::createSceneGraph()
     xAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Horizontal, metrics_, xAxisBarMaterial, xAxisLabelMaterial);
     xAxis_->setTitleText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
+    connect(xAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
 
     auto *yAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,
@@ -91,6 +92,7 @@ void MildredWidget::createSceneGraph()
     yAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Vertical, metrics_, yAxisBarMaterial, yAxisLabelMaterial);
     yAxis_->setTitleText("Y");
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
+    connect(yAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
 
     auto *zAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,
@@ -103,6 +105,7 @@ void MildredWidget::createSceneGraph()
     zAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Depth, metrics_, zAxisBarMaterial, zAxisLabelMaterial);
     zAxis_->setTitleText("Z");
     connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
+    connect(zAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
 
     /*
@@ -116,13 +119,13 @@ void MildredWidget::createSceneGraph()
 }
 
 //! Return x axis entity
-const AxisEntity *MildredWidget::xAxis() const { return xAxis_; }
+AxisEntity *MildredWidget::xAxis() { return xAxis_; }
 
 //! Return y axis entity
-const AxisEntity *MildredWidget::yAxis() const { return yAxis_; }
+AxisEntity *MildredWidget::yAxis() { return yAxis_; }
 
 //! Return z axis entity
-const AxisEntity *MildredWidget::zAxis() const { return zAxis_; }
+AxisEntity *MildredWidget::zAxis() { return zAxis_; }
 
 //! Update transforms from metrics
 /*!
@@ -178,9 +181,27 @@ void MildredWidget::resetView()
  */
 void MildredWidget::showAllData()
 {
-    Cuboid extrema;
+    Cuboid extrema, logarithmicExtrema;
     for (auto &[name, entity] : dataEntities_)
+    {
+        // Don't adjust extents for hidden data
+        if (!entity->isEnabled())
+            continue;
+
         extrema.expand(entity->extrema());
+        logarithmicExtrema.expand(entity->logarithmicExtrema());
+    }
+
+    // Overwrite linear with log extents for any log axes we have
+    if (xAxis_->isLogarithmic() && logarithmicExtrema.validXExtent())
+        extrema.setXExtent(pow(10.0, logarithmicExtrema.lowerLeftBack().x()),
+                           pow(10.0, logarithmicExtrema.upperRightFront().x()));
+    if (yAxis_->isLogarithmic() && logarithmicExtrema.validYExtent())
+        extrema.setYExtent(pow(10.0, logarithmicExtrema.lowerLeftBack().y()),
+                           pow(10.0, logarithmicExtrema.upperRightFront().y()));
+    if (zAxis_->isLogarithmic() && logarithmicExtrema.validZExtent())
+        extrema.setZExtent(pow(10.0, logarithmicExtrema.lowerLeftBack().z()),
+                           pow(10.0, logarithmicExtrema.upperRightFront().z()));
 
     // Don't allow zero range on any axis
     // TODO Checking on absolute value is going to be unsuited to all eventualities

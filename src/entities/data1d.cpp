@@ -24,6 +24,7 @@ void Data1DEntity::clearData()
     values_.clear();
     errors_.clear();
     extrema_.reset();
+    logarithmicExtrema_.reset();
 }
 
 //! Set display data (1D)
@@ -35,8 +36,25 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values)
 {
     clearData();
 
-    x_ = std::move(x);
-    values_ = std::move(values);
+    // Check vector sizes
+    if (x.size() != values.size())
+        printf("Irregular vector sizes provided (%zu vs %zu) so data will be ignored.\n", x.size(), values.size());
+    else
+    {
+        x_ = std::move(x);
+        values_ = std::move(values);
+    }
+
+    // Determine data extrema
+    auto xit = x_.cbegin(), vit = values_.cbegin();
+    while (xit != x_.end())
+    {
+        extrema_.expand(*xit, *vit, std::nullopt);
+        logarithmicExtrema_.expand(*xit <= 0.0 ? std::nullopt : std::optional<double>{log10(*xit)},
+                                   *vit <= 0.0 ? std::nullopt : std::optional<double>{log10(*vit)}, std::nullopt);
+        ++xit;
+        ++vit;
+    }
 
     create();
 }
@@ -49,5 +67,5 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values)
 void Data1DEntity::create()
 {
     assert(dataRenderer_);
-    extrema_ = dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
+    dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
 }

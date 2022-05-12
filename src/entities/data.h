@@ -34,10 +34,14 @@ class DataEntity : public Qt3DCore::QEntity
     std::string displayName_;
     // Extrema of data points in three-dimensional space
     Cuboid extrema_;
+    // Extrema of data points in three-dimensional logarithmic space
+    Cuboid logarithmicExtrema_;
 
     public:
     // Return extrema of data points in three-dimensional space
     Cuboid extrema() const;
+    // Return extrema of data points in three-dimensional logarithmic space
+    Cuboid logarithmicExtrema() const;
 
     /*
      * Entities

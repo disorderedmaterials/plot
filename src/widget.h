@@ -124,11 +124,11 @@ class MildredWidget : public QWidget
 
     public:
     // Return x axis entity
-    const AxisEntity *xAxis() const;
+    AxisEntity *xAxis();
     // Return y axis entity
-    const AxisEntity *yAxis() const;
+    AxisEntity *yAxis();
     // Return z axis entity
-    const AxisEntity *zAxis() const;
+    AxisEntity *zAxis();
 
     public slots:
     // Update transforms from metrics
