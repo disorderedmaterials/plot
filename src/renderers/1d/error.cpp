@@ -28,9 +28,9 @@ Cuboid ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vec
     colour_ = colour;
 
     // Check array sizes
-    if (x.size() != values.size())
+    if ((x.size() != values.size()) || (x.size() != errors.size()) || (values.size() != errors.size()))
     {
-        printf("Irregular vector sizes provided (%zu vs %zu) so can't create entities.\n", x.size(), values.size());
+        printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(), values.size(), errors.size());
         errors_->finalise();
         return {};
     }
@@ -41,21 +41,21 @@ Cuboid ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vec
     while (xit != x.end())
     {
 
+        // Upper extreme.
         cuboid.expand({float(*xit), float(*vit + *eit), 0.0});
-        cuboid.expand({float(*xit), float(*vit - *eit), 0.0});
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit), colour_.colour(*vit));
+        errors_->addIndex(i++);
+
+        // Lower extreme.
+        cuboid.expand({float(*xit), float(*vit - *eit), 0.0});
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit), colour_.colour(*vit));
-        errors_->addIndex(i);
-        errors_->addIndex(i+1);
-        errors_->addIndex();
-        ++i;
-        ++i;
+        errors_->addIndex(i++);
+
+        // Add restart index, to cause line break.
+        errors_->addIndex(-1);
         ++xit;
         ++vit;
     }
-
-    // Set basic indices
-    // errors_->setBasicIndices();
 
     // Finalise the entity
     errors_->finalise();
