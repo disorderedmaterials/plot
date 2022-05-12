@@ -170,41 +170,37 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
         return {};
     }
 
-    // Grab logged min/max values for convenience, enforcing sensible minimum
-    auto min = log10(minimum_ <= 0.0 ? 1.0e-10 : minimum_);
-
-    // Plot tickmarks - Start at floored (ceiling'd) integer of logAxisMin (logAxisMax), and go from there.
-    auto nMinorTicks = std::min(nSubTicks_, 9);
-    auto count = 0;
-    auto power = floor(min);
-    auto value = pow(10, power);
-    auto u = 0.0;
-    std::vector<std::pair<double, bool>> ticks;
-    while (value <= maximum_)
+    // Break up axis maximum into mantissa and exponent and set initial mantissa and power
+    const auto exponent = floor(log10(fabs(maximum_) + std::numeric_limits<double>::min()));
+    auto power = exponent == floor(log10(std::numeric_limits<double>::min())) ? 0 : int(exponent);
+    const auto realMantissa = maximum_ / pow(10.0, power);
+    auto intMantissa = 0;
+    if (realMantissa >= 10.0)
     {
-        // If the current value is in range, plot a tick
-        u = (inverted_ ? log10(maximum_ / value) : log10(value)) * axisScale_;
-        if (log10(value) >= min)
-        {
-            // Tick mark
-            if (count == 0)
-            {
-                ticks.emplace_back(value, true);
-            }
-            else
-                ticks.emplace_back(value, false);
-        }
+        intMantissa = int(realMantissa / 10.0);
+        ++power;
+    }
+    else
+        intMantissa = int(realMantissa);
 
-        // Increase tick counter, value, and power if necessary
-        ++count;
-        if (count == nMinorTicks)
+    auto value = intMantissa * pow(10.0, power);
+
+    std::vector<std::pair<double, bool>> ticks;
+    while (value > minimum_)
+    {
+        // Calculate current value
+        value = intMantissa * pow(10.0, power);
+
+        // Generate a tick
+        ticks.emplace_back(value, intMantissa == 1);
+
+        // Step backwards
+        --intMantissa;
+        if (intMantissa == 0)
         {
-            count = 0;
-            power = power + 1.0;
-            value = pow(10, power);
+            intMantissa = 9;
+            --power;
         }
-        else
-            value += pow(10, power);
     }
 
     return ticks;
@@ -219,6 +215,13 @@ double AxisEntity::maximum() const { return maximum_; }
 // Set limits of axis
 void AxisEntity::setLimits(double minValue, double maxValue)
 {
+    // Disallow negative / zero values if we are logarithmic
+    if (logarithmic_ && (minValue <= 0.0 || maxValue <= 0.0))
+    {
+        printf("Ignoring new limits (%e, %e) for axis as they are invalid for a logarithmic scale.\n", minValue, maxValue);
+        return;
+    }
+
     minimum_ = std::min(minValue, maxValue);
     maximum_ = std::max(minValue, maxValue);
 
@@ -284,6 +287,13 @@ QString AxisEntity::titleText() const
  */
 void AxisEntity::setMinimum(double value)
 {
+    // Disallow negative / zero values if we are logarithmic
+    if (logarithmic_ && (value <= 0.0))
+    {
+        printf("Ignoring new minimum limit (%e) for axis as it is invalid for a logarithmic scale.\n", value);
+        return;
+    }
+
     // Switch maximum and minimum if the supplied minimum is greater than the current maximum
     if (value > maximum_)
     {
@@ -307,6 +317,13 @@ void AxisEntity::setMinimum(double value)
  */
 void AxisEntity::setMaximum(double value)
 {
+    // Disallow negative / zero values if we are logarithmic
+    if (logarithmic_ && (value <= 0.0))
+    {
+        printf("Ignoring new maximum limit (%e) for axis as it is invalid for a logarithmic scale.\n", value);
+        return;
+    }
+
     // Switch maximum and minimum if the supplied maximum is less than the current minimum
     if (value < minimum_)
     {
@@ -323,7 +340,8 @@ void AxisEntity::setMaximum(double value)
 
 //! Set whether the axis is logarithmic
 /*!
- * Set whether the axis is linear (false) or logarithmic (true).
+ * Set whether the axis is linear (false) or logarithmic (true). When changing to logarithmic a light check on the current
+ * limits is made to ensure that display in a log scale is possible.
  *
  * If the style of axis is changed, the axis entities are recreated.
  *
@@ -333,6 +351,14 @@ void AxisEntity::setLogarithmic(bool b)
 {
     if (logarithmic_ == b)
         return;
+
+    // Check limits when switching to log axis
+    if (b && (minimum_ <= 0.0 || maximum_ <= 0.0))
+    {
+        printf("Can't change to logarithmic axis as the current range has a negative/zero component (%e to %e).\n", minimum_,
+               maximum_);
+        return;
+    }
 
     logarithmic_ = b;
 
