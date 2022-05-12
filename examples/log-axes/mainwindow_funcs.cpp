@@ -27,8 +27,18 @@ MainWindow::MainWindow() : QMainWindow()
         steppedValues_.push_back(x);
         x += delta;
     }
+
+    // Add data entities
+    Mildred::ColourDefinition gradient;
+    gradient.addPoint(-1.0, Qt::darkRed);
+    gradient.addPoint(-0.5, Qt::darkGreen);
+    gradient.addPoint(0.0, Qt::darkYellow);
+    gradient.addPoint(0.5, Qt::darkMagenta);
+    gradient.addPoint(1.0, Qt::darkBlue);
+
     auto *modSin = ui_.TestingWidget->addData1D("Modulated");
     modSin->setData(modulatedX_, modulatedValues_);
+    modSin->colour() = gradient;
     auto *stepped = ui_.TestingWidget->addData1D("Stepped");
     stepped->setData(steppedX_, steppedValues_);
     stepped->setEnabled(false);
