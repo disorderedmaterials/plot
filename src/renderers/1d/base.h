@@ -30,9 +30,7 @@ class DataRenderer1D
 
     public:
     // Create entities from the supplied axes and data
-    virtual Cuboid create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                          const std::vector<double> &values, const AxisEntity *valueAxis) = 0;
-    // Recreate entities from stored
-    Cuboid recreate();
+    virtual void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+                        const std::vector<double> &values, const AxisEntity *valueAxis) = 0;
 };
 } // namespace Mildred

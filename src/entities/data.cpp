@@ -22,6 +22,9 @@ DataEntity::DataEntity(Qt3DCore::QNode *parent) : Qt3DCore::QEntity(parent)
 //! Return extreme limits for displayed data
 Cuboid DataEntity::extrema() const { return extrema_; }
 
+// Return extrema of data points in three-dimensional logarithmic space
+Cuboid DataEntity::logarithmicExtrema() const { return logarithmicExtrema_; }
+
 /*
  * Components
  */

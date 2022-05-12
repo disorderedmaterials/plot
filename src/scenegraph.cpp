@@ -178,9 +178,23 @@ void MildredWidget::resetView()
  */
 void MildredWidget::showAllData()
 {
-    Cuboid extrema;
+    Cuboid extrema, logarithmicExtrema;
     for (auto &[name, entity] : dataEntities_)
+    {
         extrema.expand(entity->extrema());
+        logarithmicExtrema.expand(entity->logarithmicExtrema());
+    }
+
+    // Overwrite linear with log extents for any log axes we have
+    if (xAxis_->isLogarithmic() && logarithmicExtrema.validXExtent())
+        extrema.setXExtent(pow(10.0, logarithmicExtrema.lowerLeftBack().x()),
+                           pow(10.0, logarithmicExtrema.upperRightFront().x()));
+    if (yAxis_->isLogarithmic() && logarithmicExtrema.validYExtent())
+        extrema.setYExtent(pow(10.0, logarithmicExtrema.lowerLeftBack().y()),
+                           pow(10.0, logarithmicExtrema.upperRightFront().y()));
+    if (zAxis_->isLogarithmic() && logarithmicExtrema.validZExtent())
+        extrema.setZExtent(pow(10.0, logarithmicExtrema.lowerLeftBack().z()),
+                           pow(10.0, logarithmicExtrema.upperRightFront().z()));
 
     // Don't allow zero range on any axis
     // TODO Checking on absolute value is going to be unsuited to all eventualities

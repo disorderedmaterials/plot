@@ -352,15 +352,19 @@ void AxisEntity::setLogarithmic(bool b)
     if (logarithmic_ == b)
         return;
 
-    // Check limits when switching to log axis
-    if (b && (minimum_ <= 0.0 || maximum_ <= 0.0))
-    {
-        printf("Can't change to logarithmic axis as the current range has a negative/zero component (%e to %e).\n", minimum_,
-               maximum_);
-        return;
-    }
-
     logarithmic_ = b;
+
+    // Check limits when switching to log axis
+    if (logarithmic_)
+    {
+        if (maximum_ <= 0.0)
+        {
+            minimum_ = 0.1;
+            maximum_ = 10.0;
+        }
+        else if (minimum_ <= 0.0)
+            minimum_ = maximum_ / 100.0;
+    }
 
     recreate();
 
