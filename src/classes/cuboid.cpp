@@ -21,6 +21,27 @@ void Cuboid::reset()
     v2z_ = std::nullopt;
 }
 
+//! Set x extent
+void Cuboid::setXExtent(double extentMin, double extentMax)
+{
+    v1x_ = extentMin;
+    v2x_ = extentMax;
+}
+
+//! Set y extent
+void Cuboid::setYExtent(double extentMin, double extentMax)
+{
+    v1y_ = extentMin;
+    v2y_ = extentMax;
+}
+
+//! Set z extent
+void Cuboid::setZExtent(double extentMin, double extentMax)
+{
+    v1z_ = extentMin;
+    v2z_ = extentMax;
+}
+
 //! Return the lower left back coordinate
 /*!
  * Return the lower left back coordinate of the cuboid as a QVector3D. Any as-yet undefined coordinates will be set to zero.
@@ -115,15 +136,6 @@ void Cuboid::translate(QVector3D v)
         *v2z_ += v.z();
 }
 
-//! Return whether a valid extent in x exists
-bool Cuboid::validXExtent() const { return v1x_ && v2x_; }
-
-//! Return whether a valid extent in y exists
-bool Cuboid::validYExtent() const { return v1y_ && v2y_; }
-
-//! Return whether a valid extent in z exists
-bool Cuboid::validZExtent() const { return v1z_ && v2z_; }
-
 //! Expand x extent of cuboid by given amount
 void Cuboid::expandX(double delta)
 {
@@ -144,6 +156,15 @@ void Cuboid::expandZ(double delta)
     v1z_ = v1z_.value_or(0.0) - delta * 0.5;
     v2z_ = v2z_.value_or(0.0) + delta * 0.5;
 }
+
+//! Return whether a valid extent in x exists
+bool Cuboid::validXExtent() const { return v1x_ && v2x_; }
+
+//! Return whether a valid extent in y exists
+bool Cuboid::validYExtent() const { return v1y_ && v2y_; }
+
+//! Return whether a valid extent in z exists
+bool Cuboid::validZExtent() const { return v1z_ && v2z_; }
 
 //! Return x extent of cuboid
 float Cuboid::xExtent() const

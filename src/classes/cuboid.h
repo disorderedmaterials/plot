@@ -22,6 +22,12 @@ class Cuboid
     public:
     // Reset the cuboid to null size
     void reset();
+    // Set x extent
+    void setXExtent(double extentMin, double extentMax);
+    // Set y extent
+    void setYExtent(double extentMin, double extentMax);
+    // Set z extent
+    void setZExtent(double extentMin, double extentMax);
     // Return the lower left back coordinate
     QVector3D lowerLeftBack() const;
     // Return the upper right front coordinate
@@ -34,18 +40,18 @@ class Cuboid
     void expand(const Cuboid &cuboid);
     // Translate the cuboid by the supplied vector
     void translate(QVector3D v);
-    // Return whether a valid extent in x exists
-    bool validXExtent() const;
-    // Return whether a valid extent in y exists
-    bool validYExtent() const;
-    // Return whether a valid extent in z exists
-    bool validZExtent() const;
     // Expand x extent of cuboid by given amount
     void expandX(double delta);
     // Expand y extent of cuboid by given amount
     void expandY(double delta);
     // Expand z extent of cuboid by given amount
     void expandZ(double delta);
+    // Return whether a valid extent in x exists
+    bool validXExtent() const;
+    // Return whether a valid extent in y exists
+    bool validYExtent() const;
+    // Return whether a valid extent in z exists
+    bool validZExtent() const;
     // Return x extent of cuboid
     float xExtent() const;
     // Return y extent of cuboid
