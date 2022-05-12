@@ -50,8 +50,6 @@ class AxisEntity : public Qt3DCore::QEntity
     double minimum_{0.0}, maximum_{10.0};
     // Whether the axis is logarithmic
     bool logarithmic_{false};
-    // Whether the axis is inverted
-    bool inverted_{false};
     // Number of ticks to display
     int nSubTicks_{4};
     // Whether to determine major ticks automatically
