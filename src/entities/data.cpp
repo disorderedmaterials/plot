@@ -72,6 +72,27 @@ void DataEntity::setDataMaterial(Qt3DRender::QMaterial *material)
         }
 }
 
+void DataEntity::setErrorMaterial(Qt3DRender::QMaterial *material)
+{
+    // Remove existing material if one exists
+    if (errorEntityMaterial_)
+        foreach (auto *node, errorEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->removeComponent(errorEntityMaterial_);
+        }
+
+    errorEntityMaterial_ = material;
+    if (errorEntityMaterial_)
+        foreach (auto *node, errorEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->addComponent(errorEntityMaterial_);
+        }
+}
+
 /*
  * Rendering
  */

@@ -11,6 +11,7 @@ Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis,
     : DataEntity(parent), xAxis_(xAxis), valueAxis_(valueAxis)
 {
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
+    errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
 }
 
 /*
@@ -59,6 +60,17 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values)
     create();
 }
 
+void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, std::vector<double> errors)
+{
+    clearData();
+
+    x_ = std::move(x);
+    values_ = std::move(values);
+    errors_ = std::move(errors);
+
+    create();
+}
+
 /*
  * Rendering
  */
@@ -68,4 +80,6 @@ void Data1DEntity::create()
 {
     assert(dataRenderer_);
     dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
+    assert(errorRenderer_);
+    errorRenderer_->create(colourDefinition(), x_, xAxis_, values_, errors_, valueAxis_);
 }

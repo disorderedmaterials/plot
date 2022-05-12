@@ -197,6 +197,7 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
                                     RenderableMaterial::GeometryShaderType::LineTesselator,
                                     RenderableMaterial::FragmentShaderType::PerVertexPhong);
     entity->setDataMaterial(material);
+    entity->setErrorMaterial(material);
 
     return entity;
 }

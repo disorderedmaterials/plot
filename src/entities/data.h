@@ -62,6 +62,8 @@ class DataEntity : public Qt3DCore::QEntity
     Qt3DCore::QTransform *positionalTransform_{nullptr};
     // Material for data entity
     Qt3DRender::QMaterial *dataEntityMaterial_{nullptr};
+    // Material for error entity
+    Qt3DRender::QMaterial *errorEntityMaterial_{nullptr};
 
     protected:
     // Local colour definition for entity
@@ -83,6 +85,8 @@ class DataEntity : public Qt3DCore::QEntity
     void removeColourOverride();
     // Set data entity material
     void setDataMaterial(Qt3DRender::QMaterial *material);
+    // Set error entity material
+    void setErrorMaterial(Qt3DRender::QMaterial *material);
 
     /*
      * Rendering

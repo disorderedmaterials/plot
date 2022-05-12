@@ -37,6 +37,7 @@ class Data1DEntity : public DataEntity
     void clearData();
     // Set display data
     void setData(std::vector<double> x, std::vector<double> values);
+    void setData(std::vector<double> x, std::vector<double> values, std::vector<double> errors);
 
     /*
      * Rendering
@@ -48,6 +49,10 @@ class Data1DEntity : public DataEntity
     StyleFactory1D::Style style_{StyleFactory1D::Style::Line};
     // Data Renderer
     std::shared_ptr<DataRenderer1D> dataRenderer_{nullptr};
+    // Error style
+    StyleFactory1D::ErrorBarStyle errorStyle_{StyleFactory1D::ErrorBarStyle::ErrorBar};
+    // Error Renderer
+    std::shared_ptr<ErrorBarRenderer1D> errorRenderer_{nullptr};
     // Orientation
     AxisEntity::AxisType abscissa_{AxisEntity::AxisType::Horizontal}, ordinate_{AxisEntity::AxisType::Vertical};
 

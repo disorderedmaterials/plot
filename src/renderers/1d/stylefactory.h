@@ -21,13 +21,13 @@ enum class Style
 enum class ErrorBarStyle
 {
     ErrorBar
-}
+};
 
 // Produce renderer for the specified style
 std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity);
 
 // Produce error renderer for the specified style
-std::shared_ptr<ErrorRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCore::QEntity *rootEntity);
+std::shared_ptr<ErrorBarRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCore::QEntity *rootEntity);
 
 } // namespace StyleFactory1D
 } // namespace Mildred

@@ -38,12 +38,11 @@ class DataRenderer1D
 /*!
  * ErrorRenderer1DBase provides a base class for all 1-dimensional error data rendering styles.
  */
-class ErrorRenderer1DBase
+class ErrorRenderer1D
 {
-
     public:
-    ErrorRenderer1DBase(Qt3DCore::QEntity *rootEntity) : rootEntity_(rootEntity){};
-    virtual ~ErrorRenderer1DBase() = default;
+    ErrorRenderer1D(Qt3DCore::QEntity *rootEntity) : rootEntity_(rootEntity){};
+    virtual ~ErrorRenderer1D() = default;
 
     /*
      * Entities
@@ -51,9 +50,20 @@ class ErrorRenderer1DBase
     protected:
     // Root entity
     Qt3DCore::QEntity *rootEntity_{nullptr};
+
     /*
      * Rendering
      */
+    protected:
+    // Colour definition
+    ColourDefinition colour_;
+
+    public:
+    // Create entities from the supplied axes and data
+    virtual Cuboid create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+                          const std::vector<double> &values, const std::vector<double> &errors, const AxisEntity *valueAxis) = 0;
+    // Recreate entities from stored
+    Cuboid recreate();
 
 };
 
