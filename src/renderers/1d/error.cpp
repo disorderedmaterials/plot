@@ -19,7 +19,8 @@ ErrorBarRenderer1D::~ErrorBarRenderer1D()
 
 // Create entities from the supplied metrics and data
 Cuboid ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                              const std::vector<double> &values, const std::vector<double> &errors, const AxisEntity *valueAxis)
+                                  const std::vector<double> &values, const std::vector<double> &errors,
+                                  const AxisEntity *valueAxis)
 {
     assert(errors_);
     errors_->clear();
@@ -30,7 +31,8 @@ Cuboid ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vec
     // Check array sizes
     if ((x.size() != values.size()) || (x.size() != errors.size()) || (values.size() != errors.size()))
     {
-        printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(), values.size(), errors.size());
+        printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
+               values.size(), errors.size());
         errors_->finalise();
         return {};
     }
