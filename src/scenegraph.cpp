@@ -184,6 +184,10 @@ void MildredWidget::showAllData()
     Cuboid extrema, logarithmicExtrema;
     for (auto &[name, entity] : dataEntities_)
     {
+        // Don't adjust extents for hidden data
+        if (!entity->isEnabled())
+            continue;
+
         extrema.expand(entity->extrema());
         logarithmicExtrema.expand(entity->logarithmicExtrema());
     }
