@@ -451,9 +451,9 @@ double AxisEntity::getAxisScale(const MildredMetrics &metrics) const
 double AxisEntity::toGlobal(double axisValue) const
 {
     if (logarithmic_)
-        return ((axisValue - minimum_) / (maximum_ - minimum_)) * axisScale_;
+        return ((log10(axisValue) - log10(minimum_)) / (log10(maximum_) - log10(minimum_))) * axisScale_;
     else
-        return ((inverted_ ? (maximum_ - axisValue) : (axisValue - minimum_)) / (maximum_ - minimum_)) * axisScale_;
+        return ((axisValue - minimum_) / (maximum_ - minimum_)) * axisScale_;
 }
 
 //! Map axis value to 3D point
@@ -463,7 +463,13 @@ double AxisEntity::toGlobal(double axisValue) const
 QVector3D AxisEntity::to3D(double axisValue) const { return direction_ * float(toGlobal(axisValue)); }
 
 //! Return scaled value point
-QVector3D AxisEntity::toScaled(double axisValue) const { return direction_ * axisValue * axisScale_ / (maximum_ - minimum_); }
+QVector3D AxisEntity::toScaled(double axisValue) const
+{
+    if (logarithmic_)
+        return direction_ * log10(axisValue) * axisScale_ / (log10(maximum_) - log10(minimum_));
+    else
+        return direction_ * axisValue * axisScale_ / (maximum_ - minimum_);
+}
 
 /*
  * Entities
