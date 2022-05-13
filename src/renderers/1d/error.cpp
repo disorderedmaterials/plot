@@ -19,8 +19,8 @@ ErrorBarRenderer1D::~ErrorBarRenderer1D()
 
 // Create entities from the supplied metrics and data
 void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                                  const std::vector<double> &values, const std::vector<double> &errors,
-                                  const AxisEntity *valueAxis)
+                                const std::vector<double> &values, const std::vector<double> &errors,
+                                const AxisEntity *valueAxis)
 {
     assert(errors_);
     errors_->clear();
@@ -28,7 +28,8 @@ void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vecto
     colour_ = colour;
 
     // Check if errors are defined.
-    if (errors.empty()) {
+    if (errors.empty())
+    {
         errors_->finalise();
         return;
     }
@@ -64,5 +65,4 @@ void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vecto
 
     // Finalise the entity
     errors_->finalise();
-
 }

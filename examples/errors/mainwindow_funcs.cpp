@@ -2,8 +2,8 @@
 #include "material.h"
 #include "renderers/1d/stylefactory.h"
 #include "ui_mainwindow.h"
-#include <random>
 #include <iostream>
+#include <random>
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -24,15 +24,17 @@ MainWindow::MainWindow() : QMainWindow()
 
     // Fill in y values (sin(x)).
     yValues_ = std::vector<double>(nPoints);
-    std::transform(xValues_.begin(), xValues_.end(), yValues_.begin(), [](const auto x) {return sin(x);});
-    
+    std::transform(xValues_.begin(), xValues_.end(), yValues_.begin(), [](const auto x) { return sin(x); });
+
     // Fill in uniform errors.
     uniformErrors_ = std::vector<double>(nPoints);
-    std::transform(yValues_.begin(), yValues_.end(), uniformErrors_.begin(), [relativeError](const auto x) {return relativeError * x;});
-    
+    std::transform(yValues_.begin(), yValues_.end(), uniformErrors_.begin(),
+                   [relativeError](const auto x) { return relativeError * x; });
+
     // Fill in random errors.
     randomErrors_ = std::vector<double>(nPoints);
-    std::transform(yValues_.begin(), yValues_.end(), randomErrors_.begin(), [dist, gen](const auto x) mutable {return x * dist(gen);});
+    std::transform(yValues_.begin(), yValues_.end(), randomErrors_.begin(),
+                   [dist, gen](const auto x) mutable { return x * dist(gen); });
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
@@ -40,13 +42,13 @@ MainWindow::MainWindow() : QMainWindow()
 
 void MainWindow::on_UniformErrorRadio_clicked(bool checked)
 {
-    if (checked) 
+    if (checked)
         dataEntity_->setData(xValues_, yValues_, uniformErrors_);
 }
 
 void MainWindow::on_RandomErrorRadio_clicked(bool checked)
 {
-    if (checked) 
+    if (checked)
         dataEntity_->setData(xValues_, yValues_, randomErrors_);
 }
 

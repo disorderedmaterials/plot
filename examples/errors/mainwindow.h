@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ui_mainwindow.h"
 #include "entities/data1d.h"
+#include "ui_mainwindow.h"
 
 class MainWindow : public QMainWindow
 {

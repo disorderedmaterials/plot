@@ -61,9 +61,7 @@ class ErrorRenderer1D
     public:
     // Create entities from the supplied axes and data
     virtual void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                          const std::vector<double> &values, const std::vector<double> &errors,
-                          const AxisEntity *valueAxis) = 0;
-
+                        const std::vector<double> &values, const std::vector<double> &errors, const AxisEntity *valueAxis) = 0;
 };
 
 } // namespace Mildred

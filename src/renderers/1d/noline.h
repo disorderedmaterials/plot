@@ -12,9 +12,9 @@ class NoLineRenderer1D : public DataRenderer1D
 {
     public:
     NoLineRenderer1D(Qt3DCore::QEntity *rootEntity) : DataRenderer1D(rootEntity) {}
-    ~NoLineRenderer1D() {};
-    
+    ~NoLineRenderer1D(){};
+
     void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                  const std::vector<double> &values, const AxisEntity *valueAxis) override {};
+                const std::vector<double> &values, const AxisEntity *valueAxis) override{};
 };
 } // namespace Mildred

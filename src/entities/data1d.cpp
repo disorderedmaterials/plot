@@ -7,7 +7,8 @@ using namespace Mildred;
 /*!
  * Construct a new Data1DEntity storing a reference to the supplied @param metrics and with the given @param parent.
  */
-Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent, StyleFactory1D::Style style, StyleFactory1D::ErrorBarStyle errorStyle)
+Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent,
+                           StyleFactory1D::Style style, StyleFactory1D::ErrorBarStyle errorStyle)
     : DataEntity(parent), xAxis_(xAxis), valueAxis_(valueAxis), style_(style), errorStyle_(errorStyle)
 {
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
@@ -40,7 +41,8 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
     // Check vector sizes
     if ((!errors) && (x.size() != values.size()))
         printf("Irregular vector sizes provided (%zu vs %zu) so data will be ignored.\n", x.size(), values.size());
-    else if (errors && ((x.size() != values.size()) || (x.size() != errors.value().size()) || (values.size() != errors.value().size())))
+    else if (errors &&
+             ((x.size() != values.size()) || (x.size() != errors.value().size()) || (values.size() != errors.value().size())))
         printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
                values.size(), errors.value().size());
     {
@@ -57,7 +59,8 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
         extrema_.expand(*xit, *vit, std::nullopt);
         logarithmicExtrema_.expand(*xit <= 0.0 ? std::nullopt : std::optional<double>{log10(*xit)},
                                    *vit <= 0.0 ? std::nullopt : std::optional<double>{log10(*vit)}, std::nullopt);
-        if (!errors_.empty()) {
+        if (!errors_.empty())
+        {
             extrema_.expand(*xit, *vit + *eit, std::nullopt);
             extrema_.expand(*xit, *vit - *eit, std::nullopt);
             ++eit;
@@ -87,7 +90,7 @@ void Data1DEntity::setLineStyle(StyleFactory1D::Style style)
 {
     style_ = style;
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
-    Qt3DRender::QMaterial* material = dataMaterial();
+    Qt3DRender::QMaterial *material = dataMaterial();
     if (material != nullptr)
         setDataMaterial(material);
     create();
@@ -98,9 +101,8 @@ void Data1DEntity::setErrorStyle(StyleFactory1D::ErrorBarStyle style)
 {
     errorStyle_ = style;
     errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
-    Qt3DRender::QMaterial* material = errorMaterial();
+    Qt3DRender::QMaterial *material = errorMaterial();
     if (material != nullptr)
         setErrorMaterial(material);
     create();
-    
 }

@@ -18,7 +18,9 @@ class AxisEntity;
 class Data1DEntity : public DataEntity
 {
     public:
-    Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr,  StyleFactory1D::Style style = StyleFactory1D::Style::Line, StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
+    Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr,
+                 StyleFactory1D::Style style = StyleFactory1D::Style::Line,
+                 StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
     ~Data1DEntity() = default;
 
     /*
@@ -54,6 +56,7 @@ class Data1DEntity : public DataEntity
     std::shared_ptr<ErrorRenderer1D> errorRenderer_{nullptr};
     // Orientation
     AxisEntity::AxisType abscissa_{AxisEntity::AxisType::Horizontal}, ordinate_{AxisEntity::AxisType::Vertical};
+
     public:
     // Set line style
     void setLineStyle(StyleFactory1D::Style style);
