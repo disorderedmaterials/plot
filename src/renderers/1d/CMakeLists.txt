@@ -6,6 +6,7 @@ add_library(
   base.h
   line.h
   error.h
+  no_error.h
   stylefactory.h)
 
 target_include_directories(

@@ -7,8 +7,8 @@ using namespace Mildred;
 /*!
  * Construct a new Data1DEntity storing a reference to the supplied @param metrics and with the given @param parent.
  */
-Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent)
-    : DataEntity(parent), xAxis_(xAxis), valueAxis_(valueAxis)
+Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent, StyleFactory1D::Style style, StyleFactory1D::ErrorBarStyle errorStyle)
+    : DataEntity(parent), xAxis_(xAxis), valueAxis_(valueAxis), style_(style), errorStyle_(errorStyle)
 {
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
     errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
@@ -80,4 +80,20 @@ void Data1DEntity::create()
     dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
     assert(errorRenderer_);
     errorRenderer_->create(colourDefinition(), x_, xAxis_, values_, errors_, valueAxis_);
+}
+
+//! Set the line style
+void Data1DEntity::setLineStyle(StyleFactory1D::Style style)
+{
+    style_ = style;
+    dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
+    create();
+}
+
+//! Set the error style
+void Data1DEntity::setErrorStyle(StyleFactory1D::ErrorBarStyle style)
+{
+    errorStyle_ = style;
+    errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
+    create();
 }
