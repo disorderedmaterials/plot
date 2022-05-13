@@ -36,8 +36,7 @@ class Data1DEntity : public DataEntity
     // Clear all data
     void clearData();
     // Set display data
-    void setData(std::vector<double> x, std::vector<double> values);
-    void setData(std::vector<double> x, std::vector<double> values, std::vector<double> errors);
+    void setData(std::vector<double> x, std::vector<double> values, std::optional<std::vector<double>> errors = {});
 
     /*
      * Rendering

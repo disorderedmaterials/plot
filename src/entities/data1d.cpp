@@ -33,17 +33,20 @@ void Data1DEntity::clearData()
  * Set the supplied one-dimensional data (axis points @param x and @param values at those points). The data are copied to local
  * arrays and entities representing the data in the current style are immediately created.
  */
-void Data1DEntity::setData(std::vector<double> x, std::vector<double> values)
+void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, std::optional<std::vector<double>> errors)
 {
     clearData();
 
     // Check vector sizes
-    if (x.size() != values.size())
+    if ((errors.empty()) && (x.size() != values.size()))
         printf("Irregular vector sizes provided (%zu vs %zu) so data will be ignored.\n", x.size(), values.size());
-    else
+    else if ((x.size() != values.size()) || (x.size() != errors.size()) || (values.size() != errors.size()))
+        printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
+               values.size(), errors.size());
     {
         x_ = std::move(x);
         values_ = std::move(values);
+        errors_ = std::move(errors);
     }
 
     // Determine data extrema
@@ -56,17 +59,6 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values)
         ++xit;
         ++vit;
     }
-
-    create();
-}
-
-void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, std::vector<double> errors)
-{
-    clearData();
-
-    x_ = std::move(x);
-    values_ = std::move(values);
-    errors_ = std::move(errors);
 
     create();
 }
