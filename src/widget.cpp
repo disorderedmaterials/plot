@@ -57,6 +57,7 @@ MildredWidget::MildredWidget(QWidget *parent) : QWidget(parent)
     connect(mouseHandler, SIGNAL(pressed(Qt3DInput::QMouseEvent *)), this, SLOT(mouseButtonPressed(Qt3DInput::QMouseEvent *)));
     connect(mouseHandler, SIGNAL(released(Qt3DInput::QMouseEvent *)), this,
             SLOT(mouseButtonReleased(Qt3DInput::QMouseEvent *)));
+    connect(mouseHandler, SIGNAL(wheel(Qt3DInput::QWheelEvent *)), this, SLOT(mouseWheeled(Qt3DInput::QWheelEvent *)));
 
     // Construct a camera
     camera_ = new Qt3DRender::QCamera(rootEntity_.data());

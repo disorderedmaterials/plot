@@ -157,6 +157,7 @@ class MildredWidget : public QWidget
     void mousePositionChanged(Qt3DInput::QMouseEvent *event);
     void mouseButtonPressed(Qt3DInput::QMouseEvent *event);
     void mouseButtonReleased(Qt3DInput::QMouseEvent *event);
+    void mouseWheeled(Qt3DInput::QWheelEvent *event);
 
     /*
      * Keyboard Handling / Interaction

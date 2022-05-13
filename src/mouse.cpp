@@ -76,3 +76,19 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
 
 void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
+
+void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
+{
+    // The angleDelta() of the event appears to correspond to multiples of 120 with the sign indicating the wheel direction.
+    if (flatView_)
+    {
+        // Determine factor based on wheel amount, and axis deltas based on that
+        auto factor = 0.05 * (event->angleDelta().y() > 0 ? 1.0 : -1.0);
+        auto xDelta = xAxis_->range() * factor;
+        auto yDelta = yAxis_->range() * factor;
+        xAxis_->setLimits(xAxis_->minimum() + xDelta, xAxis_->maximum() - xDelta);
+        yAxis_->setLimits(yAxis_->minimum() + yDelta, yAxis_->maximum() - yDelta);
+
+        updateTransforms();
+    }
+}
