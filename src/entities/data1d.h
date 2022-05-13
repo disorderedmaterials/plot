@@ -49,7 +49,7 @@ class Data1DEntity : public DataEntity
     // Data Renderer
     std::shared_ptr<DataRenderer1D> dataRenderer_{nullptr};
     // Error style
-    StyleFactory1D::ErrorBarStyle errorStyle_{StyleFactory1D::ErrorBarStyle::ErrorBar};
+    StyleFactory1D::ErrorBarStyle errorStyle_{StyleFactory1D::ErrorBarStyle::Stick};
     // Error Renderer
     std::shared_ptr<ErrorBarRenderer1D> errorRenderer_{nullptr};
     // Orientation

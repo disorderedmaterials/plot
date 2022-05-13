@@ -38,24 +38,30 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
     clearData();
 
     // Check vector sizes
-    if ((errors.empty()) && (x.size() != values.size()))
+    if ((!errors) && (x.size() != values.size()))
         printf("Irregular vector sizes provided (%zu vs %zu) so data will be ignored.\n", x.size(), values.size());
-    else if ((x.size() != values.size()) || (x.size() != errors.size()) || (values.size() != errors.size()))
+    else if (errors && ((x.size() != values.size()) || (x.size() != errors.value().size()) || (values.size() != errors.value().size())))
         printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
-               values.size(), errors.size());
+               values.size(), errors.value().size());
     {
         x_ = std::move(x);
         values_ = std::move(values);
-        errors_ = std::move(errors);
+        if (errors)
+            errors_ = std::move(errors.value());
     }
 
     // Determine data extrema
-    auto xit = x_.cbegin(), vit = values_.cbegin();
+    auto xit = x_.cbegin(), vit = values_.cbegin(), eit = errors_.cbegin();
     while (xit != x_.end())
     {
         extrema_.expand(*xit, *vit, std::nullopt);
         logarithmicExtrema_.expand(*xit <= 0.0 ? std::nullopt : std::optional<double>{log10(*xit)},
                                    *vit <= 0.0 ? std::nullopt : std::optional<double>{log10(*vit)}, std::nullopt);
+        if (!errors_.empty()) {
+            extrema_.expand(*xit, *vit + *eit, std::nullopt);
+            extrema_.expand(*xit, *vit - *eit, std::nullopt);
+            ++eit;
+        }
         ++xit;
         ++vit;
     }
