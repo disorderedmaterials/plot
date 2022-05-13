@@ -124,6 +124,8 @@ class AxisEntity : public Qt3DCore::QEntity
     QVector3D to3D(double axisValue) const;
     // Return scaled value point
     QVector3D toScaled(double axisValue) const;
+    // Return axis value from scaled point
+    double fromScaled(double scaledValue) const;
 
     /*
      * Entities

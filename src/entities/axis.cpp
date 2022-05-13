@@ -474,7 +474,19 @@ QVector3D AxisEntity::toScaled(double axisValue) const
     if (logarithmic_)
         return direction_ * log10(axisValue) * axisScale_ / (log10(maximum_) - log10(minimum_));
     else
-        return direction_ * axisValue * axisScale_ / (maximum_ - minimum_);
+        return direction_ * axisValue * axisScale_ / range();
+}
+
+//! Return axis value from scaled point
+/*!
+ * Convert the supplied pixel offset @param scaledValue into axis coordinates along the axis.
+ */
+double AxisEntity::fromScaled(double scaledValue) const
+{
+    if (logarithmic_)
+        return 0.0; // direction_ * log10(axisValue) * axisScale_ / (log10(maximum_) - log10(minimum_));
+    else
+        return minimum_ + scaledValue * range() / axisScale_;
 }
 
 /*

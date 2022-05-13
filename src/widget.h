@@ -121,6 +121,10 @@ class MildredWidget : public QWidget
     private:
     // Create basic scenegraph
     void createSceneGraph();
+    // Convert widget position to 2D (flat) coordinates
+    QPointF toAxes2D(QPoint pos) const;
+    // Return screen coordinates at centre of 2D view
+    QPoint screen2DCentre() const;
 
     public:
     // Return x axis entity

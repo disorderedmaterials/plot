@@ -89,6 +89,13 @@ void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
         xAxis_->setLimits(xAxis_->minimum() + xDelta, xAxis_->maximum() - xDelta);
         yAxis_->setLimits(yAxis_->minimum() + yDelta, yAxis_->maximum() - yDelta);
 
+        // Shift view centre towards current mouse position
+        // -- Get the data-space delta between the centre coordinates of the 2D axes and the current mouse position
+        auto centreDelta = toAxes2D(QPoint(event->x(), height() - event->y())) - toAxes2D(screen2DCentre());
+        printf("DELTA = %f %f\n", centreDelta.x(), centreDelta.y());
+        xAxis_->shiftLimits(centreDelta.x() * 0.25);
+        yAxis_->shiftLimits(centreDelta.y() * 0.25);
+
         updateTransforms();
     }
 }
