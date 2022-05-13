@@ -2,7 +2,6 @@
 #include "material.h"
 #include "renderers/1d/stylefactory.h"
 #include "ui_mainwindow.h"
-#include <iostream>
 #include <random>
 
 MainWindow::MainWindow() : QMainWindow()
