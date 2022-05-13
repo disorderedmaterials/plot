@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "material.h"
 #include "ui_mainwindow.h"
+#include <QCheckBox>
 #include <random>
 
 MainWindow::MainWindow() : QMainWindow()
@@ -44,7 +45,18 @@ MainWindow::MainWindow() : QMainWindow()
 
         renderable->colour().set({int(255 * dist(gen)), int(255 * dist(gen)), int(255 * dist(gen)), 255});
         displayGroup_->addTarget(renderable);
+
+        QCheckBox * checkBox = new QCheckBox(QString((std::string("Sines") + std::to_string(n)).c_str()));
+        checkBox->setChecked(true);
+        ui_.datasetsLayout->addWidget(checkBox);
+        connect(checkBox, &QCheckBox::stateChanged, [=](int state) {
+            renderable->setLineStyle(
+                state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None
+            );
+        });
+        // connect(checkBox, SIGNAL(clicked(bool)), renderable->setErrorStyle(Mildred::StyleFactory1D::Style::None))
     }
+
 };
 
 void MainWindow::on_ColourPolicyNoneRadio_clicked(bool checked)

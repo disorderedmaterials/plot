@@ -103,6 +103,14 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Datasets</string>
+         </property>
+         <layout class="QVBoxLayout" name="datasetsLayout"/>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -126,7 +134,7 @@
      <x>0</x>
      <y>0</y>
      <width>956</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
