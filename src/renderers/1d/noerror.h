@@ -1,13 +1,12 @@
 #pragma once
 
 #include "renderers/1d/base.h"
-#include "renderers/1d/no_error.h"
 
 namespace Mildred
 {
-//! LineRenderer1D renders 1D data as a line.
+//! NoErrorRenderer1D renders no error bars.
 /*!
- * LineRenderer1D manages the creation of entities for displaying 1D data as a simple line.
+ * NoErrorRenderer1D is a dummy class to represent valid, but 'None' error bars.
  */
 class NoErrorRenderer1D : public ErrorRenderer1D
 {

@@ -86,7 +86,7 @@ class DataEntity : public Qt3DCore::QEntity
     // Set data entity material
     void setDataMaterial(Qt3DRender::QMaterial *material);
     // Get the data entity material
-    Qt3DRender::QMaterial* dataMaterial()
+    Qt3DRender::QMaterial* dataMaterial();
     // Set error entity material
     void setErrorMaterial(Qt3DRender::QMaterial *material);
     // Get the error entity material

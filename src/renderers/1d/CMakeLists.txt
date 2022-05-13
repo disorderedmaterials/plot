@@ -5,8 +5,9 @@ add_library(
   stylefactory.cpp
   base.h
   line.h
+  noline.h
   error.h
-  no_error.h
+  noerror.h
   stylefactory.h)
 
 target_include_directories(

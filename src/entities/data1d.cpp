@@ -89,7 +89,7 @@ void Data1DEntity::setLineStyle(StyleFactory1D::Style style)
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
     Qt3DRender::QMaterial* material = dataMaterial();
     if (material != nullptr)
-        setErrorMaterial(material);
+        setDataMaterial(material);
     create();
 }
 
