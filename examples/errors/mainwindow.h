@@ -2,6 +2,7 @@
 
 #include "ui_mainwindow.h"
 #include "entities/data1d.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,6 +17,7 @@ class MainWindow : public QMainWindow
     private slots:
     void on_UniformErrorRadio_clicked(bool checked);
     void on_RandomErrorRadio_clicked(bool checked);
+    void on_ShowErrorBarsCheck_toggled(bool checked);
 
     private:
     // Main form declaration

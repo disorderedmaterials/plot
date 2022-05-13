@@ -1,8 +1,9 @@
 #include "mainwindow.h"
 #include "material.h"
+#include "renderers/1d/stylefactory.h"
 #include "ui_mainwindow.h"
 #include <random>
-
+#include <iostream>
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -35,18 +36,24 @@ MainWindow::MainWindow() : QMainWindow()
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
-
 };
 
-void MainWindow::on_UniformErrorRadio_clicked(bool checked) {
-    if (checked) {
+void MainWindow::on_UniformErrorRadio_clicked(bool checked)
+{
+    if (checked) 
         dataEntity_->setData(xValues_, yValues_, uniformErrors_);
-    }
-
 }
 
-void MainWindow::on_RandomErrorRadio_clicked(bool checked) {
-    if (checked) {
+void MainWindow::on_RandomErrorRadio_clicked(bool checked)
+{
+    if (checked) 
         dataEntity_->setData(xValues_, yValues_, randomErrors_);
-    }
+}
+
+void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
+{
+    if (checked)
+        dataEntity_->setErrorStyle(Mildred::StyleFactory1D::ErrorBarStyle::Stick);
+    else
+        dataEntity_->setErrorStyle(Mildred::StyleFactory1D::ErrorBarStyle::None);
 }

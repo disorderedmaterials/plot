@@ -120,7 +120,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QCheckBox" name="showErrorBarsCheckBox">
+           <widget class="QCheckBox" name="ShowErrorBarsCheck">
             <property name="text">
              <string>Show</string>
             </property>
