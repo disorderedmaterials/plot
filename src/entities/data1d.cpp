@@ -47,7 +47,7 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
         x_ = std::move(x);
         values_ = std::move(values);
         if (errors)
-            errors_ = std::move(errors.value());
+            errors_ = std::move(*errors);
     }
 
     // Determine data extrema
