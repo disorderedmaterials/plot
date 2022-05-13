@@ -93,6 +93,10 @@ void DataEntity::setErrorMaterial(Qt3DRender::QMaterial *material)
         }
 }
 
+Qt3DRender::QMaterial* DataEntity::dataMaterial() {return dataEntityMaterial_;}
+
+Qt3DRender::QMaterial* DataEntity::errorMaterial() {return errorEntityMaterial_;}
+
 /*
  * Rendering
  */

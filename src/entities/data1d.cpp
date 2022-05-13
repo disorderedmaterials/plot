@@ -87,6 +87,9 @@ void Data1DEntity::setLineStyle(StyleFactory1D::Style style)
 {
     style_ = style;
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
+    Qt3DRender::QMaterial* material = dataMaterial();
+    if (material != nullptr)
+        setErrorMaterial(material);
     create();
 }
 
@@ -95,5 +98,9 @@ void Data1DEntity::setErrorStyle(StyleFactory1D::ErrorBarStyle style)
 {
     errorStyle_ = style;
     errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
+    Qt3DRender::QMaterial* material = errorMaterial();
+    if (material != nullptr)
+        setErrorMaterial(material);
     create();
+    
 }
