@@ -47,7 +47,6 @@ void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vecto
     int i = 0;
     while (xit != x.end())
     {
-
         // Upper extreme.
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit), colour_.colour(*vit));
         errors_->addIndex(i++);
@@ -60,6 +59,7 @@ void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vecto
         errors_->addIndex(-1);
         ++xit;
         ++vit;
+        ++eit;
     }
 
     // Finalise the entity
