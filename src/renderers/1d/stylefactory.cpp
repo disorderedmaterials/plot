@@ -14,7 +14,7 @@ std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntit
 }
 std::shared_ptr<ErrorBarRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCore::QEntity *rootEntity)
 {
-    if (style == ErrorBarStyle::ErrorBar)
+    if (style == ErrorBarStyle::Stick)
         return std::make_shared<ErrorBarRenderer1D>(rootEntity);
 }
 } // namespace StyleFactory1D

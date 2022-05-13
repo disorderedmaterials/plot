@@ -39,7 +39,7 @@ void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vecto
         printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
                values.size(), errors.size());
         errors_->finalise();
-        return {};
+        return;
     }
 
     // Loop over data and add vertices

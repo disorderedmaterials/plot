@@ -15,13 +15,13 @@ namespace StyleFactory1D
 // Styles for 1-dimensional data rendering
 enum class Style
 {
-    None
+    None,
     Line
 };
 
 enum class ErrorBarStyle
 {
-    None
+    None,
     Stick
 };
 
