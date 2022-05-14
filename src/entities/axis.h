@@ -72,8 +72,10 @@ class AxisEntity : public Qt3DCore::QEntity
     void setLimits(double minValue, double maxValue);
     // Return range of axis
     double range() const;
-    // Shift limits of axis
+    // Shift limits by axis delta specified
     void shiftLimits(double delta);
+    // Shift limits of axis using the specified pixel delta
+    void shiftLimitsByPixels(int pixelDelta);
     // Return whether the axis is logarithmic
     bool isLogarithmic() const;
     // Set title text
