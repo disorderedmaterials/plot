@@ -25,6 +25,15 @@ Cuboid DataEntity::extrema() const { return extrema_; }
 // Return extrema of data points in three-dimensional logarithmic space
 Cuboid DataEntity::logarithmicExtrema() const { return logarithmicExtrema_; }
 
+//! Update the limits of the extrema
+void DataEntity::updateExtrema(std::optional<double> x, std::optional<double> y, std::optional<double> z)
+{
+    extrema_.expand(x, y, z);
+    logarithmicExtrema_.expand(x <= 0.0 ? std::nullopt : std::optional<double>{log10(x)},
+                                       y <= 0.0 ? std::nullopt : std::optional<double>{log10(y)},
+                                       z <= 0.0 ? std::nullopt : std::optional<double>{log10(z)});
+}
+
 /*
  * Components
  */

@@ -56,15 +56,15 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
     auto xit = x_.cbegin(), vit = values_.cbegin(), eit = errors_.cbegin();
     while (xit != x_.end())
     {
-        extrema_.expand(*xit, *vit, std::nullopt);
-        logarithmicExtrema_.expand(*xit <= 0.0 ? std::nullopt : std::optional<double>{log10(*xit)},
-                                   *vit <= 0.0 ? std::nullopt : std::optional<double>{log10(*vit)}, std::nullopt);
-        if (!errors_.empty())
+        if (errors_.empty())
+            updateExtrema(*xit, *vit*, std::nullopt);
+        else
         {
-            extrema_.expand(*xit, *vit + *eit, std::nullopt);
-            extrema_.expand(*xit, *vit - *eit, std::nullopt);
+            updateExtrema(*xit, *vit + *eit, std::nullopt);
+            updateExtrema(*xit, *vit - *eit, std::nullopt);
             ++eit;
         }
+
         ++xit;
         ++vit;
     }

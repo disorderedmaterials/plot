@@ -43,6 +43,9 @@ class DataEntity : public Qt3DCore::QEntity
     // Return extrema of data points in three-dimensional logarithmic space
     Cuboid logarithmicExtrema() const;
 
+    protected:
+    void updateExtrema(std::optional<double> x, std::optional<double> y, std::optional<double> z);
+
     /*
      * Entities
      */
