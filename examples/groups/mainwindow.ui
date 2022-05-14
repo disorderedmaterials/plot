@@ -107,7 +107,68 @@
          <property name="title">
           <string>Datasets</string>
          </property>
-         <layout class="QVBoxLayout" name="datasetsLayout"/>
+         <layout class="QVBoxLayout" name="datasetsLayout">
+          <item>
+           <widget class="QCheckBox" name="ShowSin1Check">
+            <property name="text">
+             <string>Sin 1</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ShowSin2Check">
+            <property name="text">
+             <string>Sin 2</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ShowSin3Check">
+            <property name="text">
+             <string>Sin 3</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ShowSin4Check">
+            <property name="text">
+             <string>Sin 4</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ShowSin5Check">
+            <property name="text">
+             <string>Sin 5</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ShowSin6Check">
+            <property name="text">
+             <string>Sin 6</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>

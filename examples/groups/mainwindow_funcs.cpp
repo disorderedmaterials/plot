@@ -45,15 +45,7 @@ MainWindow::MainWindow() : QMainWindow()
 
         renderable->colour().set({int(255 * dist(gen)), int(255 * dist(gen)), int(255 * dist(gen)), 255});
         displayGroup_->addTarget(renderable);
-
-        QCheckBox *checkBox = new QCheckBox(QString((std::string("Sines") + std::to_string(n)).c_str()));
-        checkBox->setChecked(true);
-        ui_.datasetsLayout->addWidget(checkBox);
-        connect(checkBox, &QCheckBox::stateChanged, [=](int state) {
-            renderable->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
-                                                          : Mildred::StyleFactory1D::Style::None);
-        });
-        // connect(checkBox, SIGNAL(clicked(bool)), renderable->setErrorStyle(Mildred::StyleFactory1D::Style::None))
+        entities_.emplace_back(renderable);
     }
 };
 
@@ -101,4 +93,40 @@ void MainWindow::on_ColourPolicyHSVGradientRadio_clicked(bool checked)
         displayGroup_->setGradient(gradient);
         displayGroup_->setColourPolicy(Mildred::DisplayGroup::ColourPolicy::Gradient);
     }
+}
+
+void MainWindow::on_ShowSin1Check_toggled(bool state)
+{
+    entities_[0]->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
+                                                    : Mildred::StyleFactory1D::Style::None);
+}
+
+void MainWindow::on_ShowSin2Check_toggled(bool state)
+{
+    entities_[1]->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
+                                                    : Mildred::StyleFactory1D::Style::None);
+}
+
+void MainWindow::on_ShowSin3Check_toggled(bool state)
+{
+    entities_[2]->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
+                                                    : Mildred::StyleFactory1D::Style::None);
+}
+
+void MainWindow::on_ShowSin4Check_toggled(bool state)
+{
+    entities_[3]->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
+                                                    : Mildred::StyleFactory1D::Style::None);
+}
+
+void MainWindow::on_ShowSin5Check_toggled(bool state)
+{
+    entities_[4]->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
+                                                    : Mildred::StyleFactory1D::Style::None);
+}
+
+void MainWindow::on_ShowSin6Check_toggled(bool state)
+{
+    entities_[5]->setLineStyle(state == Qt::Checked ? Mildred::StyleFactory1D::Style::Line
+                                                    : Mildred::StyleFactory1D::Style::None);
 }
