@@ -57,7 +57,7 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
     while (xit != x_.end())
     {
         if (errors_.empty())
-            updateExtrema(*xit, *vit*, std::nullopt);
+            updateExtrema(*xit, *vit, std::nullopt);
         else
         {
             updateExtrema(*xit, *vit + *eit, std::nullopt);
