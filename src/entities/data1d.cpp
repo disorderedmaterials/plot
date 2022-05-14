@@ -39,12 +39,12 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
     clearData();
 
     // Check vector sizes
-    if ((!errors) && (x.size() != values.size()))
+    if (x.size() != values.size())
         printf("Irregular vector sizes provided (%zu vs %zu) so data will be ignored.\n", x.size(), values.size());
-    else if (errors &&
-             ((x.size() != values.size()) || (x.size() != errors.value().size()) || (values.size() != errors.value().size())))
+    else if (errors && x.size() != errors->size())
         printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
-               values.size(), errors.value().size());
+               values.size(), errors->size());
+    else
     {
         x_ = std::move(x);
         values_ = std::move(values);
