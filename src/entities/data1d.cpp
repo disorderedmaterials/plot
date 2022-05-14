@@ -101,6 +101,6 @@ void Data1DEntity::setErrorStyle(StyleFactory1D::ErrorBarStyle style)
     errorStyle_ = style;
     errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
     if (errorMaterial())
-        setErrorMaterial(errorMateterial());
+        setErrorMaterial(errorMaterial());
     create();
 }
