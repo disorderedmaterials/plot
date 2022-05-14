@@ -18,20 +18,20 @@ MainWindow::MainWindow() : QMainWindow()
     double relativeError = 0.1;
 
     // Fill in x values (0 to nPoints).
-    xValues_ = std::vector<double>(nPoints);
+    xValues_.resize(nPoints);
     std::iota(xValues_.begin(), xValues_.end(), 0);
 
     // Fill in y values (sin(x)).
-    yValues_ = std::vector<double>(nPoints);
+    yValues_.resize(nPoints);
     std::transform(xValues_.begin(), xValues_.end(), yValues_.begin(), [](const auto x) { return sin(x); });
 
     // Fill in uniform errors.
-    uniformErrors_ = std::vector<double>(nPoints);
+    uniformErrors_.resize(nPoints);
     std::transform(yValues_.begin(), yValues_.end(), uniformErrors_.begin(),
                    [relativeError](const auto x) { return relativeError * x; });
 
     // Fill in random errors.
-    randomErrors_ = std::vector<double>(nPoints);
+    randomErrors_.resize(nPoints);
     std::transform(yValues_.begin(), yValues_.end(), randomErrors_.begin(),
                    [dist, gen](const auto x) mutable { return x * dist(gen); });
 
