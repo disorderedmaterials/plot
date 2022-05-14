@@ -5,9 +5,9 @@
 
 namespace Mildred
 {
-//! LineRenderer1D renders 1D data as a line.
+//! ErrorBarRenderer1D renders 1D data errors as sticks.
 /*!
- * LineRenderer1D manages the creation of entities for displaying 1D data as a simple line.
+ * ErrorBarRenderer1D manages the creation of entities for displaying 1D data error bars in a simple stick representation.
  */
 class ErrorBarRenderer1D : public ErrorRenderer1D
 {
