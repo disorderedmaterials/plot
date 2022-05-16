@@ -43,6 +43,9 @@ class DataEntity : public Qt3DCore::QEntity
     // Return extrema of data points in three-dimensional logarithmic space
     Cuboid logarithmicExtrema() const;
 
+    protected:
+    void updateExtrema(std::optional<double> x, std::optional<double> y, std::optional<double> z);
+
     /*
      * Entities
      */
@@ -62,6 +65,8 @@ class DataEntity : public Qt3DCore::QEntity
     Qt3DCore::QTransform *positionalTransform_{nullptr};
     // Material for data entity
     Qt3DRender::QMaterial *dataEntityMaterial_{nullptr};
+    // Material for error entity
+    Qt3DRender::QMaterial *errorEntityMaterial_{nullptr};
 
     protected:
     // Local colour definition for entity
@@ -83,6 +88,12 @@ class DataEntity : public Qt3DCore::QEntity
     void removeColourOverride();
     // Set data entity material
     void setDataMaterial(Qt3DRender::QMaterial *material);
+    // Get the data entity material
+    Qt3DRender::QMaterial *dataMaterial();
+    // Set error entity material
+    void setErrorMaterial(Qt3DRender::QMaterial *material);
+    // Get the error entity material
+    Qt3DRender::QMaterial *errorMaterial();
 
     /*
      * Rendering

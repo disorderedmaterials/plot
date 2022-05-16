@@ -25,6 +25,15 @@ Cuboid DataEntity::extrema() const { return extrema_; }
 // Return extrema of data points in three-dimensional logarithmic space
 Cuboid DataEntity::logarithmicExtrema() const { return logarithmicExtrema_; }
 
+//! Update the limits of the extrema
+void DataEntity::updateExtrema(std::optional<double> x, std::optional<double> y, std::optional<double> z)
+{
+    extrema_.expand(*x, *y, *z);
+    logarithmicExtrema_.expand(x <= 0.0 ? std::nullopt : std::optional<double>{log10(*x)},
+                               y <= 0.0 ? std::nullopt : std::optional<double>{log10(*y)},
+                               z <= 0.0 ? std::nullopt : std::optional<double>{log10(*z)});
+}
+
 /*
  * Components
  */
@@ -71,6 +80,31 @@ void DataEntity::setDataMaterial(Qt3DRender::QMaterial *material)
                 entity->addComponent(dataEntityMaterial_);
         }
 }
+
+void DataEntity::setErrorMaterial(Qt3DRender::QMaterial *material)
+{
+    // Remove existing material if one exists
+    if (errorEntityMaterial_)
+        foreach (auto *node, errorEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->removeComponent(errorEntityMaterial_);
+        }
+
+    errorEntityMaterial_ = material;
+    if (errorEntityMaterial_)
+        foreach (auto *node, errorEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->addComponent(errorEntityMaterial_);
+        }
+}
+
+Qt3DRender::QMaterial *DataEntity::dataMaterial() { return dataEntityMaterial_; }
+
+Qt3DRender::QMaterial *DataEntity::errorMaterial() { return errorEntityMaterial_; }
 
 /*
  * Rendering

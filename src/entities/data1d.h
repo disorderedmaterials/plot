@@ -18,7 +18,9 @@ class AxisEntity;
 class Data1DEntity : public DataEntity
 {
     public:
-    Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr);
+    Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr,
+                 StyleFactory1D::Style style = StyleFactory1D::Style::Line,
+                 StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
     ~Data1DEntity() = default;
 
     /*
@@ -36,7 +38,7 @@ class Data1DEntity : public DataEntity
     // Clear all data
     void clearData();
     // Set display data
-    void setData(std::vector<double> x, std::vector<double> values);
+    void setData(std::vector<double> x, std::vector<double> values, std::optional<std::vector<double>> errors = std::nullopt);
 
     /*
      * Rendering
@@ -45,11 +47,21 @@ class Data1DEntity : public DataEntity
     // Axes to plot against
     const AxisEntity *xAxis_{nullptr}, *valueAxis_{nullptr};
     // Data style
-    StyleFactory1D::Style style_{StyleFactory1D::Style::Line};
+    StyleFactory1D::Style style_;
     // Data Renderer
     std::shared_ptr<DataRenderer1D> dataRenderer_{nullptr};
+    // Error style
+    StyleFactory1D::ErrorBarStyle errorStyle_;
+    // Error Renderer
+    std::shared_ptr<ErrorRenderer1D> errorRenderer_{nullptr};
     // Orientation
     AxisEntity::AxisType abscissa_{AxisEntity::AxisType::Horizontal}, ordinate_{AxisEntity::AxisType::Vertical};
+
+    public:
+    // Set line style
+    void setLineStyle(StyleFactory1D::Style style);
+    // Set error style
+    void setErrorStyle(StyleFactory1D::ErrorBarStyle style);
 
     protected:
     // Create renderables from current data

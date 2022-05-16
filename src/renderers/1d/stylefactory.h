@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderers/1d/base.h"
+#include "renderers/1d/error.h"
 
 namespace Mildred
 {
@@ -14,10 +15,21 @@ namespace StyleFactory1D
 // Styles for 1-dimensional data rendering
 enum class Style
 {
+    None,
     Line
+};
+
+enum class ErrorBarStyle
+{
+    None,
+    Stick
 };
 
 // Produce renderer for the specified style
 std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity);
+
+// Produce error renderer for the specified style
+std::shared_ptr<ErrorRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCore::QEntity *rootEntity);
+
 } // namespace StyleFactory1D
 } // namespace Mildred

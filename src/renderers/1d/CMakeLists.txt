@@ -1,4 +1,14 @@
-add_library(renderers1d line.cpp stylefactory.cpp base.h line.h stylefactory.h)
+add_library(
+  renderers1d
+  line.cpp
+  error.cpp
+  stylefactory.cpp
+  base.h
+  line.h
+  noline.h
+  error.h
+  noerror.h
+  stylefactory.h)
 
 target_include_directories(
   renderers1d

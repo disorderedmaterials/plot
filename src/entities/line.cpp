@@ -12,6 +12,7 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
       vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_), colourBuffer_(&geometry_),
       colourAttribute_(&geometry_)
 {
+
     // Set up the vertex attribute
     vertexAttribute_.setName(Qt3DCore::QAttribute::defaultPositionAttributeName());
     vertexAttribute_.setVertexBaseType(Qt3DCore::QAttribute::Float);
@@ -42,6 +43,12 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
 
     geometryRenderer_.setGeometry(&geometry_);
     geometryRenderer_.setPrimitiveType(primitiveType);
+
+    // Enable primitive restarting and define the restart index value.
+    // This allows us to enable line breaks, by adding indices with the value
+    // of the restart value.
+    geometryRenderer_.setPrimitiveRestartEnabled(true);
+    geometryRenderer_.setRestartIndexValue(-1);
 
     // Set up entity
     addComponent(&geometryRenderer_);
