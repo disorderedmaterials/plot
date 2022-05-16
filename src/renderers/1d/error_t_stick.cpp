@@ -19,8 +19,8 @@ ErrorTStickRenderer1D::~ErrorTStickRenderer1D()
 
 // Create entities from the supplied metrics and data
 void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                                const std::vector<double> &values, const std::vector<double> &errors,
-                                const AxisEntity *valueAxis)
+                                   const std::vector<double> &values, const std::vector<double> &errors,
+                                   const AxisEntity *valueAxis)
 {
     assert(errors_);
     errors_->clear();
@@ -61,20 +61,24 @@ void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::ve
 
         // Upper T bar.
         // Offset x of vertex by +errorBarSize_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(errorBarSize() / 2.0, 0, 0), colour_.colour(*vit));
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(errorBarSize() / 2.0, 0, 0),
+                           colour_.colour(*vit));
         errors_->addIndex(i++);
         // Offset x of vertex by -errorBarSize_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0), colour_.colour(*vit));
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0),
+                           colour_.colour(*vit));
         errors_->addIndex(i++);
         // Add restart index, to cause line break.
         errors_->addIndex(-1);
 
         // Lower T bar.
         // Offset x of vertex by +errorBarSize_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(errorBarSize() / 2.0, 0, 0), colour_.colour(*vit));
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(errorBarSize() / 2.0, 0, 0),
+                           colour_.colour(*vit));
         errors_->addIndex(i++);
         // Offset x of vertex by -errorBarSize_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0), colour_.colour(*vit));
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0),
+                           colour_.colour(*vit));
         errors_->addIndex(i++);
         // Add restart index, to cause line break.
         errors_->addIndex(-1);

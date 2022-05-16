@@ -67,10 +67,10 @@ class ErrorRenderer1D
                         const std::vector<double> &values, const std::vector<double> &errors, const AxisEntity *valueAxis) = 0;
 
     // Get error bar size.
-    float errorBarSize() const {return errorBarSize_;}
+    float errorBarSize() const { return errorBarSize_; }
 
     // Set error bar size.
-    void setErrorBarSize(float errorBarSize) {errorBarSize_ = errorBarSize;}
+    void setErrorBarSize(float errorBarSize) { errorBarSize_ = errorBarSize; }
 };
 
 } // namespace Mildred

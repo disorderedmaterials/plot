@@ -40,7 +40,6 @@ MainWindow::MainWindow() : QMainWindow()
 
     ui_.styleCombo->addItem(QString("Stick"));
     ui_.styleCombo->addItem(QString("T-Bar Stick"));
-
 };
 
 void MainWindow::on_UniformErrorRadio_clicked(bool checked)
@@ -57,8 +56,7 @@ void MainWindow::on_RandomErrorRadio_clicked(bool checked)
 
 void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
 {
-    dataEntity_->setErrorStyle(checked ? style_
-                                       : Mildred::StyleFactory1D::ErrorBarStyle::None);
+    dataEntity_->setErrorStyle(checked ? style_ : Mildred::StyleFactory1D::ErrorBarStyle::None);
 }
 
 void MainWindow::on_styleCombo_currentIndexChanged(int index)

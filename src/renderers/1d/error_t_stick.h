@@ -26,6 +26,5 @@ class ErrorTStickRenderer1D : public ErrorRenderer1D
     // Create entities from the supplied metrics and data
     void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
                 const std::vector<double> &values, const std::vector<double> &errors, const AxisEntity *valueAxis) override;
-
 };
 } // namespace Mildred

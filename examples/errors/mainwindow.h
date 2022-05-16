@@ -25,7 +25,7 @@ class MainWindow : public QMainWindow
     Ui::MainWindow ui_;
     // Display group
     Mildred::Data1DEntity *dataEntity_{nullptr};
-    //Style
+    // Style
     Mildred::StyleFactory1D::ErrorBarStyle style_{Mildred::StyleFactory1D::ErrorBarStyle::Stick};
     /*
      * Data

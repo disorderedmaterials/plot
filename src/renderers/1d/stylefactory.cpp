@@ -1,8 +1,8 @@
 #include "renderers/1d/stylefactory.h"
 #include "renderers/1d/error.h"
+#include "renderers/1d/error_t_stick.h"
 #include "renderers/1d/line.h"
 #include "renderers/1d/noerror.h"
-#include "renderers/1d/error_t_stick.h"
 #include "renderers/1d/noline.h"
 
 namespace Mildred
