@@ -1,7 +1,6 @@
 #pragma once
 
 #include "renderers/1d/base.h"
-#include "renderers/1d/error.h"
 
 namespace Mildred
 {

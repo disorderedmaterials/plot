@@ -1,15 +1,15 @@
 add_library(
   renderers1d
   line.cpp
-  error.cpp
+  error_stick.cpp
   error_t_stick.cpp
   stylefactory.cpp
   base.h
   line.h
-  noline.h
-  error.h
+  line_none.h
+  error_stick.h
   error_t_stick.h
-  noerror.h
+  error_none.h
   stylefactory.h)
 
 target_include_directories(

@@ -1,4 +1,4 @@
-#include "renderers/1d/error.h"
+#include "renderers/1d/error_stick.h"
 
 using namespace Mildred;
 
