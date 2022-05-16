@@ -35,6 +35,5 @@ class MainWindow : public QMainWindow
     Mildred::DisplayGroup *displayGroup_{nullptr};
 
     // Data entities
-    std::vector<Mildred::Data1DEntity*> entities_;
-
+    std::vector<Mildred::Data1DEntity *> entities_;
 };

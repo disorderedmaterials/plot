@@ -30,8 +30,8 @@ void DataEntity::updateExtrema(std::optional<double> x, std::optional<double> y,
 {
     extrema_.expand(*x, *y, *z);
     logarithmicExtrema_.expand(x <= 0.0 ? std::nullopt : std::optional<double>{log10(*x)},
-                                       y <= 0.0 ? std::nullopt : std::optional<double>{log10(*y)},
-                                       z <= 0.0 ? std::nullopt : std::optional<double>{log10(*z)});
+                               y <= 0.0 ? std::nullopt : std::optional<double>{log10(*y)},
+                               z <= 0.0 ? std::nullopt : std::optional<double>{log10(*z)});
 }
 
 /*
