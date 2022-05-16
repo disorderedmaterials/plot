@@ -18,7 +18,8 @@ class MainWindow : public QMainWindow
     void on_UniformErrorRadio_clicked(bool checked);
     void on_RandomErrorRadio_clicked(bool checked);
     void on_ShowErrorBarsCheck_toggled(bool checked);
-    void on_styleCombo_currentIndexChanged(int index);
+    void on_StyleCombo_currentIndexChanged(int index);
+    void on_WidthSpin_valueChanged(double value);
 
     private:
     // Main form declaration
