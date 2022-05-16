@@ -54,5 +54,5 @@ void MainWindow::on_RandomErrorRadio_clicked(bool checked)
 void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
 {
     dataEntity_->setErrorStyle(checked ? Mildred::StyleFactory1D::ErrorBarStyle::Stick
-                                      : Mildred::StyleFactory1D::ErrorBarStyle::None);
+                                       : Mildred::StyleFactory1D::ErrorBarStyle::None);
 }
