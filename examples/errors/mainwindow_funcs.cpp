@@ -51,10 +51,7 @@ void MainWindow::on_RandomErrorRadio_clicked(bool checked)
         dataEntity_->setData(xValues_, yValues_, randomErrors_);
 }
 
-void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
-{
-    if (checked)
-        dataEntity_->setErrorStyle(Mildred::StyleFactory1D::ErrorBarStyle::Stick);
-    else
-        dataEntity_->setErrorStyle(Mildred::StyleFactory1D::ErrorBarStyle::None);
+void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked) {
+    dataEntity_->setLineStyle(checked ? Mildred::StyleFactory1D::ErrorBarStyle::Stick
+                                                    : Mildred::StyleFactory1D::ErrorBarStyle::None);
 }
