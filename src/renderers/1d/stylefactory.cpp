@@ -2,6 +2,7 @@
 #include "renderers/1d/error.h"
 #include "renderers/1d/line.h"
 #include "renderers/1d/noerror.h"
+#include "renderers/1d/error_t_stick.h"
 #include "renderers/1d/noline.h"
 
 namespace Mildred
@@ -20,6 +21,8 @@ std::shared_ptr<ErrorRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCo
 {
     if (style == ErrorBarStyle::Stick)
         return std::make_shared<ErrorBarRenderer1D>(rootEntity);
+    else if (style == ErrorBarStyle::T_Stick)
+        return std::make_shared<ErrorTStickRenderer1D>(rootEntity);
     else if (style == ErrorBarStyle::None)
         return std::make_shared<NoErrorRenderer1D>(rootEntity);
 }
