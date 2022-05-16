@@ -37,6 +37,10 @@ MainWindow::MainWindow() : QMainWindow()
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
+
+    ui_.styleCombo->addItem(QString("Stick"));
+    ui_.styleCombo->addItem(QString("T-Bar Stick"));
+
 };
 
 void MainWindow::on_UniformErrorRadio_clicked(bool checked)
@@ -53,6 +57,13 @@ void MainWindow::on_RandomErrorRadio_clicked(bool checked)
 
 void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
 {
-    dataEntity_->setErrorStyle(checked ? Mildred::StyleFactory1D::ErrorBarStyle::Stick
+    dataEntity_->setErrorStyle(checked ? style_
                                        : Mildred::StyleFactory1D::ErrorBarStyle::None);
+}
+
+void MainWindow::on_styleCombo_currentIndexChanged(int index)
+{
+    style_ = index == 0 ? Mildred::StyleFactory1D::ErrorBarStyle::Stick : Mildred::StyleFactory1D::ErrorBarStyle::T_Stick;
+    if (ui_.ShowErrorBarsCheck->isChecked())
+        dataEntity_->setErrorStyle(style_);
 }
