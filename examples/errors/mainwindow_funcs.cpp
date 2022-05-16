@@ -60,19 +60,16 @@ void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
 {
     dataEntity_->setErrorStyle(checked ? style_ : Mildred::StyleFactory1D::ErrorBarStyle::None);
     dataEntity_->setErrorBarSize(float(ui_.WidthSpin->value()));
-
 }
 
 void MainWindow::on_StyleCombo_currentIndexChanged(int index)
 {
     style_ = index == 0 ? Mildred::StyleFactory1D::ErrorBarStyle::Stick : Mildred::StyleFactory1D::ErrorBarStyle::T_Stick;
-    if (ui_.ShowErrorBarsCheck->isChecked()) {
+    if (ui_.ShowErrorBarsCheck->isChecked())
+    {
         dataEntity_->setErrorStyle(style_);
         dataEntity_->setErrorBarSize(float(ui_.WidthSpin->value()));
     }
 }
 
-void MainWindow::on_WidthSpin_valueChanged(double value)
-{
-    dataEntity_->setErrorBarSize(float(value));
-}
+void MainWindow::on_WidthSpin_valueChanged(double value) { dataEntity_->setErrorBarSize(float(value)); }

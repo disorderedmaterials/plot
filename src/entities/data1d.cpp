@@ -113,4 +113,4 @@ void Data1DEntity::setErrorBarSize(float size)
 }
 
 //! Get error size
-float Data1DEntity::errorBarSize() const{ return errorRenderer_->errorBarSize(); }
+float Data1DEntity::errorBarSize() const { return errorRenderer_->errorBarSize(); }
