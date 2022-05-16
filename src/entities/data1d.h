@@ -20,7 +20,7 @@ class Data1DEntity : public DataEntity
     public:
     Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr,
                  StyleFactory1D::Style style = StyleFactory1D::Style::Line,
-                 StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
+                 StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::T_Stick);
     ~Data1DEntity() = default;
 
     /*
@@ -62,6 +62,10 @@ class Data1DEntity : public DataEntity
     void setLineStyle(StyleFactory1D::Style style);
     // Set error style
     void setErrorStyle(StyleFactory1D::ErrorBarStyle style);
+    // Set error size
+    void setErrorBarSize(float size);
+    // Get error size
+    float errorBarSize() const;
 
     protected:
     // Create renderables from current data
