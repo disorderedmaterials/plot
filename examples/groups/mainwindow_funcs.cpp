@@ -1,9 +1,7 @@
 #include "mainwindow.h"
 #include "material.h"
 #include "ui_mainwindow.h"
-#include <QCheckBox>
 #include <random>
-#include <iostream>
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -98,36 +96,30 @@ void MainWindow::on_ColourPolicyHSVGradientRadio_clicked(bool checked)
 
 void MainWindow::on_ShowSin1Check_toggled(bool checked)
 {
-    entities_[0]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line
-                                                    : Mildred::StyleFactory1D::Style::None);
+    entities_[0]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None);
 }
 
 void MainWindow::on_ShowSin2Check_toggled(bool checked)
 {
-    entities_[1]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line
-                                                    : Mildred::StyleFactory1D::Style::None);
+    entities_[1]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None);
 }
 
 void MainWindow::on_ShowSin3Check_toggled(bool checked)
 {
-    entities_[2]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line
-                                                    : Mildred::StyleFactory1D::Style::None);
+    entities_[2]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None);
 }
 
 void MainWindow::on_ShowSin4Check_toggled(bool checked)
 {
-    entities_[3]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line
-                                                    : Mildred::StyleFactory1D::Style::None);
+    entities_[3]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None);
 }
 
 void MainWindow::on_ShowSin5Check_toggled(bool checked)
 {
-    entities_[4]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line
-                                                    : Mildred::StyleFactory1D::Style::None);
+    entities_[4]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None);
 }
 
 void MainWindow::on_ShowSin6Check_toggled(bool checked)
 {
-    entities_[5]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line
-                                                    : Mildred::StyleFactory1D::Style::None);
+    entities_[5]->setLineStyle(checked ? Mildred::StyleFactory1D::Style::Line : Mildred::StyleFactory1D::Style::None);
 }
