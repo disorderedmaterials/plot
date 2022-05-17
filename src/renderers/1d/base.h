@@ -58,7 +58,7 @@ class ErrorRenderer1D
     // Colour definition
     ColourDefinition colour_;
 
-    // Error bar metric1
+    // Error bar metric
     double errorBarMetric_{10.0};
 
     public:
