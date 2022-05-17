@@ -59,7 +59,7 @@ class ErrorRenderer1D
     ColourDefinition colour_;
 
     // Error bar metric
-    double errorBarMetric_{10.0};
+    double errorBarMetric_{6.0};
 
     public:
     // Create entities from the supplied axes and data
