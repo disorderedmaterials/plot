@@ -5,9 +5,9 @@
 
 namespace Mildred
 {
-//! StickErrorRenderer1D renders 1D data errors as sticks.
+//! TeeErrorRenderer1D renders 1D data errors as sticks.
 /*!
- * StickErrorRenderer1D manages the creation of entities for displaying 1D data error bars in a simple stick representation.
+ * TeeErrorRenderer1D manages the creation of entities for displaying 1D data error bars in a simple T-style sticks.
  */
 class TeeErrorRenderer1D : public ErrorRenderer1D
 {
