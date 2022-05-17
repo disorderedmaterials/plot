@@ -525,7 +525,7 @@ QVector3D AxisEntity::toScaled(double axisValue) const
 double AxisEntity::fromScaled(double scaledValue) const
 {
     if (logarithmic_)
-        return 0.0; // direction_ * log10(axisValue) * axisScale_ / (log10(maximum_) - log10(minimum_));
+        return pow(10.0, log10(minimum_) + (scaledValue / axisScale_) * (log10(maximum_) - log10(minimum_)));
     else
         return minimum_ + scaledValue * range() / axisScale_;
 }
