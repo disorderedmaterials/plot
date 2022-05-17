@@ -72,7 +72,7 @@ class AxisEntity : public Qt3DCore::QEntity
     void setLimits(double minValue, double maxValue);
     // Return range of axis
     double range() const;
-    // Shift limits by axis delta specified
+    // Shift limits of axis using the specified axis delta.
     void shiftLimits(double delta);
     // Shift limits of axis using the specified pixel delta
     void shiftLimitsByPixels(int pixelDelta);
