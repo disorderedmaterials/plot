@@ -263,7 +263,7 @@ void AxisEntity::shiftLimits(double delta)
     recreate();
 }
 
-//! Shift the limits of the axis base on the supplied screen pixel delta
+//! Shift the limits of the axis based on the supplied screen pixel delta
 /*!
  * Adjust the limits of the axis by the supplied @param pixelDelta. The @param pixelDelta is converted to a suitable axis value
  * delta which is then added to both the minimum and maximum values. The overall range of the axis is not modified, unless the
