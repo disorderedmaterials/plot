@@ -19,8 +19,8 @@ StickErrorRenderer1D::~StickErrorRenderer1D()
 
 // Create entities from the supplied metrics and data
 void StickErrorRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                                const std::vector<double> &values, const std::vector<double> &errors,
-                                const AxisEntity *valueAxis)
+                                  const std::vector<double> &values, const std::vector<double> &errors,
+                                  const AxisEntity *valueAxis)
 {
     assert(errors_);
     errors_->clear();

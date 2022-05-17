@@ -19,8 +19,8 @@ TeeErrorRenderer1D::~TeeErrorRenderer1D()
 
 // Create entities from the supplied metrics and data
 void TeeErrorRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                                   const std::vector<double> &values, const std::vector<double> &errors,
-                                   const AxisEntity *valueAxis)
+                                const std::vector<double> &values, const std::vector<double> &errors,
+                                const AxisEntity *valueAxis)
 {
     assert(errors_);
     errors_->clear();
