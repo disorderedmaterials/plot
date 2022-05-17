@@ -104,3 +104,13 @@ void Data1DEntity::setErrorStyle(StyleFactory1D::ErrorBarStyle style)
         setErrorMaterial(errorMaterial());
     create();
 }
+
+//! Set error size
+void Data1DEntity::setErrorBarMetric(double metric)
+{
+    errorRenderer_->setErrorBarMetric(metric);
+    create();
+}
+
+//! Get error size
+double Data1DEntity::errorBarMetric() const { return errorRenderer_->errorBarMetric(); }

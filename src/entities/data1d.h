@@ -62,6 +62,10 @@ class Data1DEntity : public DataEntity
     void setLineStyle(StyleFactory1D::Style style);
     // Set error style
     void setErrorStyle(StyleFactory1D::ErrorBarStyle style);
+    // Set error size
+    void setErrorBarMetric(double metric);
+    // Get error size
+    double errorBarMetric() const;
 
     protected:
     // Create renderables from current data

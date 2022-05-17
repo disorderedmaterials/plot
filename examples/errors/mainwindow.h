@@ -18,13 +18,19 @@ class MainWindow : public QMainWindow
     void on_UniformErrorRadio_clicked(bool checked);
     void on_RandomErrorRadio_clicked(bool checked);
     void on_ShowErrorBarsCheck_toggled(bool checked);
+    void on_StyleCombo_currentIndexChanged(int index);
+
+    public slots:
+    // Set error size
+    void setErrorBarSize(double size);
 
     private:
     // Main form declaration
     Ui::MainWindow ui_;
     // Display group
     Mildred::Data1DEntity *dataEntity_{nullptr};
-
+    // Style
+    Mildred::StyleFactory1D::ErrorBarStyle style_{Mildred::StyleFactory1D::ErrorBarStyle::Stick};
     /*
      * Data
      */
