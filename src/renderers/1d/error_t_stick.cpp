@@ -61,11 +61,11 @@ void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::ve
 
         // Upper T bar.
         // Offset x of vertex by +errorBarMetric_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(errorBarSize() / 2.0, 0, 0),
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(errorBarMetric() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
         // Offset x of vertex by -errorBarMetric_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0),
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(-errorBarMetric() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
         // Add restart index, to cause line break.
@@ -73,11 +73,11 @@ void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::ve
 
         // Lower T bar.
         // Offset x of vertex by +errorBarMetric_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(errorBarSize() / 2.0, 0, 0),
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(errorBarMetric() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
         // Offset x of vertex by -errorBarMetric_ / 2.
-        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0),
+        errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(-errorBarMetric() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
         // Add restart index, to cause line break.
