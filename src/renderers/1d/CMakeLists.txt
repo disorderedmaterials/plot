@@ -1,6 +1,7 @@
 add_library(
   renderers1d
   line.cpp
+  error_base.cpp
   error_stick.cpp
   error_tee.cpp
   stylefactory.cpp
