@@ -45,7 +45,7 @@ void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::ve
 
     // Loop over data and add vertices
     auto xit = x.cbegin(), vit = values.cbegin(), eit = errors.cbegin();
-    int i = 0;
+    auto i = 0;
     while (xit != x.end())
     {
         // Upper extreme.
