@@ -42,6 +42,8 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
 
     ui_.WidthSpin->setValue(10.0);
+
+    connect(ui_.WidthSpin, SIGNAL(valueChanged(double)), this, SLOT(setErrorBarSize(double)));
 };
 
 void MainWindow::on_UniformErrorRadio_clicked(bool checked)
@@ -59,7 +61,7 @@ void MainWindow::on_RandomErrorRadio_clicked(bool checked)
 void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
 {
     dataEntity_->setErrorStyle(checked ? style_ : Mildred::StyleFactory1D::ErrorBarStyle::None);
-    dataEntity_->setErrorBarSize(float(ui_.WidthSpin->value()));
+    dataEntity_->setErrorBarMetric(ui_.WidthSpin->value());
 }
 
 void MainWindow::on_StyleCombo_currentIndexChanged(int index)
@@ -68,8 +70,8 @@ void MainWindow::on_StyleCombo_currentIndexChanged(int index)
     if (ui_.ShowErrorBarsCheck->isChecked())
     {
         dataEntity_->setErrorStyle(style_);
-        dataEntity_->setErrorBarSize(float(ui_.WidthSpin->value()));
+        dataEntity_->setErrorBarMetric(ui_.WidthSpin->value());
     }
 }
 
-void MainWindow::on_WidthSpin_valueChanged(double value) { dataEntity_->setErrorBarSize(float(value)); }
+void MainWindow::setErrorBarSize(double size) { dataEntity_->setErrorBarMetric(size); }

@@ -19,7 +19,10 @@ class MainWindow : public QMainWindow
     void on_RandomErrorRadio_clicked(bool checked);
     void on_ShowErrorBarsCheck_toggled(bool checked);
     void on_StyleCombo_currentIndexChanged(int index);
-    void on_WidthSpin_valueChanged(double value);
+
+    public slots:
+    // Set error size
+    void setErrorBarSize(double size);
 
     private:
     // Main form declaration
