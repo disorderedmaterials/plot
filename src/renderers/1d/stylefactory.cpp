@@ -3,7 +3,7 @@
 #include "renderers/1d/error_stick.h"
 #include "renderers/1d/error_t_stick.h"
 #include "renderers/1d/line.h"
-#include "renderers/1d/line_none.h"
+#include "renderers/1d/none.h"
 
 namespace Mildred
 {
