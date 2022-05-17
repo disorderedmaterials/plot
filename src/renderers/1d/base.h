@@ -68,7 +68,6 @@ class ErrorRenderer1D
 
     // Get error bar metric.
     float errorBarMetric() const { return errorBarMetric_; }
-
     // Set error bar size.
     void setErrorBarMetric(double errorBarMetric) { errorBarMetric_ = errorBarMetric; }
 };
