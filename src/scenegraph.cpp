@@ -118,6 +118,20 @@ void MildredWidget::createSceneGraph()
     dataEntityParent_->addComponent(dataOriginTransform_);
 }
 
+//! Convert widget position to 2D (flat) coordinates
+QPointF MildredWidget::toAxes2D(QPoint pos) const
+{
+    return {xAxis_->fromScaled((pos.x() - width() / 2.0) - sceneObjectsTransform_->translation().x()),
+            yAxis_->fromScaled((pos.y() - height() / 2.0) - sceneObjectsTransform_->translation().y())};
+}
+
+//! Return screen coordinates at centre of 2D view
+QPoint MildredWidget::screen2DCentre() const
+{
+    return {int(width() / 2 + sceneObjectsTransform_->translation().x() + metrics_.displayVolumeExtent().x() / 2.0),
+            int(height() / 2 + sceneObjectsTransform_->translation().y() + metrics_.displayVolumeExtent().y() / 2.0)};
+}
+
 //! Return x axis entity
 AxisEntity *MildredWidget::xAxis() { return xAxis_; }
 

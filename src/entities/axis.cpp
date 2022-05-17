@@ -236,27 +236,68 @@ void AxisEntity::setLimits(double minValue, double maxValue)
  */
 double AxisEntity::range() const { return maximum_ - minimum_; }
 
-//! Shift the limits of the axis
+//! Shift limits by axis delta specified
 /*!
  * Adjust the limits of the axis by the supplied @param delta. The @param delta is added to both the minimum and maximum values.
- * The overall range of the axis is not modified.
+ * The overall range of the axis is not modified, unless the axis represents a logarithmic scale.
  *
- * Emits rangeChanged().
+ * Emits rangeChanged() if the axis style is logarithmic.
  */
 void AxisEntity::shiftLimits(double delta)
 {
-    // If we are logarithmic and the shift would cause a negative minimum_, ignore the request
-    if (logarithmic_ && (minimum_ + delta) <= 0.0)
-        return;
+    if (logarithmic_)
+    {
+        auto logRange = log10(maximum_) - log10(minimum_);
+        auto logDelta = logRange * (delta / range());
+        minimum_ = pow(10.0, log10(minimum_) + logDelta);
+        maximum_ = pow(10.0, log10(maximum_) + logDelta);
 
-    minimum_ += delta;
-    maximum_ += delta;
+        rangeChanged();
+    }
+    else
+    {
+        minimum_ += delta;
+        maximum_ += delta;
+    }
 
     recreate();
+}
 
-    // Only need to emit a range changed if we're logarithmic
+//! Shift the limits of the axis based on the supplied screen pixel delta
+/*!
+ * Adjust the limits of the axis by the supplied @param pixelDelta. The @param pixelDelta is converted to a suitable axis value
+ * delta which is then added to both the minimum and maximum values. The overall range of the axis is not modified, unless the
+ * axis represents a logarithmic scale.
+ *
+ * Emits rangeChanged() if the axis style is logarithmic.
+ */
+// Shift limits of axis using the specified pixel delta
+void AxisEntity::shiftLimitsByPixels(int pixelDelta)
+{
     if (logarithmic_)
-        emit(rangeChanged());
+    {
+        // Get logarithmic range and determine delta
+        auto logRange = log10(maximum_) - log10(minimum_);
+        auto delta = logRange * (double(pixelDelta) / axisScale_);
+
+        // If we are logarithmic and the shift would cause a negative minimum_, ignore the request
+        if (pow(10.0, log10(minimum_) + delta) <= 0.0)
+            return;
+
+        minimum_ = pow(10.0, log10(minimum_) + delta);
+        maximum_ = pow(10.0, log10(maximum_) + delta);
+
+        rangeChanged();
+    }
+    else
+    {
+        auto delta = range() * (double(pixelDelta) / axisScale_);
+
+        minimum_ += delta;
+        maximum_ += delta;
+    }
+
+    recreate();
 }
 
 //! Return whether the axis is logarithmic
@@ -474,7 +515,19 @@ QVector3D AxisEntity::toScaled(double axisValue) const
     if (logarithmic_)
         return direction_ * log10(axisValue) * axisScale_ / (log10(maximum_) - log10(minimum_));
     else
-        return direction_ * axisValue * axisScale_ / (maximum_ - minimum_);
+        return direction_ * axisValue * axisScale_ / range();
+}
+
+//! Return axis value from scaled point
+/*!
+ * Convert the supplied pixel offset @param scaledValue into axis coordinates along the axis.
+ */
+double AxisEntity::fromScaled(double scaledValue) const
+{
+    if (logarithmic_)
+        return pow(10.0, log10(minimum_) + (scaledValue / axisScale_) * (log10(maximum_) - log10(minimum_)));
+    else
+        return minimum_ + scaledValue * range() / axisScale_;
 }
 
 /*

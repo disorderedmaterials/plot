@@ -60,10 +60,8 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     {
         if (flatView_)
         {
-            xAxis_->shiftLimits(-xAxis_->range() *
-                                (double(event->x() - lastMousePosition_.x()) / metrics_.displayVolumeExtent().x()));
-            yAxis_->shiftLimits(yAxis_->range() *
-                                (double(event->y() - lastMousePosition_.y()) / metrics_.displayVolumeExtent().y()));
+            xAxis_->shiftLimitsByPixels(lastMousePosition_.x() - event->x());
+            yAxis_->shiftLimitsByPixels(event->y() - lastMousePosition_.y());
             updateTransforms();
         }
     }
@@ -76,3 +74,27 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
 
 void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
+
+void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
+{
+    if (flatView_)
+    {
+        const auto sensitivity = 3;
+
+        // Determine factor based on wheel amount, and axis deltas based on that
+        auto sign = event->angleDelta().y() > 0 ? 1 : -1;
+        const auto factor = 0.05;
+        auto xDelta = xAxis_->range() * factor * sign;
+        auto yDelta = yAxis_->range() * factor * sign;
+        xAxis_->setLimits(xAxis_->minimum() + xDelta, xAxis_->maximum() - xDelta);
+        yAxis_->setLimits(yAxis_->minimum() + yDelta, yAxis_->maximum() - yDelta);
+
+        // Shift view centre towards current mouse position
+        // -- Get the data-space delta between the centre coordinates of the 2D axes and the current mouse position
+        auto centreDelta = QPoint(event->x(), height() - event->y()) - screen2DCentre();
+        xAxis_->shiftLimitsByPixels(centreDelta.x() / (sign * sensitivity));
+        yAxis_->shiftLimitsByPixels(centreDelta.y() / (sign * sensitivity));
+
+        updateTransforms();
+    }
+}
