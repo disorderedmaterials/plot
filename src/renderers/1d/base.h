@@ -58,19 +58,19 @@ class ErrorRenderer1D
     // Colour definition
     ColourDefinition colour_;
 
-    // Error bar size
-    float errorBarSize_{10.0};
+    // Error bar metric1
+    float errorBarMetric_{10.0};
 
     public:
     // Create entities from the supplied axes and data
     virtual void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
                         const std::vector<double> &values, const std::vector<double> &errors, const AxisEntity *valueAxis) = 0;
 
-    // Get error bar size.
-    float errorBarSize() const { return errorBarSize_; }
+    // Get error bar metric.
+    float errorBarMetric() const { return errorBarMetric_; }
 
     // Set error bar size.
-    void setErrorBarSize(float errorBarSize) { errorBarSize_ = errorBarSize; }
+    void setErrorBarMetric(double errorBarMetric) { errorBarMetric_ = errorBarMetric; }
 };
 
 } // namespace Mildred

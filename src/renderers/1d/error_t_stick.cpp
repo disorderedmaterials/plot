@@ -60,11 +60,11 @@ void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::ve
         errors_->addIndex(-1);
 
         // Upper T bar.
-        // Offset x of vertex by +errorBarSize_ / 2.
+        // Offset x of vertex by +errorBarMetric_ / 2.
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(errorBarSize() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
-        // Offset x of vertex by -errorBarSize_ / 2.
+        // Offset x of vertex by -errorBarMetric_ / 2.
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit + *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
@@ -72,11 +72,11 @@ void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::ve
         errors_->addIndex(-1);
 
         // Lower T bar.
-        // Offset x of vertex by +errorBarSize_ / 2.
+        // Offset x of vertex by +errorBarMetric_ / 2.
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(errorBarSize() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
-        // Offset x of vertex by -errorBarSize_ / 2.
+        // Offset x of vertex by -errorBarMetric_ / 2.
         errors_->addVertex(xAxis->toScaled(*xit) + valueAxis->toScaled(*vit - *eit) + QVector3D(-errorBarSize() / 2.0, 0, 0),
                            colour_.colour(*vit));
         errors_->addIndex(i++);
