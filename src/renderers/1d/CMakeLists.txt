@@ -6,7 +6,7 @@ add_library(
   stylefactory.cpp
   base.h
   line.h
-  line_none.h
+  none.h
   error_stick.h
   error_t_stick.h
   error_none.h
