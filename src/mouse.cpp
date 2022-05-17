@@ -77,9 +77,10 @@ void MildredWidget::mouseButtonReleased(Qt3DInput::QMouseEvent *event) {}
 
 void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
 {
-    // The angleDelta() of the event appears to correspond to multiples of 120 with the sign indicating the wheel direction.
     if (flatView_)
     {
+        const auto sensitivity = 3;
+
         // Determine factor based on wheel amount, and axis deltas based on that
         auto sign = event->angleDelta().y() > 0 ? 1 : -1;
         const auto factor = 0.05;
@@ -91,8 +92,8 @@ void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
         // Shift view centre towards current mouse position
         // -- Get the data-space delta between the centre coordinates of the 2D axes and the current mouse position
         auto centreDelta = QPoint(event->x(), height() - event->y()) - screen2DCentre();
-        xAxis_->shiftLimitsByPixels(centreDelta.x() / (sign * 3));
-        yAxis_->shiftLimitsByPixels(centreDelta.y() / (sign * 3));
+        xAxis_->shiftLimitsByPixels(centreDelta.x() / (sign * sensitivity));
+        yAxis_->shiftLimitsByPixels(centreDelta.y() / (sign * sensitivity));
 
         updateTransforms();
     }
