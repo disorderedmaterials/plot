@@ -66,7 +66,7 @@ void MainWindow::on_ShowErrorBarsCheck_toggled(bool checked)
 
 void MainWindow::on_StyleCombo_currentIndexChanged(int index)
 {
-    style_ = index == 0 ? Mildred::StyleFactory1D::ErrorBarStyle::Stick : Mildred::StyleFactory1D::ErrorBarStyle::T_Stick;
+    style_ = index == 0 ? Mildred::StyleFactory1D::ErrorBarStyle::Stick : Mildred::StyleFactory1D::ErrorBarStyle::Tee;
     if (ui_.ShowErrorBarsCheck->isChecked())
     {
         dataEntity_->setErrorStyle(style_);

@@ -22,7 +22,7 @@ enum class ErrorBarStyle
 {
     None,
     Stick,
-    T_Stick
+    Tee
 };
 
 // Produce renderer for the specified style

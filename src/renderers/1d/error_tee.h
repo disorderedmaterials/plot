@@ -5,15 +5,15 @@
 
 namespace Mildred
 {
-//! ErrorBarRenderer1D renders 1D data errors as sticks.
+//! StickErrorRenderer1D renders 1D data errors as sticks.
 /*!
- * ErrorBarRenderer1D manages the creation of entities for displaying 1D data error bars in a simple stick representation.
+ * StickErrorRenderer1D manages the creation of entities for displaying 1D data error bars in a simple stick representation.
  */
-class ErrorTStickRenderer1D : public ErrorRenderer1D
+class TeeErrorRenderer1D : public ErrorRenderer1D
 {
     public:
-    ErrorTStickRenderer1D(Qt3DCore::QEntity *rootEntity);
-    ~ErrorTStickRenderer1D();
+    TeeErrorRenderer1D(Qt3DCore::QEntity *rootEntity);
+    ~TeeErrorRenderer1D();
 
     /*
      * Rendering

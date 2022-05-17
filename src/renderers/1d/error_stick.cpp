@@ -2,12 +2,12 @@
 
 using namespace Mildred;
 
-ErrorBarRenderer1D::ErrorBarRenderer1D(Qt3DCore::QEntity *rootEntity) : ErrorRenderer1D(rootEntity)
+StickErrorRenderer1D::StickErrorRenderer1D(Qt3DCore::QEntity *rootEntity) : ErrorRenderer1D(rootEntity)
 {
     errors_ = new LineEntity(rootEntity_);
 }
 
-ErrorBarRenderer1D::~ErrorBarRenderer1D()
+StickErrorRenderer1D::~StickErrorRenderer1D()
 {
     if (errors_)
         errors_->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
@@ -18,7 +18,7 @@ ErrorBarRenderer1D::~ErrorBarRenderer1D()
  */
 
 // Create entities from the supplied metrics and data
-void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+void StickErrorRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
                                 const std::vector<double> &values, const std::vector<double> &errors,
                                 const AxisEntity *valueAxis)
 {
@@ -45,7 +45,7 @@ void ErrorBarRenderer1D::create(const ColourDefinition &colour, const std::vecto
 
     // Loop over data and add vertices
     auto xit = x.cbegin(), vit = values.cbegin(), eit = errors.cbegin();
-    int i = 0;
+    auto i = 0;
     while (xit != x.end())
     {
         // Upper extreme.

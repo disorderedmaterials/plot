@@ -20,7 +20,7 @@ class Data1DEntity : public DataEntity
     public:
     Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr,
                  StyleFactory1D::Style style = StyleFactory1D::Style::Line,
-                 StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::T_Stick);
+                 StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
     ~Data1DEntity() = default;
 
     /*

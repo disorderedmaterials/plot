@@ -1,13 +1,13 @@
-#include "renderers/1d/error_t_stick.h"
+#include "renderers/1d/error_tee.h"
 
 using namespace Mildred;
 
-ErrorTStickRenderer1D::ErrorTStickRenderer1D(Qt3DCore::QEntity *rootEntity) : ErrorRenderer1D(rootEntity)
+TeeErrorRenderer1D::TeeErrorRenderer1D(Qt3DCore::QEntity *rootEntity) : ErrorRenderer1D(rootEntity)
 {
     errors_ = new LineEntity(rootEntity_);
 }
 
-ErrorTStickRenderer1D::~ErrorTStickRenderer1D()
+TeeErrorRenderer1D::~TeeErrorRenderer1D()
 {
     if (errors_)
         errors_->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
@@ -18,7 +18,7 @@ ErrorTStickRenderer1D::~ErrorTStickRenderer1D()
  */
 
 // Create entities from the supplied metrics and data
-void ErrorTStickRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
+void TeeErrorRenderer1D::create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
                                    const std::vector<double> &values, const std::vector<double> &errors,
                                    const AxisEntity *valueAxis)
 {
