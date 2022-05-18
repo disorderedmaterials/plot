@@ -21,9 +21,9 @@ class TextEntity : public Qt3DCore::QEntity
 
     private:
     // Text mesh
-    Qt3DExtras::QExtrudedTextMesh *mesh_;
+    Qt3DExtras::QExtrudedTextMesh *mesh_{nullptr};
     // Transform
-    Qt3DCore::QTransform *transform_;
+    Qt3DCore::QTransform *transform_{nullptr};
 
     /*
      * Definition
