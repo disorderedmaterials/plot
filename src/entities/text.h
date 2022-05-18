@@ -2,6 +2,7 @@
 
 #include "classes/cuboid.h"
 #include "classes/metrics.h"
+#include "material.h"
 #include <QFontMetrics>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
@@ -20,10 +21,24 @@ class TextEntity : public Qt3DCore::QEntity
     ~TextEntity() = default;
 
     private:
+    // Collective positional transform
+    Qt3DCore::QTransform *positionalTransform_{nullptr};
+    // Material
+    RenderableMaterial *material_{nullptr};
+    // Main entity
+    Qt3DCore::QEntity *textEntity_{nullptr};
     // Text mesh
-    Qt3DExtras::QExtrudedTextMesh *mesh_{nullptr};
+    Qt3DExtras::QExtrudedTextMesh *textMesh_{nullptr};
     // Transform
-    Qt3DCore::QTransform *transform_{nullptr};
+    Qt3DCore::QTransform *textTransform_{nullptr};
+    // Bounding box and anchor point entities
+    LineEntity *boundingBoxEntity_{nullptr}, *anchorPointEntity_{nullptr};
+    // Transforms for bounding box and anchor point entities
+    Qt3DCore::QTransform *boundingBoxTransform_{nullptr};
+
+    public:
+    // Set text material
+    void setMaterial(RenderableMaterial *material);
 
     /*
      * Definition

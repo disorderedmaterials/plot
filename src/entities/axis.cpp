@@ -32,7 +32,7 @@ AxisEntity::AxisEntity(Qt3DCore::QNode *parent, AxisType type, const MildredMetr
     ticksEntity_->addComponent(axisBarMaterial_);
     subTicksEntity_->addComponent(axisBarMaterial_);
     labelMaterial_ = labelMaterial;
-    axisTitleEntity_->addComponent(labelMaterial_);
+    axisTitleEntity_->setMaterial(labelMaterial_);
 
     // Update data dependent on the axis type
     setType(type_);
@@ -554,7 +554,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
     {
         auto *entity = new TextEntity(this);
         entity->setFont(metrics_.axisTickLabelFont());
-        entity->addComponent(labelMaterial_);
+        entity->setMaterial(labelMaterial_);
         entity->setAnchorPoint(labelAnchorPoint_);
         tickLabelEntities_.push_back(entity);
     }
