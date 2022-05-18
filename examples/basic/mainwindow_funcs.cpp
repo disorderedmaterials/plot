@@ -27,11 +27,19 @@ MainWindow::MainWindow() : QMainWindow()
     connect(ui_.ZVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->zAxis(), SLOT(setEnabled(bool)));
 
     // Data
-    for (auto n = -5; n <= 5; ++n)
+    const auto nPoints = 1000;
+    const auto delta = 2.0 * M_PI / nPoints;
+    sinX_.reserve(nPoints);
+    sinValues_.reserve(nPoints);
+    auto x = 0.0;
+    for (auto n = 0; n < nPoints; ++n)
     {
-        squaresX_.push_back(n);
-        squaresValues_.push_back(fabs(n));
+        sinX_.push_back(x);
+        sinValues_.push_back(sin(x));
+        x += delta;
     }
-    auto *squares = ui_.TestingWidget->addData1D("Squares");
-    squares->setData(squaresX_, squaresValues_);
+    auto *sinData = ui_.TestingWidget->addData1D("sin");
+    sinData->setData(sinX_, sinValues_);
+
+    ui_.TestingWidget->showAllData();
 };
