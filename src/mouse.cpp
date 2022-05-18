@@ -69,6 +69,9 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     updateShaderParameters();
 
     lastMousePosition_ = QPoint(event->x(), event->y());
+
+    if (flatView_)
+        emit mouseCoordChanged(toAxes2D(lastMousePosition_));
 }
 
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
