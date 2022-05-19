@@ -84,10 +84,10 @@ void TextEntity::updateTranslation()
     // Set the main positional transform
     positionalTransform_->setTranslation(anchorPosition_);
 
-    // Set the text translation vector so that the defined anchor point is located at the desired position
-    auto anchorFrac = MildredMetrics::anchorLocation(anchorPoint_);
-    auto textCuboid = boundingCuboid(textMesh_->font(), textMesh_->text(), textMesh_->depth());
-    textTransform_->setTranslation(-QVector3D(textCuboid.xExtent() * anchorFrac.x(), textCuboid.yExtent() * anchorFrac.y(), 0.0));
+    // Set the text translation vector so that the defined anchor point is located at {0,0,0}
+    auto [textCuboid, descent] = boundingCuboid(textMesh_->font(), textMesh_->text(), {}, anchorPoint_, textMesh_->depth());
+    auto v = QVector3D(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
+    textTransform_->setTranslation(v);
 
     // Update the bounding box entity
     if (boundingBoxEntity_)
@@ -100,8 +100,6 @@ void TextEntity::updateTranslation()
         boundingBoxEntity_->addVertex({textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0});
         boundingBoxEntity_->setBasicIndices();
         boundingBoxEntity_->finalise();
-
-        boundingBoxTransform_->setTranslation(v);
     }
 }
 
@@ -143,12 +141,12 @@ void TextEntity::setAnchorPosition(QVector3D p)
     updateTranslation();
 }
 
-//! Return simple bounding cuboid for text
+//! Return simple bounding cuboid for text, along with baseline descent from font metrics
 /*!
- * Calculates a bounding cuboid in the XY plane for the specified@param font and @param text. The @param depth is applied in the
- * z-direction, and the bounding cuboid's lower-left-back corner is located at (0,0,0).
+ * Calculates a bounding cuboid in the XY plane for the specified @param font and @param text. The @param depth is applied in
+ * the z-direction, and the bounding cuboid's lower-left-back corner is located at (0,0,0).
  */
-Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, float depth)
+std::pair<Cuboid, int> TextEntity::boundingCuboid(const QFont &font, const QString &text, float depth)
 {
     QFontMetrics fontMetrics(font);
     const auto boundingRect = fontMetrics.boundingRect(text);
@@ -156,8 +154,9 @@ Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, float 
      * Take the values out of boundingRect (which refers to Qt's coordinate system where 0,0 is top left) so we understand what
      * we're doing. We need to negate the bottom and top values to get them into our coordinate system (0,0 = bottom left).
      */
-    return {{float(boundingRect.left()), float(-boundingRect.bottom()), 0.0},
-            {float(boundingRect.right()), float(-boundingRect.top()), depth}};
+    return {{{float(boundingRect.left()), float(-boundingRect.bottom()), 0.0},
+             {float(boundingRect.right()), float(-boundingRect.top()), depth}},
+            fontMetrics.descent()};
 }
 
 //! Return bounding cuboid with translation and anchor point applied
@@ -165,16 +164,31 @@ Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, float 
  * Calculates a bounding cuboid in the XY plane for the specified @param font and @param text, and translated to put the
  * requested @param anchorPoint at the supplied @param anchorPosition. The @param depth is applied in the z-direction.
  */
-Cuboid TextEntity::boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
-                                  MildredMetrics::AnchorPoint anchorPoint, float depth)
+std::pair<Cuboid, int> TextEntity::boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
+                                                  MildredMetrics::AnchorPoint anchorPoint, float depth)
 {
     // Get basic bounding cuboid for the text
-    auto cuboid = boundingCuboid(font, text, depth);
+    auto [cuboid, descent] = boundingCuboid(font, text, depth);
 
-    // Get the anchor location and translate our coordinates so the anchor is at (0,0)
+    /*
+     * Get the anchor location and translate our coordinates so the anchor is at (0,0)
+     * Correct for negative lower y values, occurring from QFontMetrics returning a negative lower y limit which represents
+     * the descent of characters below the baseline.
+     *
+     * For horizontal anchors, remove it twice to better centre the letter centres with the anchor point.
+     */
     auto anchorFrac = MildredMetrics::anchorLocation(anchorPoint);
-    cuboid.translate(anchorPosition -
-                     QVector3D(cuboid.xExtent() * anchorFrac.x(), cuboid.upperRightFront().y() * anchorFrac.y(), 0.0));
+    auto bottomEdgeDrop = cuboid.lowerLeftBack().y();
 
-    return cuboid;
+    // Translate the cuboid according to the anchor point, and remove any bottom "edge" drop arising from the letter baseline
+    // descent.
+    cuboid.translate(anchorPosition -
+                     QVector3D(cuboid.xExtent() * anchorFrac.x(), cuboid.yExtent() * anchorFrac.y() - descent, 0.0));
+
+    // For primarily vertical anchor points, add on the bottom edge drop again to better locate the text relative to the anchor
+    // point
+    if (MildredMetrics::isAnchorPointVertical(anchorPoint))
+        cuboid.translate({0.0, -bottomEdgeDrop, 0.0});
+
+    return {cuboid, descent};
 }

@@ -64,10 +64,10 @@ class TextEntity : public Qt3DCore::QEntity
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
-    // Return simple bounding cuboid for text
-    static Cuboid boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
+    // Return simple bounding cuboid for text, along with baseline descent from font metrics
+    static std::pair<Cuboid, int> boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
     // Return bounding cuboid with translation and anchor point applied
-    static Cuboid boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
-                                 MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
+    static std::pair<Cuboid, int> boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
+                                                 MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
 };
 } // namespace Mildred

@@ -579,8 +579,10 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
             (*tickLabelEntity)
                 ->setAnchorPosition(axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap()));
             boundingCuboid.expand(TextEntity::boundingCuboid(
-                metrics_.axisTickLabelFont(), QString::number(v),
-                {axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap())}, labelAnchorPoint_));
+                                      metrics_.axisTickLabelFont(), QString::number(v),
+                                      {axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap())},
+                                      labelAnchorPoint_)
+                                      .first);
             ++tickLabelEntity;
         }
         else
@@ -692,9 +694,11 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
             cuboid.expand({axisPos, axisPos + tickDirection_ * metrics_.tickPixelSize()});
 
             // Label
-            cuboid.expand(TextEntity::boundingCuboid(
-                metrics.axisTickLabelFont(), QString::number(v),
-                axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics.tickLabelPixelGap()), labelAnchorPoint_));
+            cuboid.expand(
+                TextEntity::boundingCuboid(metrics.axisTickLabelFont(), QString::number(v),
+                                           axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics.tickLabelPixelGap()),
+                                           labelAnchorPoint_)
+                    .first);
         }
         else
             cuboid.expand({axisPos, axisPos + tickDirection_ * metrics_.tickPixelSize() * 0.5});
@@ -705,7 +709,8 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
                                                  direction_ * metrics.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
                                                      tickDirection_ *
                                                          (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap()),
-                                                 labelAnchorPoint_));
+                                                 labelAnchorPoint_)
+                          .first);
 
     return cuboid;
 }
