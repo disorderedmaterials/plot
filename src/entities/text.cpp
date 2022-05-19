@@ -2,6 +2,7 @@
 
 using namespace Mildred;
 
+// Enables showing of bounding boxes around Text Entities.
 constexpr auto showBoundingBoxes = false;
 
 //! Construct a new text entity
