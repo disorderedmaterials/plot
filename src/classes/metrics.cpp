@@ -68,6 +68,12 @@ QPointF MildredMetrics::anchorLocation(AnchorPoint anchor)
     }
 }
 
+// Return whether the anchor point is primarily associated with vertical edges
+bool MildredMetrics::isAnchorPointVertical(MildredMetrics::AnchorPoint anchor)
+{
+    return (anchor == AnchorPoint::MiddleLeft || anchor == AnchorPoint::Middle || anchor == AnchorPoint::MiddleRight);
+}
+
 /*
  * Display
  */

@@ -67,6 +67,8 @@ class MildredMetrics : public QObject
     };
     // Return the fractional anchor location, with (0,0) corresponding to bottom-left corner
     static QPointF anchorLocation(AnchorPoint anchor);
+    // Return whether the anchor point is primarily associated with vertical edges
+    static bool isAnchorPointVertical(AnchorPoint anchor);
 
     /*
      * Display
