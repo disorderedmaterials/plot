@@ -2,6 +2,7 @@
 
 #include "classes/cuboid.h"
 #include "classes/metrics.h"
+#include "material.h"
 #include <QFontMetrics>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
@@ -20,10 +21,24 @@ class TextEntity : public Qt3DCore::QEntity
     ~TextEntity() = default;
 
     private:
+    // Collective positional transform
+    Qt3DCore::QTransform *positionalTransform_{nullptr};
+    // Material
+    RenderableMaterial *material_{nullptr};
+    // Main entity
+    Qt3DCore::QEntity *textEntity_{nullptr};
     // Text mesh
-    Qt3DExtras::QExtrudedTextMesh *mesh_;
+    Qt3DExtras::QExtrudedTextMesh *textMesh_{nullptr};
     // Transform
-    Qt3DCore::QTransform *transform_;
+    Qt3DCore::QTransform *textTransform_{nullptr};
+    // Bounding box and anchor point entities
+    LineEntity *boundingBoxEntity_{nullptr}, *anchorPointEntity_{nullptr};
+    // Transforms for bounding box and anchor point entities
+    Qt3DCore::QTransform *boundingBoxTransform_{nullptr};
+
+    public:
+    // Set text material
+    void setMaterial(RenderableMaterial *material);
 
     /*
      * Definition
@@ -43,16 +58,16 @@ class TextEntity : public Qt3DCore::QEntity
     void setText(const QString &text);
     // Return current text
     QString text() const;
-    // Set axisTickLabelFont
+    // Set font
     void setFont(const QFont &font);
     // Set anchor point
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
-    // Return simple bounding cuboid for text
-    static Cuboid boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
-    // Return bounding cuboid with translation and anchor point applied
-    static Cuboid boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
-                                 MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
+    // Return simple bounding cuboid for text, along with baseline descent from font metrics
+    static std::pair<Cuboid, int> boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
+    // Return bounding cuboid with translation and anchor point applied, and required translation vector for text mesh
+    static std::pair<Cuboid, QVector3D> boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
+                                                       MildredMetrics::AnchorPoint anchorPoint, float depth = 0.1f);
 };
 } // namespace Mildred

@@ -41,7 +41,7 @@ class MildredMetrics : public QObject
     // Tick size
     float tickPixelSize_{5.0};
     // Spacing between tick marks and labels
-    float tickLabelPixelGap_{0.0};
+    float tickLabelPixelGap_{2.0};
 
     public:
     // Return tick size
@@ -67,6 +67,8 @@ class MildredMetrics : public QObject
     };
     // Return the fractional anchor location, with (0,0) corresponding to bottom-left corner
     static QPointF anchorLocation(AnchorPoint anchor);
+    // Return whether the anchor point is primarily associated with vertical edges
+    static bool isAnchorPointVertical(AnchorPoint anchor);
 
     /*
      * Display

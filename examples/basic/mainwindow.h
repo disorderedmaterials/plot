@@ -22,5 +22,5 @@ class MainWindow : public QMainWindow
      */
     private:
     // Test data
-    std::vector<double> squaresX_, squaresValues_;
+    std::vector<double> sinX_, sinValues_;
 };
