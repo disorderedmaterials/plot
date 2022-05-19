@@ -116,6 +116,30 @@ void MildredWidget::createSceneGraph()
     dataEntityParent_ = new Qt3DCore::QEntity(dataRootEntity_);
     dataOriginTransform_ = new Qt3DCore::QTransform(dataEntityParent_);
     dataEntityParent_->addComponent(dataOriginTransform_);
+
+    // Create mouse coord entity
+    auto *mouseCoordLabelMaterial = 
+        createMaterial(sceneObjectsEntity_, RenderableMaterial::VertexShaderType::Unclipped,
+        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
+    mouseCoordLabelMaterial->setAmbient(QColor(0,0,0,255));
+    mouseCoordEntity_ = new TextEntity(sceneObjectsEntity_, QString("0.0, 0.0"));
+    mouseCoordEntity_->addComponent(mouseCoordLabelMaterial);
+    mouseCoordEntity_->setFont(QFont("monospace", 10.0));
+    mouseCoordEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::BottomLeft);
+    if (mouseCoordStyle_ == MouseCoordStyle::FixedAnchor)
+    {
+        mouseCoordEntity_->setAnchorPosition(
+            {-30, -40, 0.1}
+        );
+    }
+    else if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
+    {
+        ;
+    }
+    else
+    {
+        mouseCoordEntity_->setEnabled(false);
+    }
 }
 
 //! Convert widget position to 2D (flat) coordinates

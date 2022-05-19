@@ -19,6 +19,14 @@
 
 namespace Mildred
 {
+
+enum class MouseCoordStyle
+{
+    None,
+    MouseAnchor,
+    FixedAnchor
+};
+
 //! The Mildred widget is the core class of Mildred.
 /*!
  * The Mildred widget is a standard QWidget displaying a Qt3D-based subwidget providing full 2D (flat) and 3D data
@@ -156,6 +164,10 @@ class MildredWidget : public QWidget
     private:
     // Last recorded mouse position
     QPoint lastMousePosition_;
+    // Mouse coordinate style
+    MouseCoordStyle mouseCoordStyle_{MouseCoordStyle::MouseAnchor};
+    // Mouse coordinate entity
+    TextEntity *mouseCoordEntity_{nullptr};
 
     private slots:
     void mousePositionChanged(Qt3DInput::QMouseEvent *event);

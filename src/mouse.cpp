@@ -71,7 +71,25 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     lastMousePosition_ = QPoint(event->x(), event->y());
 
     if (flatView_)
-        emit mouseCoordChanged(toAxes2D(lastMousePosition_));
+    {
+        const auto coords = toAxes2D(lastMousePosition_);
+        emit mouseCoordChanged(coords);
+        mouseCoordEntity_->setText(QString("%1 %2").arg(QString::number(coords.x()), QString::number(coords.y())));
+        if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
+        {
+            mouseCoordEntity_->setEnabled(true);
+            printf("%d %d\n", event->x(), event->y());
+            mouseCoordEntity_->setAnchorPosition(
+                // {
+                //     float(event->x()), metrics_.displayVolumeExtent().y() - float(event->y()), 0.1
+                // }
+                {
+                    float(event->x()) - metrics_.nMarginPixels(), metrics_.displayVolumeExtent().y() - float(event->y()) - metrics_.nMarginPixels(), 0.1
+                }
+            );
+        }
+    }
+        
 }
 
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}

@@ -41,7 +41,7 @@ class MildredMetrics : public QObject
     // Tick size
     float tickPixelSize_{5.0};
     // Spacing between tick marks and labels
-    float tickLabelPixelGap_{0.0};
+    float tickLabelPixelGap_{2.0};
 
     public:
     // Return tick size
