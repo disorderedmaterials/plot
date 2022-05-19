@@ -58,7 +58,7 @@ class TextEntity : public Qt3DCore::QEntity
     void setText(const QString &text);
     // Return current text
     QString text() const;
-    // Set axisTickLabelFont
+    // Set font
     void setFont(const QFont &font);
     // Set anchor point
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
