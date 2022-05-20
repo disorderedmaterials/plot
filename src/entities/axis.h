@@ -114,6 +114,10 @@ class AxisEntity : public Qt3DCore::QEntity
     public:
     // Set axis type
     void setType(AxisType type);
+    // Set title label alignment
+    void setTitleLabelAlignment(Mildred::TextAlignment alignment);
+    // Set tick label alignment
+    void setTickLabelAlignment(Mildred::TextAlignment alignment);
     // Set explicit direction
     void setDirection(QVector3D v);
     // Return explicit direction

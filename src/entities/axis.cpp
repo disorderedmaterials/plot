@@ -466,6 +466,21 @@ void AxisEntity::setType(AxisType type)
     }
 }
 
+//! Define title alignment
+/*!
+ * Set the alignment of the title label to @param alignment.
+ */
+void AxisEntity::setTitleLabelAlignment(Mildred::TextAlignment alignment)
+{
+    axisTitleEntity_->setTextAlignment(alignment);
+}
+
+void AxisEntity::setTickLabelAlignment(Mildred::TextAlignment alignment)
+{
+    for (auto &entity : tickLabelEntities_)
+        entity->setTextAlignment(alignment);
+}
+
 //! Define direction
 /*!
  * Set the direction of the axis in 3D space to the supplied vector @param v.
