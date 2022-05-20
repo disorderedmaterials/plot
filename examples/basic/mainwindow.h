@@ -15,6 +15,9 @@ class MainWindow : public QMainWindow
      */
     private slots:
     void on_mouseCoordStyleCombo_currentIndexChanged(int index);
+    void on_XLabelAlignmentCombo_currentIndexChanged(int index);
+    void on_YLabelAlignmentCombo_currentIndexChanged(int index);
+    void on_ZLabelAlignmentCombo_currentIndexChanged(int index);
 
     public slots:
     // Set mouse coordinates in external label.

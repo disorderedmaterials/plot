@@ -35,6 +35,14 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.externalMouseCoordLabel->setVisible(false);
     connect(ui_.TestingWidget, SIGNAL(mouseCoordChanged(QPointF)), this, SLOT(setExternalMouseCoordinatesText(QPointF)));
 
+    // Axis Label Rotation
+    ui_.XLabelAlignmentCombo->addItem(QString("Horizontal"));
+    ui_.XLabelAlignmentCombo->addItem(QString("Vertical"));
+    ui_.YLabelAlignmentCombo->addItem(QString("Horizontal"));
+    ui_.YLabelAlignmentCombo->addItem(QString("Vertical"));
+    ui_.ZLabelAlignmentCombo->addItem(QString("Horizontal"));
+    ui_.ZLabelAlignmentCombo->addItem(QString("Vertical"));
+
     // Data
     const auto nPoints = 1000;
     const auto delta = 2.0 * M_PI / nPoints;
@@ -71,11 +79,55 @@ void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
             break;
         default:
             throw(std::runtime_error("Unhandled coordinate display style.\n"));
-            break;
     }
 }
 
 void MainWindow::setExternalMouseCoordinatesText(QPointF p)
 {
     ui_.externalMouseCoordLabel->setText(QString("%1 %2").arg(QString::number(p.x()), QString::number(p.y())));
+}
+
+void MainWindow::on_XLabelAlignmentCombo_currentIndexChanged(int index)
+{
+    switch (index)
+    {
+        case 0:
+            ui_.TestingWidget->xAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Horizontal);
+            break;
+        case 1:
+            ui_.TestingWidget->xAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Vertical);
+            break;
+        default:
+            throw(std::runtime_error("Unhandled text alignment mode.\n"));
+    }
+}
+
+void MainWindow::on_YLabelAlignmentCombo_currentIndexChanged(int index)
+{
+    switch (index)
+    {
+        case 0:
+            ui_.TestingWidget->yAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Horizontal);
+            break;
+        case 1:
+            ui_.TestingWidget->yAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Vertical);
+            break;
+        default:
+            throw(std::runtime_error("Unhandled text alignment mode.\n"));
+    }
+}
+
+void MainWindow::on_ZLabelAlignmentCombo_currentIndexChanged(int index)
+{
+    switch (index)
+    {
+        case 0:
+            ui_.TestingWidget->zAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Horizontal);
+            break;
+        case 1:
+            ui_.TestingWidget->zAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Vertical);
+            break;
+        default:
+            throw(std::runtime_error("Unhandled text alignment mode.\n"));
+    }
 }
