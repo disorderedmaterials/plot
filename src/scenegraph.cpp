@@ -126,16 +126,8 @@ void MildredWidget::createSceneGraph()
     mouseCoordEntity_->addComponent(mouseCoordLabelMaterial);
     mouseCoordEntity_->setFont(QFont("monospace", 10.0));
     mouseCoordEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::BottomLeft);
-    if (mouseCoordStyle_ == MouseCoordStyle::FixedAnchor)
-    {
-        mouseCoordEntity_->setAnchorPosition(
-            {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1}
-        );
-    }
-    else if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
-    {
-        mouseCoordEntity_->setEnabled(false);
-    }
+    mouseCoordEntity_->setEnabled(false);
+
 }
 
 //! Convert widget position to 2D (flat) coordinates

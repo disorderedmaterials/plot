@@ -89,6 +89,14 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             // Enable the text entity, to ensure that it is visible.
             mouseCoordEntity_->setEnabled(true);
 
+            if (mouseCoordStyle_ == MouseCoordStyle::FixedAnchor)
+            {
+                // Anchor the text entity at the bottom left of the widget.
+                mouseCoordEntity_->setAnchorPosition(
+                    {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1}
+                );
+            }
+
             if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
             {
                 // Anchor the text entity at the mouse cursor.
@@ -96,7 +104,13 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
                     {float(event->x())-metrics_.displayVolumeOrigin().x(), height() - float(event->y())-metrics_.displayVolumeOrigin().y(), 0}
                 );
             }
-        } else
+            else if (mouseCoordStyle_ == MouseCoordStyle::None)
+            {
+                // Hide the text entity.
+                mouseCoordEntity_->setEnabled(false);
+            }
+        }
+        else
         {
             // Hide the text entity.
             mouseCoordEntity_->setEnabled(false);
@@ -134,3 +148,5 @@ void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
         updateTransforms();
     }
 }
+
+void MildredWidget::setMouseCoordStyle(MouseCoordStyle style) {mouseCoordStyle_ = style;}

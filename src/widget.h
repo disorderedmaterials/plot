@@ -175,6 +175,9 @@ class MildredWidget : public QWidget
     void mouseButtonReleased(Qt3DInput::QMouseEvent *event);
     void mouseWheeled(Qt3DInput::QWheelEvent *event);
 
+    public slots:
+    void setMouseCoordStyle(MouseCoordStyle style);
+
     signals:
     void mouseCoordChanged(QPointF pos);
 
