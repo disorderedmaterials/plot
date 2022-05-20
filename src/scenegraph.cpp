@@ -129,14 +129,10 @@ void MildredWidget::createSceneGraph()
     if (mouseCoordStyle_ == MouseCoordStyle::FixedAnchor)
     {
         mouseCoordEntity_->setAnchorPosition(
-            {-30, -40, 0.1}
+            {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1}
         );
     }
     else if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
-    {
-        ;
-    }
-    else
     {
         mouseCoordEntity_->setEnabled(false);
     }
