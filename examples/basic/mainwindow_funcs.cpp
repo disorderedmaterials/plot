@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "material.h"
-#include "widget.h"
 #include "ui_mainwindow.h"
+#include "widget.h"
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -30,7 +30,7 @@ MainWindow::MainWindow() : QMainWindow()
     // Mouse Coordinates
     ui_.mouseCoordStyleCombo->addItem(QString("Fixed Anchor"));
     ui_.mouseCoordStyleCombo->addItem(QString("Anchor at Mouse"));
-    ui_.mouseCoordStyleCombo->addItem(QString("Use 'External' Slot"));    
+    ui_.mouseCoordStyleCombo->addItem(QString("Use 'External' Slot"));
     ui_.externalMouseCoordLabel->setVisible(false);
     connect(ui_.TestingWidget, SIGNAL(mouseCoordChanged(QPointF)), this, SLOT(setExternalMouseCoordinatesText(QPointF)));
 
@@ -43,7 +43,6 @@ MainWindow::MainWindow() : QMainWindow()
     auto *squares = ui_.TestingWidget->addData1D("Squares");
     squares->setData(squaresX_, squaresValues_);
 };
-
 
 void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
 {

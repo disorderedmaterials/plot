@@ -71,11 +71,13 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     if (flatView_)
     {
         // Ensure that mouse is within plot area.
-        if ((event->x() >= metrics_.displayVolumeOrigin().x()) && (event->x() <= metrics_.displayVolumeExtent().x()) && (height() - event->y() >= metrics_.displayVolumeOrigin().y()) && (height()-event->y() <= metrics_.displayVolumeExtent().y()))
+        if ((event->x() >= metrics_.displayVolumeOrigin().x()) && (event->x() <= metrics_.displayVolumeExtent().x()) &&
+            (height() - event->y() >= metrics_.displayVolumeOrigin().y()) &&
+            (height() - event->y() <= metrics_.displayVolumeExtent().y()))
         {
             // Convert mouse position to 2D axes value.
-            auto coords = toAxes2D(QPoint(event->x(), height()-event->y()));
-            
+            auto coords = toAxes2D(QPoint(event->x(), height() - event->y()));
+
             // Round to 3 d.p.
             coords.setX(round(coords.x() * 1000.0) / 1000.0);
             coords.setY(round(coords.y() * 1000.0) / 1000.0);
@@ -93,16 +95,14 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             {
                 // Anchor the text entity at the bottom left of the widget.
                 mouseCoordEntity_->setAnchorPosition(
-                    {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1}
-                );
+                    {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1});
             }
 
             if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
             {
                 // Anchor the text entity at the mouse cursor.
-                mouseCoordEntity_->setAnchorPosition(
-                    {float(event->x())-metrics_.displayVolumeOrigin().x(), height() - float(event->y())-metrics_.displayVolumeOrigin().y(), 0}
-                );
+                mouseCoordEntity_->setAnchorPosition({float(event->x()) - metrics_.displayVolumeOrigin().x(),
+                                                      height() - float(event->y()) - metrics_.displayVolumeOrigin().y(), 0});
             }
             else if (mouseCoordStyle_ == MouseCoordStyle::None)
             {
@@ -116,9 +116,8 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             mouseCoordEntity_->setEnabled(false);
         }
     }
-        
-    updateShaderParameters();
 
+    updateShaderParameters();
 }
 
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
@@ -149,4 +148,4 @@ void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
     }
 }
 
-void MildredWidget::setMouseCoordStyle(MouseCoordStyle style) {mouseCoordStyle_ = style;}
+void MildredWidget::setMouseCoordStyle(MouseCoordStyle style) { mouseCoordStyle_ = style; }
