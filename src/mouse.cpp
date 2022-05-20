@@ -72,21 +72,24 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 
     if (flatView_)
     {
-        const auto coords = toAxes2D(lastMousePosition_);
-        emit mouseCoordChanged(coords);
-        mouseCoordEntity_->setText(QString("%1 %2").arg(QString::number(coords.x()), QString::number(coords.y())));
-        if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
+        if ((event->x() >= metrics_.displayVolumeOrigin().x()) && (event->x() <= metrics_.displayVolumeExtent().x()) && (height() - event->y() >= metrics_.displayVolumeOrigin().y()) && (height()-event->y() <= metrics_.displayVolumeExtent().y()))
         {
-            mouseCoordEntity_->setEnabled(true);
-            printf("%d %d\n", event->x(), event->y());
-            mouseCoordEntity_->setAnchorPosition(
-                // {
-                //     float(event->x()), metrics_.displayVolumeExtent().y() - float(event->y()), 0.1
-                // }
-                {
-                    float(event->x()) - metrics_.nMarginPixels(), metrics_.displayVolumeExtent().y() - float(event->y()) - metrics_.nMarginPixels(), 0.1
-                }
-            );
+            const auto coords = toAxes2D(QPoint(event->x(), height()-event->y()));
+            emit mouseCoordChanged(coords);
+            mouseCoordEntity_->setText(QString("%1 %2").arg(QString::number(coords.x()), QString::number(coords.y())));
+            if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
+            {
+                mouseCoordEntity_->setEnabled(true);
+                mouseCoordEntity_->setAnchorPosition(
+                    {
+                        float(event->x())-metrics_.displayVolumeOrigin().x(), height() - float(event->y())-metrics_.displayVolumeOrigin().y(), 0
+                    }
+                );
+            }
+        }
+        else
+        {
+            mouseCoordEntity_->setEnabled(false);
         }
     }
         
