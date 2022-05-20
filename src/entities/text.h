@@ -10,6 +10,12 @@
 
 namespace Mildred
 {
+
+enum class TextAlignment {
+    Horizontal,
+    Vertical
+};
+
 //! TextEntity represents a 3D text entity
 /*!
  * TextEntity represents a renderable entity displaying a specified string with a given transform.
@@ -23,6 +29,8 @@ class TextEntity : public Qt3DCore::QEntity
     private:
     // Collective positional transform
     Qt3DCore::QTransform *positionalTransform_{nullptr};
+    // Alignment
+    Mildred::TextAlignment alignment_;
     // Material
     RenderableMaterial *material_{nullptr};
     // Main entity
@@ -64,6 +72,10 @@ class TextEntity : public Qt3DCore::QEntity
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
+    // Set rotation
+    void setTextAlignment(Mildred::TextAlignment alignment);
+    // Get required rotation in degrees
+    float rotationZFromAlignment();
     // Return simple bounding cuboid for text, along with baseline descent from font metrics
     static std::pair<Cuboid, int> boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
     // Return bounding cuboid with translation and anchor point applied, and required translation vector for text mesh
