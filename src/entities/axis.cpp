@@ -470,10 +470,7 @@ void AxisEntity::setType(AxisType type)
 /*!
  * Set the alignment of the title label to @param alignment.
  */
-void AxisEntity::setTitleLabelAlignment(Mildred::TextAlignment alignment)
-{
-    axisTitleEntity_->setTextAlignment(alignment);
-}
+void AxisEntity::setTitleLabelAlignment(Mildred::TextAlignment alignment) { axisTitleEntity_->setTextAlignment(alignment); }
 
 void AxisEntity::setTickLabelAlignment(Mildred::TextAlignment alignment)
 {

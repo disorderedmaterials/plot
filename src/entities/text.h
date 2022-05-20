@@ -11,7 +11,8 @@
 namespace Mildred
 {
 
-enum class TextAlignment {
+enum class TextAlignment
+{
     Horizontal,
     Vertical
 };

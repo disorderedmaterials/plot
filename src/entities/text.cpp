@@ -88,7 +88,6 @@ void TextEntity::updateTranslation()
     // Set the rotation about z.
     positionalTransform_->setRotationZ(rotationZFromAlignment());
 
-
     // Set the text translation vector so that the defined anchor point is located at {0,0,0}
     auto [textCuboid, translation] = boundingCuboid(textMesh_->font(), textMesh_->text(), {}, anchorPoint_, textMesh_->depth());
     auto v = QVector3D(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
@@ -158,7 +157,7 @@ void TextEntity::setTextAlignment(Mildred::TextAlignment alignment)
 //! Gets the required rotation, around z, in degrees, to achieve the current alignment.
 float TextEntity::rotationZFromAlignment()
 {
-    switch(alignment_)
+    switch (alignment_)
     {
         case (Mildred::TextAlignment::Horizontal):
             return 0.0;
