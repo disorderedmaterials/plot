@@ -66,35 +66,45 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
         }
     }
 
-    updateShaderParameters();
-
     lastMousePosition_ = QPoint(event->x(), event->y());
 
     if (flatView_)
     {
+        // Ensure that mouse is within plot area.
         if ((event->x() >= metrics_.displayVolumeOrigin().x()) && (event->x() <= metrics_.displayVolumeExtent().x()) && (height() - event->y() >= metrics_.displayVolumeOrigin().y()) && (height()-event->y() <= metrics_.displayVolumeExtent().y()))
         {
+            // Convert mouse position to 2D axes value.
             auto coords = toAxes2D(QPoint(event->x(), height()-event->y()));
+            
+            // Round to 3 d.p.
             coords.setX(round(coords.x() * 1000.0) / 1000.0);
             coords.setY(round(coords.y() * 1000.0) / 1000.0);
+
+            // Emit signal indicating that mouse coordinates have been changed.
             emit mouseCoordChanged(coords);
+
+            // Updat ethe mouse coordinates in the text entity.
             mouseCoordEntity_->setText(QString("%1 %2").arg(QString::number(coords.x()), QString::number(coords.y())));
+
+            // Enable the text entity, to ensure that it is visible.
+            mouseCoordEntity_->setEnabled(true);
+
             if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
             {
-                mouseCoordEntity_->setEnabled(true);
+                // Anchor the text entity at the mouse cursor.
                 mouseCoordEntity_->setAnchorPosition(
-                    {
-                        float(event->x())-metrics_.displayVolumeOrigin().x(), height() - float(event->y())-metrics_.displayVolumeOrigin().y(), 0
-                    }
+                    {float(event->x())-metrics_.displayVolumeOrigin().x(), height() - float(event->y())-metrics_.displayVolumeOrigin().y(), 0}
                 );
             }
-        }
-        else
+        } else
         {
+            // Hide the text entity.
             mouseCoordEntity_->setEnabled(false);
         }
     }
         
+    updateShaderParameters();
+
 }
 
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
