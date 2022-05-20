@@ -30,7 +30,7 @@ class TextEntity : public Qt3DCore::QEntity
     // Collective positional transform
     Qt3DCore::QTransform *positionalTransform_{nullptr};
     // Alignment
-    Mildred::TextAlignment alignment_;
+    Mildred::TextAlignment alignment_{Mildred::TextAlignment::Horizontal};
     // Material
     RenderableMaterial *material_{nullptr};
     // Main entity
