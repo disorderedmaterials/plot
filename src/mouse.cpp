@@ -74,7 +74,9 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     {
         if ((event->x() >= metrics_.displayVolumeOrigin().x()) && (event->x() <= metrics_.displayVolumeExtent().x()) && (height() - event->y() >= metrics_.displayVolumeOrigin().y()) && (height()-event->y() <= metrics_.displayVolumeExtent().y()))
         {
-            const auto coords = toAxes2D(QPoint(event->x(), height()-event->y()));
+            auto coords = toAxes2D(QPoint(event->x(), height()-event->y()));
+            coords.setX(round(coords.x() * 1000.0) / 1000.0);
+            coords.setY(round(coords.y() * 1000.0) / 1000.0);
             emit mouseCoordChanged(coords);
             mouseCoordEntity_->setText(QString("%1 %2").arg(QString::number(coords.x()), QString::number(coords.y())));
             if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
