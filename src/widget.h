@@ -165,7 +165,7 @@ class MildredWidget : public QWidget
     // Last recorded mouse position
     QPoint lastMousePosition_;
     // Mouse coordinate style
-    MouseCoordStyle mouseCoordStyle_{MouseCoordStyle::MouseAnchor};
+    MouseCoordStyle mouseCoordStyle_{MouseCoordStyle::FixedAnchor};
     // Mouse coordinate entity
     TextEntity *mouseCoordEntity_{nullptr};
 
