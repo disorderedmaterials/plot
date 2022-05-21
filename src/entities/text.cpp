@@ -149,7 +149,6 @@ void TextEntity::setAnchorPosition(QVector3D p)
 //! Set alignment of text
 void TextEntity::setTextAlignment(Mildred::TextAlignment alignment)
 {
-
     alignment_ = alignment;
 
     updateTranslation();
