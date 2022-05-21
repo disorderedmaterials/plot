@@ -97,8 +97,7 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
                 mouseCoordEntity_->setAnchorPosition(
                     {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1});
             }
-
-            if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
+            else if (mouseCoordStyle_ == MouseCoordStyle::MouseAnchor)
             {
                 // Anchor the text entity at the mouse cursor.
                 mouseCoordEntity_->setAnchorPosition({float(event->x()) - metrics_.displayVolumeOrigin().x(),
