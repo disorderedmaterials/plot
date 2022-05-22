@@ -19,8 +19,8 @@
 
 namespace Mildred
 {
-
-enum class MouseCoordStyle
+// Coordinate Display
+enum class CoordinateDisplayStyle
 {
     None,
     MouseAnchor,
