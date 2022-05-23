@@ -79,15 +79,11 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             // Convert mouse position to 2D axes value.
             auto coords = toAxes2D(QPoint(event->x(), height() - event->y()));
 
-            // Round to 3 d.p.
-            coords.setX(round(coords.x() * 1000.0) / 1000.0);
-            coords.setY(round(coords.y() * 1000.0) / 1000.0);
-
             // Emit signal indicating that mouse coordinates have been changed.
             emit mouseCoordChanged(coords);
 
             // Update the mouse coordinates in the text entity.
-            mouseCoordEntity_->setText(QString("%1 %2").arg(QString::number(coords.x()), QString::number(coords.y())));
+            mouseCoordEntity_->setText(QString("%1 %2").arg(coords.x()).arg( coords.y()));
 
             // Enable the text entity, to ensure that it is visible.
             mouseCoordEntity_->setEnabled(true);
