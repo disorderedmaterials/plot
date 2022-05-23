@@ -71,9 +71,10 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
     if (flatView_)
     {
         // Ensure that mouse is within plot area.
-        if ((event->x() >= metrics_.displayVolumeOrigin().x()) && (event->x() <= metrics_.displayVolumeExtent().x()) &&
+        if ((event->x() >= metrics_.displayVolumeOrigin().x()) &&
+            (event->x() <= (metrics_.displayVolumeExtent().x() + metrics_.displayVolumeOrigin().x())) &&
             (height() - event->y() >= metrics_.displayVolumeOrigin().y()) &&
-            (height() - event->y() <= metrics_.displayVolumeExtent().y()))
+            (height() - event->y() <= (metrics_.displayVolumeExtent().y() + metrics_.displayVolumeOrigin().y())))
         {
             // Convert mouse position to 2D axes value.
             auto coords = toAxes2D(QPoint(event->x(), height() - event->y()));
