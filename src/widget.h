@@ -165,7 +165,7 @@ class MildredWidget : public QWidget
     // Last recorded mouse position
     QPoint lastMousePosition_;
     // Mouse coordinate style
-    MouseCoordStyle mouseCoordStyle_{MouseCoordStyle::FixedAnchor};
+    CoordinateDisplayStyle mouseCoordStyle_{CoordinateDisplayStyle::FixedAnchor};
     // Mouse coordinate entity
     TextEntity *mouseCoordEntity_{nullptr};
 
@@ -176,7 +176,7 @@ class MildredWidget : public QWidget
     void mouseWheeled(Qt3DInput::QWheelEvent *event);
 
     public slots:
-    void setMouseCoordStyle(MouseCoordStyle style);
+    void setMouseCoordStyle(CoordinateDisplayStyle style);
 
     signals:
     void mouseCoordChanged(QPointF pos);

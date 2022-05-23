@@ -49,15 +49,15 @@ void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
     switch (index)
     {
         case 0:
-            ui_.TestingWidget->setMouseCoordStyle(Mildred::MouseCoordStyle::FixedAnchor);
+            ui_.TestingWidget->setMouseCoordStyle(Mildred::CoordinateDisplayStyle::FixedAnchor);
             ui_.externalMouseCoordLabel->setVisible(false);
             break;
         case 1:
-            ui_.TestingWidget->setMouseCoordStyle(Mildred::MouseCoordStyle::MouseAnchor);
+            ui_.TestingWidget->setMouseCoordStyle(Mildred::CoordinateDisplayStyle::MouseAnchor);
             ui_.externalMouseCoordLabel->setVisible(false);
             break;
         case 2:
-            ui_.TestingWidget->setMouseCoordStyle(Mildred::MouseCoordStyle::None);
+            ui_.TestingWidget->setMouseCoordStyle(Mildred::CoordinateDisplayStyle::None);
             ui_.externalMouseCoordLabel->setVisible(true);
             break;
         default:
