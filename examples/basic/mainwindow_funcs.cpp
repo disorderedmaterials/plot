@@ -61,8 +61,8 @@ void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
             ui_.externalMouseCoordLabel->setVisible(true);
             break;
         default:
-        throw(std::runtime_error("Unhandled coordinate display style.\n"));
-        break;
+            throw(std::runtime_error("Unhandled coordinate display style.\n"));
+            break;
     }
 }
 
