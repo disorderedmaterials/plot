@@ -83,7 +83,7 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             emit mouseCoordChanged(coords);
 
             // Update the mouse coordinates in the text entity.
-            mouseCoordEntity_->setText(QString("%1 %2").arg(coords.x()).arg( coords.y()));
+            mouseCoordEntity_->setText(QString("%1 %2").arg(coords.x()).arg(coords.y()));
 
             // Enable the text entity, to ensure that it is visible.
             mouseCoordEntity_->setEnabled(true);
