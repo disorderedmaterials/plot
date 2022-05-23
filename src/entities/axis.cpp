@@ -466,16 +466,20 @@ void AxisEntity::setType(AxisType type)
     }
 }
 
-//! Define title alignment
+//! Define title rotation
 /*!
- * Set the alignment of the title label to @param alignment.
+ * Set the rotation of the title label to @param rotation.
  */
-void AxisEntity::setTitleLabelAlignment(Mildred::TextAlignment alignment) { axisTitleEntity_->setTextAlignment(alignment); }
+void AxisEntity::setTitleLabelRotation(double rotation) { axisTitleEntity_->setRotation(rotation); }
 
-void AxisEntity::setTickLabelAlignment(Mildred::TextAlignment alignment)
+//! Define tick label rotation
+/*!
+ * Set the rotation of the tick labels to @param rotation.
+ */
+void AxisEntity::setTickLabelRotation(double rotation)
 {
     for (auto &entity : tickLabelEntities_)
-        entity->setTextAlignment(alignment);
+        entity->setRotation(rotation);
 }
 
 //! Define direction

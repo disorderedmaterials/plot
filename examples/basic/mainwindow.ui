@@ -124,7 +124,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="XLabelAlignmentCombo"/>
+             <widget class="QComboBox" name="XLabelRotationCombo"/>
             </item>
            </layout>
           </item>
@@ -155,7 +155,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="YLabelAlignmentCombo"/>
+             <widget class="QComboBox" name="YLabelRotationCombo"/>
             </item>
            </layout>
           </item>
@@ -186,7 +186,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="ZLabelAlignmentCombo"/>
+             <widget class="QComboBox" name="ZLabelRotationCombo"/>
             </item>
            </layout>
           </item>

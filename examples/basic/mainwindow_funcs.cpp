@@ -36,12 +36,12 @@ MainWindow::MainWindow() : QMainWindow()
     connect(ui_.TestingWidget, SIGNAL(mouseCoordChanged(QPointF)), this, SLOT(setExternalMouseCoordinatesText(QPointF)));
 
     // Axis Label Rotation
-    ui_.XLabelAlignmentCombo->addItem(QString("Horizontal"));
-    ui_.XLabelAlignmentCombo->addItem(QString("Vertical"));
-    ui_.YLabelAlignmentCombo->addItem(QString("Horizontal"));
-    ui_.YLabelAlignmentCombo->addItem(QString("Vertical"));
-    ui_.ZLabelAlignmentCombo->addItem(QString("Horizontal"));
-    ui_.ZLabelAlignmentCombo->addItem(QString("Vertical"));
+    ui_.XLabelRotationCombo->addItem(QString("Horizontal"));
+    ui_.XLabelRotationCombo->addItem(QString("Vertical"));
+    ui_.YLabelRotationCombo->addItem(QString("Horizontal"));
+    ui_.YLabelRotationCombo->addItem(QString("Vertical"));
+    ui_.ZLabelRotationCombo->addItem(QString("Horizontal"));
+    ui_.ZLabelRotationCombo->addItem(QString("Vertical"));
 
     // Data
     const auto nPoints = 1000;
@@ -61,6 +61,7 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.TestingWidget->showAllData();
 };
 
+<<<<<<< HEAD
 void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
 {
     switch (index)
@@ -88,46 +89,61 @@ void MainWindow::setExternalMouseCoordinatesText(QPointF p)
 }
 
 void MainWindow::on_XLabelAlignmentCombo_currentIndexChanged(int index)
+=======
+void MainWindow::on_XLabelRotationCombo_currentIndexChanged(int index)
+>>>>>>> 007008d (Remove enum and change naming conventions.)
 {
     switch (index)
     {
         case 0:
-            ui_.TestingWidget->xAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Horizontal);
+            ui_.TestingWidget->xAxis()->setTitleLabelRotation(0.0);
             break;
         case 1:
-            ui_.TestingWidget->xAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Vertical);
+            ui_.TestingWidget->xAxis()->setTitleLabelRotation(90.0);
             break;
         default:
+<<<<<<< HEAD
             throw(std::runtime_error("Unhandled text alignment mode.\n"));
+=======
+            throw(std::runtime_error("Unhandled text rotation."));
+>>>>>>> 007008d (Remove enum and change naming conventions.)
     }
 }
 
-void MainWindow::on_YLabelAlignmentCombo_currentIndexChanged(int index)
+void MainWindow::on_YLabelRotationCombo_currentIndexChanged(int index)
 {
     switch (index)
     {
         case 0:
-            ui_.TestingWidget->yAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Horizontal);
+            ui_.TestingWidget->yAxis()->setTitleLabelRotation(0.0);
             break;
         case 1:
-            ui_.TestingWidget->yAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Vertical);
+            ui_.TestingWidget->yAxis()->setTitleLabelRotation(90.0);
             break;
         default:
+<<<<<<< HEAD
             throw(std::runtime_error("Unhandled text alignment mode.\n"));
+=======
+            throw(std::runtime_error("Unhandled text rotation."));
+>>>>>>> 007008d (Remove enum and change naming conventions.)
     }
 }
 
-void MainWindow::on_ZLabelAlignmentCombo_currentIndexChanged(int index)
+void MainWindow::on_ZLabelRotationCombo_currentIndexChanged(int index)
 {
     switch (index)
     {
         case 0:
-            ui_.TestingWidget->zAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Horizontal);
+            ui_.TestingWidget->zAxis()->setTitleLabelRotation(0.0);
             break;
         case 1:
-            ui_.TestingWidget->zAxis()->setTitleLabelAlignment(Mildred::TextAlignment::Vertical);
+            ui_.TestingWidget->zAxis()->setTitleLabelRotation(90.0);
             break;
         default:
+<<<<<<< HEAD
             throw(std::runtime_error("Unhandled text alignment mode.\n"));
+=======
+            throw(std::runtime_error("Unhandled text Rotation mode."));
+>>>>>>> 007008d (Remove enum and change naming conventions.)
     }
 }
