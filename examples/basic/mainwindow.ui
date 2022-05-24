@@ -188,6 +188,36 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Mouse Coordinates</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Style</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mouseCoordStyleCombo"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="externalMouseCoordLabel">
+            <property name="text">
+             <string>External</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -211,7 +241,7 @@
      <x>0</x>
      <y>0</y>
      <width>956</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

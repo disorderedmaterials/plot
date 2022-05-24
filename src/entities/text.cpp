@@ -134,7 +134,7 @@ void TextEntity::setAnchorPoint(MildredMetrics::AnchorPoint anchor)
     updateTranslation();
 }
 
-// 1 Set anchor position
+//! Set anchor position
 void TextEntity::setAnchorPosition(QVector3D p)
 {
     anchorPosition_ = p;

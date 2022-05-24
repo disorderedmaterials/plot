@@ -13,6 +13,13 @@ class MainWindow : public QMainWindow
     /*
      * UI
      */
+    private slots:
+    void on_mouseCoordStyleCombo_currentIndexChanged(int index);
+
+    public slots:
+    // Set mouse coordinates in external label.
+    void setExternalMouseCoordinatesText(QPointF p);
+
     private:
     // Main form declaration
     Ui::MainWindow ui_;

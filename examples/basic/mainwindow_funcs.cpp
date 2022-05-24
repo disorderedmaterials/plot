@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "material.h"
 #include "ui_mainwindow.h"
+#include "widget.h"
+#include <stdexcept>
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -26,6 +28,13 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.ZVisibleCheck->setChecked(ui_.TestingWidget->zAxis()->isEnabled());
     connect(ui_.ZVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->zAxis(), SLOT(setEnabled(bool)));
 
+    // Mouse Coordinates
+    ui_.mouseCoordStyleCombo->addItem(QString("Fixed Anchor"));
+    ui_.mouseCoordStyleCombo->addItem(QString("Anchor at Mouse"));
+    ui_.mouseCoordStyleCombo->addItem(QString("Use 'External' Slot"));
+    ui_.externalMouseCoordLabel->setVisible(false);
+    connect(ui_.TestingWidget, SIGNAL(mouseCoordChanged(QPointF)), this, SLOT(setExternalMouseCoordinatesText(QPointF)));
+
     // Data
     const auto nPoints = 1000;
     const auto delta = 2.0 * M_PI / nPoints;
@@ -43,3 +52,30 @@ MainWindow::MainWindow() : QMainWindow()
 
     ui_.TestingWidget->showAllData();
 };
+
+void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
+{
+    switch (index)
+    {
+        case 0:
+            ui_.TestingWidget->setMouseCoordStyle(Mildred::CoordinateDisplayStyle::FixedAnchor);
+            ui_.externalMouseCoordLabel->setVisible(false);
+            break;
+        case 1:
+            ui_.TestingWidget->setMouseCoordStyle(Mildred::CoordinateDisplayStyle::MouseAnchor);
+            ui_.externalMouseCoordLabel->setVisible(false);
+            break;
+        case 2:
+            ui_.TestingWidget->setMouseCoordStyle(Mildred::CoordinateDisplayStyle::None);
+            ui_.externalMouseCoordLabel->setVisible(true);
+            break;
+        default:
+            throw(std::runtime_error("Unhandled coordinate display style.\n"));
+            break;
+    }
+}
+
+void MainWindow::setExternalMouseCoordinatesText(QPointF p)
+{
+    ui_.externalMouseCoordLabel->setText(QString("%1 %2").arg(QString::number(p.x()), QString::number(p.y())));
+}

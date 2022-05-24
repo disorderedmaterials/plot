@@ -66,9 +66,54 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
         }
     }
 
-    updateShaderParameters();
-
     lastMousePosition_ = QPoint(event->x(), event->y());
+
+    if (flatView_)
+    {
+        // Ensure that mouse is within plot area.
+        if ((event->x() >= metrics_.displayVolumeOrigin().x()) &&
+            (event->x() <= (metrics_.displayVolumeExtent().x() + metrics_.displayVolumeOrigin().x())) &&
+            (height() - event->y() >= metrics_.displayVolumeOrigin().y()) &&
+            (height() - event->y() <= (metrics_.displayVolumeExtent().y() + metrics_.displayVolumeOrigin().y())))
+        {
+            // Convert mouse position to 2D axes value.
+            auto coords = toAxes2D(QPoint(event->x(), height() - event->y()));
+
+            // Emit signal indicating that mouse coordinates have been changed.
+            emit mouseCoordChanged(coords);
+
+            // Update the mouse coordinates in the text entity.
+            mouseCoordEntity_->setText(QString("%1 %2").arg(coords.x(), 0, 'g', 4).arg(coords.y(), 0, 'g', 4));
+
+            // Enable the text entity, to ensure that it is visible.
+            mouseCoordEntity_->setEnabled(true);
+
+            if (mouseCoordStyle_ == CoordinateDisplayStyle::FixedAnchor)
+            {
+                // Anchor the text entity at the bottom left of the widget.
+                mouseCoordEntity_->setAnchorPosition(
+                    {-metrics_.displayVolumeOrigin().x(), -metrics_.displayVolumeOrigin().y(), 0.1});
+            }
+            else if (mouseCoordStyle_ == CoordinateDisplayStyle::MouseAnchor)
+            {
+                // Anchor the text entity at the mouse cursor.
+                mouseCoordEntity_->setAnchorPosition({float(event->x()) - metrics_.displayVolumeOrigin().x(),
+                                                      height() - float(event->y()) - metrics_.displayVolumeOrigin().y(), 0});
+            }
+            else if (mouseCoordStyle_ == CoordinateDisplayStyle::None)
+            {
+                // Hide the text entity.
+                mouseCoordEntity_->setEnabled(false);
+            }
+        }
+        else
+        {
+            // Hide the text entity.
+            mouseCoordEntity_->setEnabled(false);
+        }
+    }
+
+    updateShaderParameters();
 }
 
 void MildredWidget::mouseButtonPressed(Qt3DInput::QMouseEvent *event) {}
@@ -98,3 +143,5 @@ void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
         updateTransforms();
     }
 }
+
+void MildredWidget::setMouseCoordStyle(CoordinateDisplayStyle style) { mouseCoordStyle_ = style; }
