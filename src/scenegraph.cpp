@@ -123,7 +123,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     mouseCoordLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     mouseCoordEntity_ = new TextEntity(sceneObjectsEntity_, QString("0.0, 0.0"));
-    mouseCoordEntity_->addComponent(mouseCoordLabelMaterial);
+    mouseCoordEntity_->setMaterial(mouseCoordLabelMaterial);
     mouseCoordEntity_->setFont(QFont("monospace", 10.0));
     mouseCoordEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::BottomLeft);
     mouseCoordEntity_->setEnabled(false);
