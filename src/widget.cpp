@@ -108,6 +108,8 @@ void MildredWidget::resizeEvent(QResizeEvent *event)
 
     // Lastly, resize our view container
     viewContainer_->resize(this->size());
+
+    updateAxisTickLabels(xAxis_);
 }
 
 /*

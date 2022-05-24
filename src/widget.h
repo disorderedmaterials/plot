@@ -147,6 +147,8 @@ class MildredWidget : public QWidget
     void updateTransforms();
     // Update shader parameters
     void updateShaderParameters();
+    // Update axis tick labels
+    void updateAxisTickLabels(AxisEntity *axis);
     // Reset view
     void resetView();
     // Show all data in view

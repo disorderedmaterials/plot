@@ -186,6 +186,15 @@ void MildredWidget::updateShaderParameters()
     viewportSizeParameter_->setValue(QVector2D(width(), height()));
 }
 
+void MildredWidget::updateAxisTickLabels(AxisEntity *axis)
+{
+    assert(axis);
+    if(axis->ticksNeedUpdating()){
+        axis->recreate();
+    }
+}
+
+
 //! Reset view
 /*!
  * Resets the main scene view rotation to the identity matrix

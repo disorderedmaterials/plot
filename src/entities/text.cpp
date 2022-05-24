@@ -87,6 +87,7 @@ void TextEntity::updateTranslation()
 
     // Set the text translation vector so that the defined anchor point is located at {0,0,0}
     auto [textCuboid, translation] = boundingCuboid(textMesh_->font(), textMesh_->text(), {}, anchorPoint_, textMesh_->depth());
+    widthExtent_ = textCuboid.xExtent();
     auto v = QVector3D(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
     textTransform_->setTranslation(v + translation);
 
@@ -140,6 +141,13 @@ void TextEntity::setAnchorPosition(QVector3D p)
     anchorPosition_ = p;
 
     updateTranslation();
+}
+
+QVector3D TextEntity::anchorPosition() const { return anchorPosition_; };
+
+float TextEntity::getWidthExtent()
+{
+    return widthExtent_;
 }
 
 //! Return simple bounding cuboid for text, along with baseline descent from font metrics

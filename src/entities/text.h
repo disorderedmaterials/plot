@@ -35,6 +35,7 @@ class TextEntity : public Qt3DCore::QEntity
     LineEntity *boundingBoxEntity_{nullptr}, *anchorPointEntity_{nullptr};
     // Transforms for bounding box and anchor point entities
     Qt3DCore::QTransform *boundingBoxTransform_{nullptr};
+    double widthExtent_{0};
 
     public:
     // Set text material
@@ -64,6 +65,10 @@ class TextEntity : public Qt3DCore::QEntity
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
+    // Get anchor position
+    QVector3D anchorPosition() const;
+    // Get width extent
+    float getWidthExtent();
     // Return simple bounding cuboid for text, along with baseline descent from font metrics
     static std::pair<Cuboid, int> boundingCuboid(const QFont &font, const QString &text, float depth = 0.1f);
     // Return bounding cuboid with translation and anchor point applied, and required translation vector for text mesh

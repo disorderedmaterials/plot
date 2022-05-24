@@ -206,6 +206,16 @@ std::vector<std::pair<double, bool>> AxisEntity::generateLogarithmicTicks() cons
     return ticks;
 }
 
+bool AxisEntity::ticksNeedUpdating()
+{
+    for (auto i = 0; i < tickLabelEntities_.size()-1; ++i)
+    {
+        if (tickLabelEntities_[i]->anchorPosition().x() + tickLabelEntities_[i]->getWidthExtent() >= tickLabelEntities_[i+1]->anchorPosition().x())
+            return true;
+    }
+    return false;
+}
+
 // Return the minimum display value of the axis
 double AxisEntity::minimum() const { return minimum_; }
 

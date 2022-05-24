@@ -64,6 +64,10 @@ class AxisEntity : public Qt3DCore::QEntity
     std::vector<std::pair<double, bool>> generateLogarithmicTicks() const;
 
     public:
+    // Determine if ticks need updating due to overlapping labels.
+    bool ticksNeedUpdating();
+
+    public:
     // Return the minimum display value of the axis
     double minimum() const;
     // Return the maximum display value of the axis
