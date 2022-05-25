@@ -1,4 +1,5 @@
 #include "entities/data2d.h"
+#include "renderers/2d/stylefactory.h"
 
 using namespace Mildred;
 
@@ -6,10 +7,14 @@ using namespace Mildred;
 /*!
  * Construct a new Data2DEntity storing a reference to the supplied @param metrics and with the given @param parent.
  */
-Data2DEntity::Data2DEntity(MildredMetrics &metrics, Qt3DCore::QNode *parent) : DataEntity(parent) {}
-
+Data2DEntity::Data2DEntity(const AxisEntity *xAxis, const AxisEntity* yAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent,
+                           StyleFactory2D::Style style)
+    : DataEntity(parent), xAxis_(xAxis), yAxis_(yAxis), valueAxis_(valueAxis), style_(style)
+{
+    dataRenderer_ = StyleFactory2D::createDataRenderer(style_, dataEntity_);
+}
 /*
- * Data
+ * Data 
  */
 
 //! Clear all data vectors
@@ -53,4 +58,15 @@ void Data2DEntity::setData(std::vector<double> x, std::vector<double> y, std::ve
     }
 
     create();
+}
+
+/*
+ * Rendering
+ */
+
+//! Create renderables in the current style
+void Data2DEntity::create()
+{
+    assert(dataRenderer_);
+    dataRenderer_->create(colourDefinition(), x_, xAxis_, y_, yAxis_, values_, valueAxis_);
 }

@@ -4,6 +4,7 @@
 #include "displaygroup.h"
 #include "entities/axis.h"
 #include "entities/data1d.h"
+#include "entities/data2d.h"
 #include "framegraph.h"
 #include "material.h"
 #include <QResizeEvent>
@@ -206,6 +207,7 @@ class MildredWidget : public QWidget
     public:
     // Add new data entity for supplied data
     Data1DEntity *addData1D(std::string_view tag);
+    Data2DEntity *addData2D(std::string_view tag);
 
     /*
      * Grouping

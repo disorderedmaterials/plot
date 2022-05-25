@@ -30,7 +30,7 @@ target_include_directories(
 
 target_link_libraries(
   mildred
-  PUBLIC ${WHOLE_ARCHIVE_FLAG} entities renderers1d classes
+  PUBLIC ${WHOLE_ARCHIVE_FLAG} entities renderers1d renderers2d classes
   PRIVATE # External libs
           Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras
           OpenGL::GL)
