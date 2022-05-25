@@ -46,7 +46,7 @@ void Data2DEntity::setData(std::vector<double> x, std::vector<double> y, std::ve
     auto xit = x_.cbegin(), yit = y_.cbegin(), vit = values_.cbegin();
     while (xit != x_.end())
     {
-        updateExtrema(*xit+*vit, *yit+*vit, std::nullopt);
+        updateExtrema(*xit, *yit, *vit);
         ++xit;
         ++yit;
         ++vit;
