@@ -21,6 +21,7 @@ class LineRenderer2D : public DataRenderer2D
     private:
     // Line entity
     LineEntity *lines_{nullptr};
+    // std::vector<LineEntity*> lines_;
 
     public:
     // Create entities from the supplied metrics and data
