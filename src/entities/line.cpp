@@ -83,7 +83,7 @@ void LineEntity::addVertex(QVector3D v, QColor colour)
     cachedVertexColours_.emplace_back(colour);
 }
 
-//! Append verteices to cached data
+//! Append vertices to cached data
 /*!
  * Append the vector of @param vertices to the cached vertices. The buffer objects (and hence the display primitive) are not
  * regenerated until a call to the finalise() method is made.
