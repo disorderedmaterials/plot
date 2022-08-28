@@ -24,8 +24,12 @@ uniform float lineWidth = 1.5;
 // Copy clip distances for specified input vertex
 void applyClipping(int inVertexID)
 {
-    for (int i=0; i < 6; ++i)
-    gl_ClipDistance[i] = gl_in[inVertexID].gl_ClipDistance[i];
+    gl_ClipDistance[0] = gl_in[inVertexID].gl_ClipDistance[0];
+    gl_ClipDistance[1] = gl_in[inVertexID].gl_ClipDistance[1];
+    gl_ClipDistance[2] = gl_in[inVertexID].gl_ClipDistance[2];
+    gl_ClipDistance[3] = gl_in[inVertexID].gl_ClipDistance[3];
+    gl_ClipDistance[4] = gl_in[inVertexID].gl_ClipDistance[4];
+    gl_ClipDistance[5] = gl_in[inVertexID].gl_ClipDistance[5];
 }
 
 void main()
