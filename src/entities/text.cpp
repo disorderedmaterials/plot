@@ -98,11 +98,11 @@ void TextEntity::updateTranslation()
     if (boundingBoxEntity_)
     {
         boundingBoxEntity_->clear();
-        boundingBoxEntity_->addVertex({textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0});
-        boundingBoxEntity_->addVertex({textCuboid.upperRightFront().x(), textCuboid.lowerLeftBack().y(), 0});
-        boundingBoxEntity_->addVertex({textCuboid.upperRightFront().x(), textCuboid.upperRightFront().y(), 0});
-        boundingBoxEntity_->addVertex({textCuboid.lowerLeftBack().x(), textCuboid.upperRightFront().y(), 0});
-        boundingBoxEntity_->addVertex({textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0});
+        boundingBoxEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
+        boundingBoxEntity_->addVertex(textCuboid.upperRightFront().x(), textCuboid.lowerLeftBack().y(), 0.0);
+        boundingBoxEntity_->addVertex(textCuboid.upperRightFront().x(), textCuboid.upperRightFront().y(), 0.0);
+        boundingBoxEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.upperRightFront().y(), 0.0);
+        boundingBoxEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
         boundingBoxEntity_->setBasicIndices();
         boundingBoxEntity_->finalise();
     }
