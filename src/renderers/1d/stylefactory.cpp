@@ -4,6 +4,7 @@
 #include "renderers/1d/error_tee.h"
 #include "renderers/1d/line.h"
 #include "renderers/1d/none.h"
+#include <stdexcept>
 
 namespace Mildred
 {
