@@ -29,6 +29,11 @@ MainWindow::MainWindow() : QMainWindow()
     connect(ui_.YVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->yAxis(), SLOT(setEnabled(bool)));
     ui_.ZVisibleCheck->setChecked(ui_.TestingWidget->zAxis()->isEnabled());
     connect(ui_.ZVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->zAxis(), SLOT(setEnabled(bool)));
+    // -- Rotation
+    ui_.XLabelRotationSpin->setValue(ui_.TestingWidget->xAxis()->labelRotation());
+    connect(ui_.XLabelRotationSpin, SIGNAL(valueChanged(double)), ui_.TestingWidget, SLOT(setXAxisLabelRotation(double)));
+    connect(ui_.YLabelRotationSpin, SIGNAL(valueChanged(double)), ui_.TestingWidget, SLOT(setYAxisLabelRotation(double)));
+    connect(ui_.ZLabelRotationSpin, SIGNAL(valueChanged(double)), ui_.TestingWidget, SLOT(setZAxisLabelRotation(double)));
 
     // Mouse Coordinates
     ui_.mouseCoordStyleCombo->addItem(QString("Fixed Anchor"));
@@ -36,14 +41,6 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.mouseCoordStyleCombo->addItem(QString("Use 'External' Slot"));
     ui_.externalMouseCoordLabel->setVisible(false);
     connect(ui_.TestingWidget, SIGNAL(mouseCoordChanged(QPointF)), this, SLOT(setExternalMouseCoordinatesText(QPointF)));
-
-    // Axis Label Rotation
-    ui_.XLabelRotationCombo->addItem(QString("Horizontal"));
-    ui_.XLabelRotationCombo->addItem(QString("Vertical"));
-    ui_.YLabelRotationCombo->addItem(QString("Horizontal"));
-    ui_.YLabelRotationCombo->addItem(QString("Vertical"));
-    ui_.ZLabelRotationCombo->addItem(QString("Horizontal"));
-    ui_.ZLabelRotationCombo->addItem(QString("Vertical"));
 
     // Data
     const auto nPoints = 1000;
@@ -87,49 +84,4 @@ void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
 void MainWindow::setExternalMouseCoordinatesText(QPointF p)
 {
     ui_.externalMouseCoordLabel->setText(QString("%1 %2").arg(QString::number(p.x()), QString::number(p.y())));
-}
-
-void MainWindow::on_XLabelRotationCombo_currentIndexChanged(int index)
-{
-    switch (index)
-    {
-        case 0:
-            ui_.TestingWidget->xAxis()->setTitleLabelRotation(0.0);
-            break;
-        case 1:
-            ui_.TestingWidget->xAxis()->setTitleLabelRotation(90.0);
-            break;
-        default:
-            throw(std::runtime_error("Unhandled text rotation.\n"));
-    }
-}
-
-void MainWindow::on_YLabelRotationCombo_currentIndexChanged(int index)
-{
-    switch (index)
-    {
-        case 0:
-            ui_.TestingWidget->yAxis()->setTitleLabelRotation(0.0);
-            break;
-        case 1:
-            ui_.TestingWidget->yAxis()->setTitleLabelRotation(90.0);
-            break;
-        default:
-            throw(std::runtime_error("Unhandled text rotation.\n"));
-    }
-}
-
-void MainWindow::on_ZLabelRotationCombo_currentIndexChanged(int index)
-{
-    switch (index)
-    {
-        case 0:
-            ui_.TestingWidget->zAxis()->setTitleLabelRotation(0.0);
-            break;
-        case 1:
-            ui_.TestingWidget->zAxis()->setTitleLabelRotation(90.0);
-            break;
-        default:
-            throw(std::runtime_error("Unhandled text Rotation mode.\n"));
-    }
 }

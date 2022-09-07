@@ -472,6 +472,9 @@ void AxisEntity::setType(AxisType type)
  */
 void AxisEntity::setLabelRotation(double rotation) { labelEntity_->setRotation(rotation); }
 
+//! Return main label rotation
+double AxisEntity::labelRotation() const { return labelEntity_->rotation(); }
+
 //! Define tick label rotation
 /*!
  * Set the rotation of the tick labels to @param rotation.

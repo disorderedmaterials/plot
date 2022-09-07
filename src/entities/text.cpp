@@ -154,6 +154,9 @@ void TextEntity::setRotation(double rotation)
     updateTranslation();
 }
 
+//! Return rotation about anchor point
+double TextEntity::rotation() const { return rotation_; }
+
 // Return bounding cuboid and anchor translation vector for current text and positioning
 std::pair<Cuboid, QVector3D> TextEntity::boundingCuboid(const QFont &font, std::optional<QVector3D> newAnchorPosition) const
 {

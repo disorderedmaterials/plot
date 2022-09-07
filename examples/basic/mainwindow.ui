@@ -124,7 +124,20 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="XLabelRotationCombo"/>
+             <widget class="QDoubleSpinBox" name="XLabelRotationSpin">
+              <property name="decimals">
+               <number>0</number>
+              </property>
+              <property name="minimum">
+               <double>-180.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>180.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>5.000000000000000</double>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -155,7 +168,20 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="YLabelRotationCombo"/>
+             <widget class="QDoubleSpinBox" name="YLabelRotationSpin">
+              <property name="decimals">
+               <number>0</number>
+              </property>
+              <property name="minimum">
+               <double>-180.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>180.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>5.000000000000000</double>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -186,7 +212,20 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="ZLabelRotationCombo"/>
+             <widget class="QDoubleSpinBox" name="ZLabelRotationSpin">
+              <property name="decimals">
+               <number>0</number>
+              </property>
+              <property name="minimum">
+               <double>-180.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>180.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>5.000000000000000</double>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -247,7 +286,7 @@
      <x>0</x>
      <y>0</y>
      <width>956</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

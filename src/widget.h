@@ -155,6 +155,9 @@ class MildredWidget : public QWidget
     void setXAxisLabel(const QString &text);
     void setYAxisLabel(const QString &text);
     void setZAxisLabel(const QString &text);
+    void setXAxisLabelRotation(double theta);
+    void setYAxisLabelRotation(double theta);
+    void setZAxisLabelRotation(double theta);
     // Debug Objects
     void setSceneCuboidEnabled(bool enabled);
 

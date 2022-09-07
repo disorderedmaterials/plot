@@ -277,6 +277,39 @@ void MildredWidget::setZAxisLabel(const QString &text)
     updateMetrics();
 }
 
+//! Change the rotation of the x-axis label.
+/*!
+ * Set the rotation of the x-axis label about its anchor point to @param theta degrees. Metrics are updated after the change.
+ */
+void MildredWidget::setXAxisLabelRotation(double theta)
+{
+    assert(xAxis_);
+    xAxis_->setLabelRotation(theta);
+    updateMetrics();
+}
+
+//! Change the rotation of the y-axis label.
+/*!
+ * Set the rotation of the y-axis label about its anchor point to @param theta degrees. Metrics are updated after the change.
+ */
+void MildredWidget::setYAxisLabelRotation(double theta)
+{
+    assert(yAxis_);
+    yAxis_->setLabelRotation(theta);
+    updateMetrics();
+}
+
+//! Change the rotation of the z-axis label.
+/*!
+ * Set the rotation of the z-axis label about its anchor point to @param theta degrees. Metrics are updated after the change.
+ */
+void MildredWidget::setZAxisLabelRotation(double theta)
+{
+    assert(zAxis_);
+    zAxis_->setLabelRotation(theta);
+    updateMetrics();
+}
+
 //! Change the visibility of the scene debug cuboid.
 /*!
  * Sets whether the scene debug cuboid is enabled (visible), and which illustrates the current view volume extent.

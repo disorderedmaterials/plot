@@ -116,6 +116,8 @@ class AxisEntity : public Qt3DCore::QEntity
     QString labelText() const;
     // Set main label rotation
     void setLabelRotation(double rotation);
+    // Return label rotation
+    double labelRotation() const;
     // Set tick label rotation
     void setTickLabelRotation(double rotation);
     // Set explicit direction

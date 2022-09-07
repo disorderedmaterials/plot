@@ -67,8 +67,10 @@ class TextEntity : public Qt3DCore::QEntity
     void setAnchorPoint(MildredMetrics::AnchorPoint anchor);
     // Set anchor position
     void setAnchorPosition(QVector3D p);
-    // Set rotation
+    // Set rotation about anchor point
     void setRotation(double rotation);
+    // Return rotation about anchor point
+    double rotation() const;
     // Return bounding cuboid and anchor translation vector for current text and positioning
     std::pair<Cuboid, QVector3D> boundingCuboid(const QFont &font,
                                                 std::optional<QVector3D> newAnchorPosition = std::nullopt) const;
