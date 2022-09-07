@@ -34,10 +34,10 @@ class TextEntity : public Qt3DCore::QEntity
     Qt3DExtras::QExtrudedTextMesh *textMesh_{nullptr};
     // Transform
     Qt3DCore::QTransform *textTransform_{nullptr};
-    // Bounding box and anchor point entities
-    LineEntity *boundingBoxEntity_{nullptr}, *anchorPointEntity_{nullptr};
-    // Transforms for bounding box and anchor point entities
-    Qt3DCore::QTransform *boundingBoxTransform_{nullptr};
+    // Bounding cuboid and anchor point entities
+    LineEntity *boundingCuboidEntity_{nullptr}, *anchorPointEntity_{nullptr};
+    // Transforms for bounding cuboid and anchor point entities
+    Qt3DCore::QTransform *boundingCuboidTransform_{nullptr};
 
     public:
     // Set text material

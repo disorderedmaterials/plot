@@ -3,8 +3,8 @@
 
 using namespace Mildred;
 
-// Enables showing of bounding boxes around Text Entities.
-constexpr auto showBoundingBoxes = true;
+// Enables showing of bounding cuboids around Text Entities.
+constexpr auto showBoundingCuboids = true;
 
 //! Construct a new text entity
 /*!
@@ -35,12 +35,12 @@ TextEntity::TextEntity(Qt3DCore::QNode *parent, QString text) : Qt3DCore::QEntit
     textTransform_->setScale3D({10.0f, 10.0f, 1.0f});
     textEntity_->addComponent(textTransform_);
 
-    // Add bounding box entity
-    if (showBoundingBoxes)
+    // Add bounding cuboid entity
+    if (showBoundingCuboids)
     {
-        boundingBoxEntity_ = new LineEntity(this);
-        boundingBoxTransform_ = new Qt3DCore::QTransform(boundingBoxEntity_);
-        boundingBoxEntity_->addComponent(boundingBoxTransform_);
+        boundingCuboidEntity_ = new LineEntity(this);
+        boundingCuboidTransform_ = new Qt3DCore::QTransform(boundingCuboidEntity_);
+        boundingCuboidEntity_->addComponent(boundingCuboidTransform_);
         anchorPointEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::PrimitiveType::Lines);
         anchorPointEntity_->addVertex({3.0, 0.0, 0.0});
         anchorPointEntity_->addVertex({-3.0, 0.0, 0.0});
@@ -95,16 +95,16 @@ void TextEntity::updateTranslation()
     textTransform_->setTranslation(v + translation);
 
     // Update the bounding box entity
-    if (boundingBoxEntity_)
+    if (boundingCuboidEntity_)
     {
-        boundingBoxEntity_->clear();
-        boundingBoxEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
-        boundingBoxEntity_->addVertex(textCuboid.upperRightFront().x(), textCuboid.lowerLeftBack().y(), 0.0);
-        boundingBoxEntity_->addVertex(textCuboid.upperRightFront().x(), textCuboid.upperRightFront().y(), 0.0);
-        boundingBoxEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.upperRightFront().y(), 0.0);
-        boundingBoxEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
-        boundingBoxEntity_->setBasicIndices();
-        boundingBoxEntity_->finalise();
+        boundingCuboidEntity_->clear();
+        boundingCuboidEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
+        boundingCuboidEntity_->addVertex(textCuboid.upperRightFront().x(), textCuboid.lowerLeftBack().y(), 0.0);
+        boundingCuboidEntity_->addVertex(textCuboid.upperRightFront().x(), textCuboid.upperRightFront().y(), 0.0);
+        boundingCuboidEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.upperRightFront().y(), 0.0);
+        boundingCuboidEntity_->addVertex(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
+        boundingCuboidEntity_->setBasicIndices();
+        boundingCuboidEntity_->finalise();
     }
 }
 
