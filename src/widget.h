@@ -151,10 +151,10 @@ class MildredWidget : public QWidget
     void resetView();
     // Show all data in view
     void showAllData();
-    // Axis Titles
-    void setXAxisTitle(const QString &title);
-    void setYAxisTitle(const QString &title);
-    void setZAxisTitle(const QString &title);
+    // Axis Main Labels
+    void setXAxisLabel(const QString &text);
+    void setYAxisLabel(const QString &text);
+    void setZAxisLabel(const QString &text);
     // Debug Objects
     void setSceneCuboidEnabled(bool enabled);
 

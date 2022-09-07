@@ -15,12 +15,14 @@ MainWindow::MainWindow() : QMainWindow()
     connect(ui_.FlatViewCheck, SIGNAL(clicked(bool)), ui_.TestingWidget, SLOT(setFlatView(bool)));
 
     // Axes
-    ui_.XTitleEdit->setText(ui_.TestingWidget->xAxis()->titleText());
-    connect(ui_.XTitleEdit, SIGNAL(textChanged(const QString &)), ui_.TestingWidget, SLOT(setXAxisTitle(const QString &)));
-    ui_.YTitleEdit->setText(ui_.TestingWidget->yAxis()->titleText());
-    connect(ui_.YTitleEdit, SIGNAL(textChanged(const QString &)), ui_.TestingWidget, SLOT(setYAxisTitle(const QString &)));
-    ui_.ZTitleEdit->setText(ui_.TestingWidget->zAxis()->titleText());
-    connect(ui_.ZTitleEdit, SIGNAL(textChanged(const QString &)), ui_.TestingWidget, SLOT(setZAxisTitle(const QString &)));
+    // -- Titles
+    ui_.XLabelEdit->setText(ui_.TestingWidget->xAxis()->labelText());
+    connect(ui_.XLabelEdit, SIGNAL(textChanged(const QString &)), ui_.TestingWidget, SLOT(setXAxisLabel(const QString &)));
+    ui_.YLabelEdit->setText(ui_.TestingWidget->yAxis()->labelText());
+    connect(ui_.YLabelEdit, SIGNAL(textChanged(const QString &)), ui_.TestingWidget, SLOT(setYAxisLabel(const QString &)));
+    ui_.ZLabelEdit->setText(ui_.TestingWidget->zAxis()->labelText());
+    connect(ui_.ZLabelEdit, SIGNAL(textChanged(const QString &)), ui_.TestingWidget, SLOT(setZAxisLabel(const QString &)));
+    // -- Visibility
     ui_.XVisibleCheck->setChecked(ui_.TestingWidget->xAxis()->isEnabled());
     connect(ui_.XVisibleCheck, SIGNAL(toggled(bool)), ui_.TestingWidget->xAxis(), SLOT(setEnabled(bool)));
     ui_.YVisibleCheck->setChecked(ui_.TestingWidget->yAxis()->isEnabled());

@@ -78,10 +78,6 @@ class AxisEntity : public Qt3DCore::QEntity
     void shiftLimitsByPixels(int pixelDelta);
     // Return whether the axis is logarithmic
     bool isLogarithmic() const;
-    // Set title text
-    void setTitleText(const QString &text);
-    // Return title text
-    QString titleText() const;
 
     public slots:
     // Set axis minimum
@@ -114,8 +110,12 @@ class AxisEntity : public Qt3DCore::QEntity
     public:
     // Set axis type
     void setType(AxisType type);
-    // Set title label rotation
-    void setTitleLabelRotation(double rotation);
+    // Set label text
+    void setLabelText(const QString &text);
+    // Return label text
+    QString labelText() const;
+    // Set main label rotation
+    void setLabelRotation(double rotation);
     // Set tick label rotation
     void setTickLabelRotation(double rotation);
     // Set explicit direction
@@ -143,8 +143,8 @@ class AxisEntity : public Qt3DCore::QEntity
     LineEntity *ticksEntity_{nullptr}, *subTicksEntity_{nullptr};
     // Tick labels
     std::vector<TextEntity *> tickLabelEntities_;
-    // Axis title
-    TextEntity *axisTitleEntity_{nullptr};
+    // Main label
+    TextEntity *labelEntity_{nullptr};
 
     private:
     // Create / update ticks and labels at specified axis values, returning their bounding cuboid
