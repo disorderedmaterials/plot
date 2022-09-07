@@ -4,7 +4,7 @@
 using namespace Mildred;
 
 // Enables showing of bounding boxes around Text Entities.
-constexpr auto showBoundingBoxes = false;
+constexpr auto showBoundingBoxes = true;
 
 //! Construct a new text entity
 /*!
@@ -90,7 +90,7 @@ void TextEntity::updateTranslation()
     positionalTransform_->setRotationZ(rotation_);
 
     // Set the text translation vector so that the defined anchor point is located at {0,0,0}
-    auto [textCuboid, translation] = boundingCuboid(textMesh_->font(), textMesh_->text(), {}, anchorPoint_, textMesh_->depth(), rotation_);
+    auto [textCuboid, translation] = boundingCuboid(textMesh_->font(), textMesh_->text(), {}, anchorPoint_, textMesh_->depth());
     auto v = QVector3D(textCuboid.lowerLeftBack().x(), textCuboid.lowerLeftBack().y(), 0.0);
     textTransform_->setTranslation(v + translation);
 
@@ -154,6 +154,12 @@ void TextEntity::setRotation(double rotation)
     updateTranslation();
 }
 
+// Return bounding cuboid and anchor translation vector for current text and positioning
+std::pair<Cuboid, QVector3D> TextEntity::boundingCuboid(const QFont &font, std::optional<QVector3D> newAnchorPosition) const
+{
+    return boundingCuboid(font, text(), newAnchorPosition.value_or(anchorPosition_), anchorPoint_, rotation_, 0.01);
+}
+
 //! Return simple bounding cuboid for text, along with baseline descent from font metrics
 /*!
  * Calculates a bounding cuboid in the XY plane for the specified @param font and @param text. The @param depth is applied in
@@ -182,7 +188,7 @@ std::pair<Cuboid, int> TextEntity::boundingCuboid(const QFont &font, const QStri
  * should be applied to the mesh to be rendered in order to get the correct positioning.
  */
 std::pair<Cuboid, QVector3D> TextEntity::boundingCuboid(const QFont &font, const QString &text, QVector3D anchorPosition,
-                                                        MildredMetrics::AnchorPoint anchorPoint, float depth)
+                                                        MildredMetrics::AnchorPoint anchorPoint, double rotation, float depth)
 {
     // Get basic bounding cuboid for the text
     auto [cuboid, descent] = boundingCuboid(font, text, depth);
@@ -209,5 +215,6 @@ std::pair<Cuboid, QVector3D> TextEntity::boundingCuboid(const QFont &font, const
     auto anchorFrac = MildredMetrics::anchorLocation(anchorPoint);
     cuboid.translate(-QVector3D(cuboid.xExtent() * anchorFrac.x(), cuboid.yExtent() * anchorFrac.y(), 0.0));
 
-    return {cuboid, meshTranslation};
+    // Return the bounding cuboid (accounting for rotation)
+    return {cuboid.zRotatedBoundingCuboid(anchorPosition, rotation), meshTranslation};
 }

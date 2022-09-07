@@ -594,11 +594,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
             (*tickLabelEntity)->setText(QString::number(v));
             (*tickLabelEntity)
                 ->setAnchorPosition(axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap()));
-            boundingCuboid.expand(TextEntity::boundingCuboid(
-                                      metrics_.axisTickLabelFont(), QString::number(v),
-                                      {axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap())},
-                                      labelAnchorPoint_)
-                                      .first);
+            boundingCuboid.expand((*tickLabelEntity)->boundingCuboid(metrics_.axisTickLabelFont()).first);
             ++tickLabelEntity;
         }
         else
@@ -713,7 +709,7 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
             cuboid.expand(
                 TextEntity::boundingCuboid(metrics.axisTickLabelFont(), QString::number(v),
                                            axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics.tickLabelPixelGap()),
-                                           labelAnchorPoint_)
+                                           labelAnchorPoint_, 0.0)
                     .first);
         }
         else
@@ -721,12 +717,12 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
     }
     // -- Title
     if (!axisTitleEntity_->text().isEmpty())
-        cuboid.expand(TextEntity::boundingCuboid(metrics.axisTitleFont(), axisTitleEntity_->text(),
-                                                 direction_ * metrics.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
-                                                     tickDirection_ *
-                                                         (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap()),
-                                                 labelAnchorPoint_)
-                          .first);
+        cuboid.expand(
+            axisTitleEntity_
+                ->boundingCuboid(metrics.axisTitleFont(),
+                                 direction_ * metrics.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
+                                     tickDirection_ * (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap()))
+                .first);
 
     return cuboid;
 }
