@@ -61,7 +61,6 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.TestingWidget->showAllData();
 };
 
-<<<<<<< HEAD
 void MainWindow::on_mouseCoordStyleCombo_currentIndexChanged(int index)
 {
     switch (index)
@@ -88,10 +87,7 @@ void MainWindow::setExternalMouseCoordinatesText(QPointF p)
     ui_.externalMouseCoordLabel->setText(QString("%1 %2").arg(QString::number(p.x()), QString::number(p.y())));
 }
 
-void MainWindow::on_XLabelAlignmentCombo_currentIndexChanged(int index)
-=======
 void MainWindow::on_XLabelRotationCombo_currentIndexChanged(int index)
->>>>>>> 007008d (Remove enum and change naming conventions.)
 {
     switch (index)
     {
@@ -102,11 +98,7 @@ void MainWindow::on_XLabelRotationCombo_currentIndexChanged(int index)
             ui_.TestingWidget->xAxis()->setTitleLabelRotation(90.0);
             break;
         default:
-<<<<<<< HEAD
-            throw(std::runtime_error("Unhandled text alignment mode.\n"));
-=======
-            throw(std::runtime_error("Unhandled text rotation."));
->>>>>>> 007008d (Remove enum and change naming conventions.)
+            throw(std::runtime_error("Unhandled text rotation.\n"));
     }
 }
 
@@ -121,11 +113,7 @@ void MainWindow::on_YLabelRotationCombo_currentIndexChanged(int index)
             ui_.TestingWidget->yAxis()->setTitleLabelRotation(90.0);
             break;
         default:
-<<<<<<< HEAD
-            throw(std::runtime_error("Unhandled text alignment mode.\n"));
-=======
-            throw(std::runtime_error("Unhandled text rotation."));
->>>>>>> 007008d (Remove enum and change naming conventions.)
+            throw(std::runtime_error("Unhandled text rotation.\n"));
     }
 }
 
@@ -140,10 +128,6 @@ void MainWindow::on_ZLabelRotationCombo_currentIndexChanged(int index)
             ui_.TestingWidget->zAxis()->setTitleLabelRotation(90.0);
             break;
         default:
-<<<<<<< HEAD
-            throw(std::runtime_error("Unhandled text alignment mode.\n"));
-=======
-            throw(std::runtime_error("Unhandled text Rotation mode."));
->>>>>>> 007008d (Remove enum and change naming conventions.)
+            throw(std::runtime_error("Unhandled text Rotation mode.\n"));
     }
 }
