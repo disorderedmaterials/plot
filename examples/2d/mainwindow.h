@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui_mainwindow.h"
+#include "entities/data2d.h"
 
 class MainWindow : public QMainWindow
 {
@@ -22,6 +23,21 @@ class MainWindow : public QMainWindow
      * Data
      */
     private:
+    // Data limits
+    double dataMin_{-5.0}, dataMax_{5.0};
+    // Data granularity
+    int nPoints_{1000};
     // Test data
-    std::vector<double> sinX_, sinY_, sinValues_;
+    std::vector<double> x_, y_, values_;
+    // Entity for data
+    Mildred::Data2DEntity *dataEntity_{nullptr};
+
+    public:
+    // Function Types
+    enum Test2DFunctions
+    {
+        AckleyFunction
+    };
+    // Generate specified function
+    void generateFunction(Test2DFunctions function);
 };

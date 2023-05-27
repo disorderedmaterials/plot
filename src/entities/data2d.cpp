@@ -36,9 +36,7 @@ void Data2DEntity::setData(std::vector<double> x, std::vector<double> y, std::ve
 {
     clearData();
 
-    if (x.size() != y.size())
-        printf("Irregular vector sizes provided (%zu (x) vs %zu (y)) so data will be ignored.\n", x.size(), y.size());
-    else if (x.size() != values.size())
+    if (x.size() * y.size() != values.size())
         printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (values)) so data will be ignored.\n", x.size(), y.size(), values.size());
     else
     {
@@ -47,13 +45,12 @@ void Data2DEntity::setData(std::vector<double> x, std::vector<double> y, std::ve
         values_ = std::move(values);
     }
 
-    // Determine data extrema
-    auto xit = x_.cbegin(), yit = y_.cbegin(), vit = values_.cbegin();
-    while (xit != x_.end())
-    {
-        updateExtrema(*xit, *yit, *vit);
-        ++xit;
-        ++yit;
+    // Determine axis extrema
+    auto vit = values_.cbegin();
+    for (const auto x : x_)
+        for (const auto y : y_)
+        {
+        updateExtrema(x, y, *vit);
         ++vit;
     }
 
