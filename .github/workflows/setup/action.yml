@@ -1,0 +1,14 @@
+name: Set Environment
+
+runs:
+  using: "composite"
+  steps:
+
+  - name: Set Environment
+    shell: bash
+    run: |
+      set -ex
+      echo "qtVersion=6.2.2" >> ${GITHUB_ENV}
+      MILDREDVERSION=`grep "#define MILDREDVERSION" src/version.h | sed "s/.*\"\(.*\)\"/\1/g"`
+      echo "mildredVersion=${MILDREDVERSION}" >> ${GITHUB_ENV}
+
