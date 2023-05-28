@@ -1,0 +1,52 @@
+name: Build
+description: Build Linux artifacts
+
+inputs:
+  gsltag:
+    default: gsl-2.7.1
+
+runs:
+  using: "composite"
+  steps:
+
+  - name: Install Prerequisites
+    shell: bash
+    run: |
+      set -ex
+      sudo apt-get update -q
+      sudo apt-get install ninja-build python3-setuptools uuid uuid-dev libglu1-mesa-dev freeglut3-dev
+
+  - name: Install Qt
+    shell: bash
+    run: |
+      set -ex
+      sudo pip3 install aqtinstall
+      aqt install-qt --outputdir /tmp/qt linux desktop ${{ env.qtVersion }} -m qt3d
+
+  - name: Build
+    shell: bash
+    run: |
+      set -ex
+      Qt6_DIR=/tmp/qt/${{ parameters.qtver }}/gcc_64/lib/cmake/Qt6
+      QT_BASE_DIR=/tmp/qt/${{ parameters.qtver }}/gcc_64
+      export QTDIR=$QT_BASE_DIR
+      export PATH=$QT_BASE_DIR/bin:$PATH
+      export LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
+      mkdir build
+      cd build
+      cmake ../ -G "Ninja" -DBUILD_EXAMPLES:bool=true ${{ parameters.extraflags }} -DCMAKE_INSTALL_PREFIX:path=./Mildred-${{ env.mildredVersion }}-linux
+      ninja
+      ninja install
+
+  - name: Create Zip
+    shell: bash
+    run: |
+      set -ex
+      cd build
+      zip -9rv ./packages/Mildred-${{ env.mildredVersion }}-linux.zip Mildred-${{ env.mildredVersion }}-linux
+
+  - name: Upload Package Artifacts
+    uses: actions/upload-artifact@v3
+    with:
+      name: packages
+      path: ${{ github.workspace }}/packages
