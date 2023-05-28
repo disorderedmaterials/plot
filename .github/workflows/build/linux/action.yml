@@ -43,7 +43,7 @@ runs:
     run: |
       set -ex
       cd build
-      zip -9rv ./packages/Mildred-${{ env.mildredVersion }}-linux.zip Mildred-${{ env.mildredVersion }}-linux
+      zip -9rv ../packages/Mildred-${{ env.mildredVersion }}-linux.zip Mildred-${{ env.mildredVersion }}-linux
 
   - name: Upload Package Artifacts
     uses: actions/upload-artifact@v3

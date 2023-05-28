@@ -29,6 +29,7 @@ runs:
     shell: bash
     run: |
       set -ex
+      mkdir packages
       cd build
       zip -9rv ../packages/Mildred-${{ env.mildredVersion }}-osx.zip Mildred-${{ env.mildredVersion }}-osx
 
