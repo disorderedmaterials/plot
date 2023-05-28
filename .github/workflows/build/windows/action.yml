@@ -15,7 +15,7 @@ runs:
     shell: powershell
     run: |
       $ErrorActionPreference = 'Stop'
-      $env:Qt6_DIR = "${{ github.workspace }}\Qt\${{ parameters.qtver }}\msvc2019_64"
+      $env:Qt6_DIR = "${{ github.workspace }}\Qt\${{ env.qtVersion }}\msvc2019_64"
       $env:PATH += ";$env:Qt6_DIR" + "\bin"
       echo $env:Qt6_DIR
       mkdir build
