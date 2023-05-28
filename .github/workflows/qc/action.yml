@@ -10,6 +10,7 @@ runs:
       set -ex
       sudo apt-get update
       sudo apt-get install --yes clang-format-13
+      pip install cmake_format==0.6.9
 
   - name: C++ Formatting
     shell: bash
