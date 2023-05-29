@@ -44,3 +44,5 @@ jobs:
       uses: "./.github/workflows/setup"
     - name: Publish
       uses: "./.github/workflows/publish"
+      with:
+        isRelease: false
