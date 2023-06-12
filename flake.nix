@@ -73,7 +73,7 @@
           buildInputs = base_libs pkgs ++ (gui_libs {inherit pkgs; q=qt;});
           nativeBuildInputs = [ pkgs.wrapGAppsHook ];
 
-          cmakeFlags = [ "-G Ninja" "-DJV2_USE_CONAN=OFF" ];
+          cmakeFlags = [ "-G Ninja" ];
           installPhase = ''
             mkdir -p $out/bin
             mv bin/* $out/bin/
