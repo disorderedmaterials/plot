@@ -50,10 +50,14 @@
           tbb
           valgrind
         ]);
-        CMAKE_CXX_COMPILER_LAUNCHER = "${pkgs.ccache}/bin/ccache";
-        CMAKE_CXX_FLAGS_DEBUG = "-g -O0";
-        CXXL = "${pkgs.stdenv.cc.cc.lib}";
-        my_proxy = "socks5://localhost:8888";
+        shellHook = ''
+          export XDG_DATA_DIRS=$GSETTINGS_SCHEMAS_PATH:$XDG_DATA_DIRS
+          export LIBGL_DRIVERS_PATH=${pkgs.lib.makeSearchPathOutput "lib" "lib/dri" [pkgs.mesa.drivers]}
+          export LIBVA_DRIVERS_PATH=${pkgs.lib.makeSearchPathOutput "out" "lib/dri" [pkgs.mesa.drivers]}
+          export __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json
+          export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [pkgs.mesa.drivers]}:${pkgs.lib.makeSearchPathOutput "lib" "lib/vdpau" [pkgs.libvdpau]}:${pkgs.lib.makeLibraryPath [pkgs.libglvnd]}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export QT_PLUGIN_PATH="${qt-idaaas.packages.${system}.qt3d}/lib/qt-6/plugins:${qt-idaaas.packages.${system}.qtsvg}/lib/qt-6/plugins:$QT_PLUGIN_PATH"
+        '';
       };
 
       apps = {
@@ -69,7 +73,7 @@
           buildInputs = base_libs pkgs ++ (gui_libs {inherit pkgs; q=qt;});
           nativeBuildInputs = [ pkgs.wrapGAppsHook ];
 
-          cmakeFlags = [ "-G Ninja" "-DJV2_USE_CONAN=OFF" ];
+          cmakeFlags = [ "-G Ninja" ];
           installPhase = ''
             mkdir -p $out/bin
             mv bin/* $out/bin/
