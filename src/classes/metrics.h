@@ -2,6 +2,7 @@
 
 #include <QFont>
 #include <QVector3D>
+#include <QObject>
 
 namespace Mildred
 {
