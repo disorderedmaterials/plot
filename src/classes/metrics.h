@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QFont>
-#include <QVector3D>
 #include <QObject>
+#include <QVector3D>
 
 namespace Mildred
 {
