@@ -73,10 +73,10 @@
           buildInputs = base_libs pkgs ++ (gui_libs {inherit pkgs; q=qt;});
           nativeBuildInputs = [ pkgs.wrapGAppsHook ];
 
-          cmakeFlags = [ "-G Ninja" ];
+          cmakeFlags = [ "-G Ninja -DBUILD_EXAMPLES:bool=true"];
           installPhase = ''
             mkdir -p $out/bin
-            mv bin/* $out/bin/
+            mv ./$out/bin/groups $out/bin/
           '';
 
           meta = with pkgs.lib; {
@@ -91,6 +91,7 @@
           nixpkgs.legacyPackages.${system}.singularity-tools.buildImage {
             name = "mildred-${version}";
             diskSize = 1024 * 250;
+            memSize = 1024 * 2;
             contents = [
               self.packages.${system}.library
             ];
