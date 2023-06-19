@@ -104,6 +104,22 @@
         "type": "github"
       }
     },
+    "nixGL-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1685908677,
+        "narHash": "sha256-E4zUPEUFyVWjVm45zICaHRpfGepfkE9Z2OECV9HXfA4=",
+        "owner": "guibou",
+        "repo": "nixGL",
+        "rev": "489d6b095ab9d289fe11af0219a9ff00fe87c7c5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "guibou",
+        "repo": "nixGL",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1620055814,
@@ -218,6 +234,7 @@
         "bundlers": "bundlers",
         "flake-utils": "flake-utils_2",
         "future": "future",
+        "nixGL-src": "nixGL-src",
         "nixpkgs": "nixpkgs_4",
         "outdated": "outdated",
         "qt-idaaas": "qt-idaaas"

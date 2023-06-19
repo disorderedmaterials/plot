@@ -4,9 +4,11 @@
     future.url = "github:NixOS/nixpkgs/nixos-unstable";
     outdated.url = "github:NixOS/nixpkgs/nixos-21.05";
     qt-idaaas.url = "github:disorderedmaterials/qt-idaaas";
+    nixGL-src.url = "github:guibou/nixGL";
+    nixGL-src.flake = false;
   };
   outputs =
-    { self, nixpkgs, future, outdated, flake-utils, bundlers, qt-idaaas }:
+    { self, nixpkgs, future, outdated, flake-utils, bundlers, qt-idaaas, nixGL-src }:
     let
 
       version = "0.1";
@@ -30,6 +32,7 @@
     let
       pkgs = import nixpkgs { inherit system; };
       next = import future { inherit system; };
+      nixGL = import nixGL-src { inherit pkgs; };
       qt = qt-idaaas.packages.${system};
     in
     {
@@ -95,7 +98,7 @@
             contents = [
               self.packages.${system}.library
             ];
-            runScript = "${self.packages.${system}.library}/bin/mildred $@";
+            runScript = "${nixGL.nixGLIntel}/bin/nixGLIntel ${self.packages.${system}.library}/bin/groups $@";
           };
       };
     });
