@@ -23,8 +23,8 @@ AxisEntity::AxisEntity(Qt3DCore::QNode *parent, AxisType type, const MildredMetr
     axisBarEntity_ = new LineEntity(this);
     ticksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
     subTicksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
-    axisTitleEntity_ = new TextEntity(this, "Unnamed Axis");
-    axisTitleEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::TopMiddle);
+    labelEntity_ = new TextEntity(this, "Unnamed Axis");
+    labelEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::TopMiddle);
 
     // Assign material components
     axisBarMaterial_ = barMaterial;
@@ -32,7 +32,7 @@ AxisEntity::AxisEntity(Qt3DCore::QNode *parent, AxisType type, const MildredMetr
     ticksEntity_->addComponent(axisBarMaterial_);
     subTicksEntity_->addComponent(axisBarMaterial_);
     labelMaterial_ = labelMaterial;
-    axisTitleEntity_->setMaterial(labelMaterial_);
+    labelEntity_->setMaterial(labelMaterial_);
 
     // Update data dependent on the axis type
     setType(type_);
@@ -303,24 +303,24 @@ void AxisEntity::shiftLimitsByPixels(int pixelDelta)
 //! Return whether the axis is logarithmic
 bool AxisEntity::isLogarithmic() const { return logarithmic_; }
 
-//! Set title text
+//! Set label text
 /*!
- * Sets the display title of the axis to @param text, modifying the underlying @class TextEntity object.
+ * Sets the display label of the axis to @param text, modifying the underlying @class TextEntity object.
  */
-void AxisEntity::setTitleText(const QString &text)
+void AxisEntity::setLabelText(const QString &text)
 {
-    assert(axisTitleEntity_);
-    axisTitleEntity_->setText(text);
+    assert(labelEntity_);
+    labelEntity_->setText(text);
 }
 
-//! Return title text
+//! Return label text
 /*!
- * Returns the current text displayed as the axis title.
+ * Returns the current text displayed as the axis label.
  */
-QString AxisEntity::titleText() const
+QString AxisEntity::labelText() const
 {
-    assert(axisTitleEntity_);
-    return axisTitleEntity_->text();
+    assert(labelEntity_);
+    return labelEntity_->text();
 }
 
 //! Set axis minimum
@@ -466,6 +466,25 @@ void AxisEntity::setType(AxisType type)
     }
 }
 
+//! Define title rotation
+/*!
+ * Set the rotation of the main label to @param rotation (degrees).
+ */
+void AxisEntity::setLabelRotation(double rotation) { labelEntity_->setRotation(rotation); }
+
+//! Return main label rotation
+double AxisEntity::labelRotation() const { return labelEntity_->rotation(); }
+
+//! Define tick label rotation
+/*!
+ * Set the rotation of the tick labels to @param rotation.
+ */
+void AxisEntity::setTickLabelRotation(double rotation)
+{
+    for (auto &entity : tickLabelEntities_)
+        entity->setRotation(rotation);
+}
+
 //! Define direction
 /*!
  * Set the direction of the axis in 3D space to the supplied vector @param v.
@@ -578,11 +597,7 @@ Cuboid AxisEntity::createTickAndLabelEntities(const std::vector<std::pair<double
             (*tickLabelEntity)->setText(QString::number(v));
             (*tickLabelEntity)
                 ->setAnchorPosition(axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap()));
-            boundingCuboid.expand(TextEntity::boundingCuboid(
-                                      metrics_.axisTickLabelFont(), QString::number(v),
-                                      {axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics_.tickLabelPixelGap())},
-                                      labelAnchorPoint_)
-                                      .first);
+            boundingCuboid.expand((*tickLabelEntity)->boundingCuboid(metrics_.axisTickLabelFont()).first);
             ++tickLabelEntity;
         }
         else
@@ -636,17 +651,17 @@ void AxisEntity::recreate()
     auto tickLabelBounds = createTickAndLabelEntities(ticks);
 
     // Axis title
-    if (!axisTitleEntity_->text().isEmpty())
+    if (!labelEntity_->text().isEmpty())
     {
-        axisTitleEntity_->setEnabled(true);
-        axisTitleEntity_->setFont(metrics_.axisTitleFont());
-        axisTitleEntity_->setAnchorPoint(labelAnchorPoint_);
-        axisTitleEntity_->setAnchorPosition(
-            direction_ * metrics_.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
-            tickDirection_ * (tickLabelBounds.extents()[tickDirectionIndex_] + metrics_.tickLabelPixelGap()));
+        labelEntity_->setEnabled(true);
+        labelEntity_->setFont(metrics_.axisTitleFont());
+        labelEntity_->setAnchorPoint(labelAnchorPoint_);
+        labelEntity_->setAnchorPosition(direction_ * metrics_.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
+                                        tickDirection_ *
+                                            (tickLabelBounds.extents()[tickDirectionIndex_] + metrics_.tickLabelPixelGap()));
     }
     else
-        axisTitleEntity_->setEnabled(false);
+        labelEntity_->setEnabled(false);
 
     ticksEntity_->setBasicIndices();
     ticksEntity_->finalise();
@@ -697,20 +712,20 @@ Cuboid AxisEntity::boundingCuboid(const MildredMetrics &metrics) const
             cuboid.expand(
                 TextEntity::boundingCuboid(metrics.axisTickLabelFont(), QString::number(v),
                                            axisPos + tickDirection_ * (metrics_.tickPixelSize() + metrics.tickLabelPixelGap()),
-                                           labelAnchorPoint_)
+                                           labelAnchorPoint_, 0.0)
                     .first);
         }
         else
             cuboid.expand({axisPos, axisPos + tickDirection_ * metrics_.tickPixelSize() * 0.5});
     }
     // -- Title
-    if (!axisTitleEntity_->text().isEmpty())
-        cuboid.expand(TextEntity::boundingCuboid(metrics.axisTitleFont(), axisTitleEntity_->text(),
-                                                 direction_ * metrics.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
-                                                     tickDirection_ *
-                                                         (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap()),
-                                                 labelAnchorPoint_)
-                          .first);
+    if (!labelEntity_->text().isEmpty())
+        cuboid.expand(
+            labelEntity_
+                ->boundingCuboid(metrics.axisTitleFont(),
+                                 direction_ * metrics.displayVolumeExtent()[axisDirectionIndex_] * 0.5 +
+                                     tickDirection_ * (cuboid.extents()[tickDirectionIndex_] + metrics.tickLabelPixelGap()))
+                .first);
 
     return cuboid;
 }

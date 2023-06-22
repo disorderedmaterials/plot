@@ -65,6 +65,16 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
  */
 void LineEntity::addVertex(QVector3D v) { cachedVertices_.emplace_back(v); }
 
+//! Append vertex to cached data
+/*!
+ * Append the vertex defined by the coordinates @param x, @param y, and @param z to the cached vertices. The buffer objects (and
+ * hence the display primitive) are not regenerated until a call to the finalise() method is made.
+ */
+void LineEntity::addVertex(double x, double y, double z)
+{
+    cachedVertices_.emplace_back(QVector3D{float(x), float(y), float(z)});
+}
+
 //! Append vertex and colour to cached data
 /*!
  * Append the vertex @param v to the cached vertices, with the specific @param colour. The buffer objects (and hence the display
@@ -76,7 +86,7 @@ void LineEntity::addVertex(QVector3D v, QColor colour)
     cachedVertexColours_.emplace_back(colour);
 }
 
-//! Append verteices to cached data
+//! Append vertices to cached data
 /*!
  * Append the vector of @param vertices to the cached vertices. The buffer objects (and hence the display primitive) are not
  * regenerated until a call to the finalise() method is made.
