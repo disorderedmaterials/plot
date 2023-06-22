@@ -8,6 +8,7 @@ in vec4 worldColor;
 // Input Fragment Data
 in fragData
 {
+  vec3 position;
   vec3 normal;
   vec4 color;
 } frag;
@@ -31,8 +32,8 @@ out vec4 fragColour;
 
 void main() {
   // Calculate normalised surface normal and light vector
-  vec3 N = normalize(worldNormal);
-  vec3 L = normalize(lightPosition - worldPosition);
+  vec3 N = normalize(frag.normal);
+  vec3 L = normalize(lightPosition - frag.position);
 
   // Lambert's cosine law
   float lambertian = max(dot(N, L), 0.0);
@@ -41,7 +42,7 @@ void main() {
   {
     // Calculate reflected light vector and vector to viewer
     vec3 R = reflect(-L, N);
-    vec3 V = normalize(-worldPosition);
+    vec3 V = normalize(-frag.position);
 
     // Compute the specular term
     float specAngle = max(dot(R, V), 0.0);
