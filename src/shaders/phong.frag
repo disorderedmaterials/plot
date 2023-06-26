@@ -1,8 +1,13 @@
 #version 150 core
 
 // Input variables
-in vec3 worldNormal;
-in vec3 worldPosition;
+in fragData
+{
+    vec3 position;
+    vec3 normal;
+    vec4 color;
+}
+frag;
 
 // Uniform variables per-primitive
 // -- Colour components
@@ -21,27 +26,26 @@ uniform vec3 lightPosition;
 // Output variables
 out vec4 fragColour;
 
-void main() {
-  // Calculate normalised surface normal and light vector
-  vec3 N = normalize(worldNormal);
-  vec3 L = normalize(lightPosition - worldPosition);
+void main()
+{
+    // Calculate normalised surface normal and light vector
+    vec3 N = normalize(frag.normal);
+    vec3 L = normalize(lightPosition - frag.position);
 
-  // Lambert's cosine law
-  float lambertian = max(dot(N, L), 0.0);
-  float specPow = 0.0;
-  if (lambertian > 0.0)
-  {
-    // Calculate reflected light vector and vector to viewer
-    vec3 R = reflect(-L, N);
-    vec3 V = normalize(-worldPosition);
+    // Lambert's cosine law
+    float lambertian = max(dot(N, L), 0.0);
+    float specPow = 0.0;
+    if (lambertian > 0.0)
+    {
+        // Calculate reflected light vector and vector to viewer
+        vec3 R = reflect(-L, N);
+        vec3 V = normalize(-frag.position);
 
-    // Compute the specular term
-    float specAngle = max(dot(R, V), 0.0);
-    specPow = pow(specAngle, shininess*128);
-  }
+        // Compute the specular term
+        float specAngle = max(dot(R, V), 0.0);
+        specPow = pow(specAngle, shininess * 128);
+    }
 
-  // Construct final colour
-  fragColour = vec4(ka * ambient +
-                      kd * lambertian * diffuse +
-                      ks * specPow * specular, 1.0);
+    // Construct final colour
+    fragColour = vec4(ka * vec3(ambient) + kd * lambertian * diffuse + ks * specPow * specular, 1.0);
 }
