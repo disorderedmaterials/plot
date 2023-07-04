@@ -4,6 +4,7 @@
 #include "renderers/1d/error_tee.h"
 #include "renderers/1d/line.h"
 #include "renderers/1d/none.h"
+#include "renderers/1d/symbol_triangle.h"
 #include <stdexcept>
 
 namespace Mildred
@@ -30,6 +31,13 @@ std::shared_ptr<ErrorRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCo
         return std::make_shared<NoErrorRenderer1D>(rootEntity);
 
     throw(std::runtime_error("DataRenderer1D::createErrorRenderer() - Style not accounted for.\n"));
+}
+std::shared_ptr<SymbolRenderer1D> createSymbolRenderer(SymbolStyle style, Qt3DCore::QEntity *rootEntity)
+{
+    if (style == SymbolStyle::Triangle)
+        return std::make_shared<TriangleSymbolRenderer1D>(rootEntity);
+
+    throw(std::runtime_error("DataRenderer1D::createSymbolRenderer() - Style not accounted for.\n"));
 }
 } // namespace StyleFactory1D
 } // namespace Mildred
