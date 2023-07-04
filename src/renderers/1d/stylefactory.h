@@ -25,11 +25,29 @@ enum class ErrorBarStyle
     Tee
 };
 
+enum class Position {
+    TopLeft=0,
+    TopRight=1,
+    BottomLeft=2,
+    BottomRight=3
+};
+
+enum class SymbolStyle
+{
+    Circle,
+    Square,
+    Triangle,
+    
+};
+
 // Produce renderer for the specified style
 std::shared_ptr<DataRenderer1D> createDataRenderer(Style style, Qt3DCore::QEntity *rootEntity);
 
 // Produce error renderer for the specified style
 std::shared_ptr<ErrorRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCore::QEntity *rootEntity);
+
+// Produce symbol renderer for the specified style
+std::shared_ptr<SymbolRenderer1D> createSymbolRenderer(SymbolStyle style, Qt3DCore::QEntity *rootEntity);
 
 } // namespace StyleFactory1D
 } // namespace Mildred
