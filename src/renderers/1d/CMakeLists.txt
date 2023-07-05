@@ -14,6 +14,7 @@ add_library(
   error_tee.h
   error_none.h
   stylefactory.h
+  symbol_none.h
   symbol_triangle.h)
 
 target_include_directories(

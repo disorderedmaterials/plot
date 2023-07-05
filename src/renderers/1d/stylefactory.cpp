@@ -4,6 +4,7 @@
 #include "renderers/1d/error_tee.h"
 #include "renderers/1d/line.h"
 #include "renderers/1d/none.h"
+#include "renderers/1d/symbol_none.h"
 #include "renderers/1d/symbol_triangle.h"
 #include <stdexcept>
 
@@ -34,6 +35,8 @@ std::shared_ptr<ErrorRenderer1D> createErrorRenderer(ErrorBarStyle style, Qt3DCo
 }
 std::shared_ptr<SymbolRenderer1D> createSymbolRenderer(SymbolStyle style, Qt3DCore::QEntity *rootEntity)
 {
+    if (style == SymbolStyle::None)
+        return std::make_shared<NoSymbolRenderer1D>(rootEntity);
     if (style == SymbolStyle::Triangle)
         return std::make_shared<TriangleSymbolRenderer1D>(rootEntity);
 

@@ -34,10 +34,10 @@ enum class Position {
 
 enum class SymbolStyle
 {
+    None,
     Circle,
     Square,
-    Triangle,
-    
+    Triangle
 };
 
 // Produce renderer for the specified style
