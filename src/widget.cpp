@@ -199,6 +199,7 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
                                     RenderableMaterial::FragmentShaderType::PerVertexPhong);
     entity->setDataMaterial(material);
     entity->setErrorMaterial(material);
+    entity->setSymbolMaterial(material);
 
     return entity;
 }

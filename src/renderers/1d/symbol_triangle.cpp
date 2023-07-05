@@ -39,24 +39,25 @@ void TriangleSymbolRenderer1D::create(const ColourDefinition &colour, const std:
     // Loop over data and add vertices
     auto xit = x.cbegin(), vit = values.cbegin();
     auto i = 0;
-    double w = 6.0/2.0;
+    double w = symbolMetric_/2.0;
     while (xit != x.end())
     {
         // Get datapoint value in scaled coordinates
         auto centre = xAxis->toScaled(*xit) + valueAxis->toScaled(*vit);
+
         //Triangle Vertices
-        // symbols_->addVertex(xAxis-w, valueAxis+0.755*w, xAxis+w, valueAxis+0.755*w);
-        // symbols_->addVertex(xAxis+w, valueAxis+0.755*w,   xAxis, valueAxis-0.977*w);
-        // symbols_->addVertex(  xAxis, valueAxis-0.977*w, xAxis-w, valueAxis+0.755*w);
         symbols_->addVertex(centre + QVector3D(-w, 0.755*w, 0.0), colour_.colour(*vit));
-        // symbols_->addIndex(i++);
+        symbols_->addIndex(i++);
         symbols_->addVertex(centre + QVector3D(w, 0.755*w, 0.0), colour_.colour(*vit));
-        // symbols_->addIndex(i++);
+        symbols_->addIndex(i++);
         symbols_->addVertex(centre + QVector3D(0.0, -0.755*w, 0.0), colour_.colour(*vit));
-        // symbols_->addIndex(i++);
+        symbols_->addIndex(i++);
+
+        // Close the triangle!
+        symbols_->addIndex(i-3);
 
         // Add restart index, to cause line break.
-        // symbols_->addIndex(-1);
+        symbols_->addIndex(-1);
         ++xit;
         ++vit;
     }

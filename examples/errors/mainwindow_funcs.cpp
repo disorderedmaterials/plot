@@ -37,10 +37,10 @@ MainWindow::MainWindow() : QMainWindow()
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
+    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
 
     ui_.StyleCombo->addItem(QString("Stick"));
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
-
     ui_.WidthSpin->setValue(10.0);
 
     connect(ui_.WidthSpin, SIGNAL(valueChanged(double)), this, SLOT(setErrorBarSize(double)));
