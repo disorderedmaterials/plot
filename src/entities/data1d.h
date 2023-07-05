@@ -54,6 +54,10 @@ class Data1DEntity : public DataEntity
     StyleFactory1D::ErrorBarStyle errorStyle_;
     // Error Renderer
     std::shared_ptr<ErrorRenderer1D> errorRenderer_{nullptr};
+    // Symbol style
+    StyleFactory1D::SymbolStyle symbolStyle_{StyleFactory1D::SymbolStyle::None};
+    // Symbol Renderer
+    std::shared_ptr<SymbolRenderer1D> symbolRenderer_{nullptr};
     // Orientation
     AxisEntity::AxisType abscissa_{AxisEntity::AxisType::Horizontal}, ordinate_{AxisEntity::AxisType::Vertical};
 
@@ -66,6 +70,12 @@ class Data1DEntity : public DataEntity
     void setErrorBarMetric(double metric);
     // Get error size
     double errorBarMetric() const;
+    // Set symbol style
+    void setSymbolStyle(StyleFactory1D::SymbolStyle style);
+    // Set symbol size
+    void setSymbolMetric(double metric);
+    // Get symbol size
+    double symbolMetric() const;
 
     protected:
     // Create renderables from current data

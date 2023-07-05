@@ -13,6 +13,7 @@ Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis,
 {
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
     errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
+    symbolRenderer_ = StyleFactory1D::createSymbolRenderer(symbolStyle_, symbolEntity_);
 }
 
 /*
@@ -83,6 +84,8 @@ void Data1DEntity::create()
     dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
     assert(errorRenderer_);
     errorRenderer_->create(colourDefinition(), x_, xAxis_, values_, errors_, valueAxis_);
+    assert(symbolRenderer_);
+    symbolRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
 }
 
 //! Set the line style
@@ -114,3 +117,23 @@ void Data1DEntity::setErrorBarMetric(double metric)
 
 //! Get error size
 double Data1DEntity::errorBarMetric() const { return errorRenderer_->errorBarMetric(); }
+
+//! Set the symbol style
+void Data1DEntity::setSymbolStyle(StyleFactory1D::SymbolStyle style)
+{
+    symbolStyle_ = style;
+    symbolRenderer_ = StyleFactory1D::createSymbolRenderer(symbolStyle_, symbolEntity_);
+    if (symbolMaterial())
+        setSymbolMaterial(symbolMaterial());
+    create();
+}
+
+//! Set symbol size
+void Data1DEntity::setSymbolMetric(double metric)
+{
+    symbolRenderer_->setSymbolMetric(metric);
+    create();
+}
+
+//! Get symbol size
+double Data1DEntity::symbolMetric() const { return symbolRenderer_->symbolMetric(); }
