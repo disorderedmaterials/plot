@@ -106,6 +106,29 @@ Qt3DRender::QMaterial *DataEntity::dataMaterial() { return dataEntityMaterial_; 
 
 Qt3DRender::QMaterial *DataEntity::errorMaterial() { return errorEntityMaterial_; }
 
+void DataEntity::setSymbolMaterial(Qt3DRender::QMaterial *material)
+{
+    // Remove existing material if one exists
+    if (symbolEntityMaterial_)
+        foreach (auto *node, symbolEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->removeComponent(symbolEntityMaterial_);
+        }
+
+    symbolEntityMaterial_ = material;
+    if (symbolEntityMaterial_)
+        foreach (auto *node, symbolEntity_->childNodes())
+        {
+            auto *entity = dynamic_cast<Qt3DCore::QEntity *>(node);
+            if (entity)
+                entity->addComponent(symbolEntityMaterial_);
+        }
+}
+
+Qt3DRender::QMaterial *DataEntity::symbolMaterial() { return symbolEntityMaterial_; }
+
 /*
  * Rendering
  */
