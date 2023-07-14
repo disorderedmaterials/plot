@@ -46,7 +46,7 @@ MainWindow::MainWindow() : QMainWindow()
     ui_.TriangleWidth->setValue(12.0);
 
     connect(ui_.WidthSpin, SIGNAL(valueChanged(double)), this, SLOT(setErrorBarSize(double)));
-    connect(ui_.TriangleWidth, SIGNAL(valueChanged(double)), this, SLOT(setSymbolSize(double)));
+    connect(ui_.SymbolSizeSpin, SIGNAL(valueChanged(double)), this, SLOT(setSymbolSize(double)));
 };
 
 // UI For Errors
