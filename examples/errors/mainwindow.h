@@ -21,7 +21,6 @@ class MainWindow : public QMainWindow
     void on_ShowSymbolsCheck_selected(bool checked);
     void on_StyleCombo_currentIndexChanged(int index);
     void on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex);
-    
 
     public slots:
     // Set error size
