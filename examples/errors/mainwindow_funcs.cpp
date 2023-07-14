@@ -92,7 +92,7 @@ void MainWindow::on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex)
 shapestyle_ = shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::None;
     if (ui_.ShowSymbolsCheck->isChecked())
     {
-        dataEntity_->setSymbolStyle(shapestyle_);
+        dataEntity_->setSymbolStyle(shapeStyle_);
         dataEntity_->setSymbolMetric(ui_.TriangleWidth->value());
     }
 }
