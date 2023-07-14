@@ -83,7 +83,7 @@ void MainWindow::setErrorBarSize(double size) { dataEntity_->setErrorBarMetric(s
 // UI For Symbols
 void MainWindow::on_ShowSymbolsCheck_selected(bool checked)
 {
-    dataEntity_->setSymbolStyle(checked ? shapestyle_ : Mildred::StyleFactory1D::SymbolStyle::None);
+    dataEntity_->setSymbolStyle(checked ? shapeStyle_ : Mildred::StyleFactory1D::SymbolStyle::None);
     dataEntity_->setSymbolMetric(ui_.TriangleWidth->value());
 }
 
