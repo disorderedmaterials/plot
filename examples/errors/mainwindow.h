@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
     Mildred::Data1DEntity *dataEntity_{nullptr};
     // Style
     Mildred::StyleFactory1D::ErrorBarStyle style_{Mildred::StyleFactory1D::ErrorBarStyle::Stick};
-    Mildred::StyleFactory1D::SymbolStyle shapestyle_{Mildred::StyleFactory1D::SymbolStyle::Triangle};
+    Mildred::StyleFactory1D::SymbolStyle shapeStyle_{Mildred::StyleFactory1D::SymbolStyle::Triangle};
     /*
      * Data
      */
