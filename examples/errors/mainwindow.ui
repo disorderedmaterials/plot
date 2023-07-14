@@ -156,7 +156,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="StyleCombo"/>
+             <widget class="QComboBox" name="SymbolCombo"/>
             </item>
            </layout>
           </item>
@@ -180,7 +180,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="TriangleWidth"/>
+             <widget class="QDoubleSpinBox" name="SymbolSizeSpin"/>
             </item>
            </layout>
           </item>
