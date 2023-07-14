@@ -39,7 +39,7 @@ void TriangleSymbolRenderer1D::create(const ColourDefinition &colour, const std:
     // Loop over data and add vertices
     auto xit = x.cbegin(), vit = values.cbegin();
     auto i = 0;
-    double w = symbolMetric_/2.0;
+    auto w = symbolMetric_/2.0;
     while (xit != x.end())
     {
         // Get datapoint value in scaled coordinates
