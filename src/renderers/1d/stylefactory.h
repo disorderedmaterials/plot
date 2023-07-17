@@ -25,13 +25,6 @@ enum class ErrorBarStyle
     Tee
 };
 
-enum class Position {
-    TopLeft=0,
-    TopRight=1,
-    BottomLeft=2,
-    BottomRight=3
-};
-
 enum class SymbolStyle
 {
     None,
