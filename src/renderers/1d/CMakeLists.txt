@@ -5,13 +5,17 @@ add_library(
   error_stick.cpp
   error_tee.cpp
   stylefactory.cpp
+  symbol_base.cpp
+  symbol_triangle.cpp
   base.h
   line.h
   none.h
   error_stick.h
   error_tee.h
   error_none.h
-  stylefactory.h)
+  stylefactory.h
+  symbol_none.h
+  symbol_triangle.h)
 
 target_include_directories(
   renderers1d

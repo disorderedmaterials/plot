@@ -18,11 +18,16 @@ class MainWindow : public QMainWindow
     void on_UniformErrorRadio_clicked(bool checked);
     void on_RandomErrorRadio_clicked(bool checked);
     void on_ShowErrorBarsCheck_toggled(bool checked);
+    void on_ShowSymbolsCheck_selected(bool checked);
     void on_StyleCombo_currentIndexChanged(int index);
+    void on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex);
 
     public slots:
     // Set error size
     void setErrorBarSize(double size);
+
+    // Set symbol size
+    void setSymbolSize(double size);
 
     private:
     // Main form declaration
@@ -31,6 +36,7 @@ class MainWindow : public QMainWindow
     Mildred::Data1DEntity *dataEntity_{nullptr};
     // Style
     Mildred::StyleFactory1D::ErrorBarStyle style_{Mildred::StyleFactory1D::ErrorBarStyle::Stick};
+    Mildred::StyleFactory1D::SymbolStyle shapeStyle_{Mildred::StyleFactory1D::SymbolStyle::Triangle};
     /*
      * Data
      */

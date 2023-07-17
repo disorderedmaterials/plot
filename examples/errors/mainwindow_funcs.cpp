@@ -37,15 +37,19 @@ MainWindow::MainWindow() : QMainWindow()
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
+    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
 
     ui_.StyleCombo->addItem(QString("Stick"));
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
-
+    ui_.SymbolCombo->addItem(QString("Triangle"));
     ui_.WidthSpin->setValue(10.0);
+    ui_.SymbolSizeSpin->setValue(12.0);
 
     connect(ui_.WidthSpin, SIGNAL(valueChanged(double)), this, SLOT(setErrorBarSize(double)));
+    connect(ui_.SymbolSizeSpin, SIGNAL(valueChanged(double)), this, SLOT(setSymbolSize(double)));
 };
 
+// UI For Errors
 void MainWindow::on_UniformErrorRadio_clicked(bool checked)
 {
     if (checked)
@@ -75,3 +79,22 @@ void MainWindow::on_StyleCombo_currentIndexChanged(int index)
 }
 
 void MainWindow::setErrorBarSize(double size) { dataEntity_->setErrorBarMetric(size); }
+
+// UI For Symbols
+void MainWindow::on_ShowSymbolsCheck_selected(bool checked)
+{
+    dataEntity_->setSymbolStyle(checked ? shapeStyle_ : Mildred::StyleFactory1D::SymbolStyle::None);
+    dataEntity_->setSymbolMetric(ui_.SymbolSizeSpin->value());
+}
+
+void MainWindow::on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex)
+{
+    shapeStyle_ = shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::None;
+    if (ui_.ShowSymbolsCheck->isChecked())
+    {
+        dataEntity_->setSymbolStyle(shapeStyle_);
+        dataEntity_->setSymbolMetric(ui_.SymbolSizeSpin->value());
+    }
+}
+
+void MainWindow::setSymbolSize(double size) { dataEntity_->setSymbolMetric(size); }

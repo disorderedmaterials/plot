@@ -67,6 +67,8 @@ class DataEntity : public Qt3DCore::QEntity
     Qt3DRender::QMaterial *dataEntityMaterial_{nullptr};
     // Material for error entity
     Qt3DRender::QMaterial *errorEntityMaterial_{nullptr};
+    // Material for symbol entity
+    Qt3DRender::QMaterial *symbolEntityMaterial_{nullptr};
 
     protected:
     // Local colour definition for entity
@@ -94,6 +96,10 @@ class DataEntity : public Qt3DCore::QEntity
     void setErrorMaterial(Qt3DRender::QMaterial *material);
     // Get the error entity material
     Qt3DRender::QMaterial *errorMaterial();
+    // Set symbol entity material
+    void setSymbolMaterial(Qt3DRender::QMaterial *material);
+    // Get the symbol entity material
+    Qt3DRender::QMaterial *symbolMaterial();
 
     /*
      * Rendering
