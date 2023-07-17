@@ -27,5 +27,4 @@ class TriangleSymbolRenderer1D : public SymbolRenderer1D
     void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
                 const std::vector<double> &values, const AxisEntity *valueAxis) override;
 };
-
 } // namespace Mildred
