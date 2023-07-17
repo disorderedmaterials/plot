@@ -101,12 +101,11 @@ class SymbolRenderer1D
     public:
     // Create entities from the supplied axes and data
     virtual void create(const ColourDefinition &colour, const std::vector<double> &x, const AxisEntity *xAxis,
-                        const std::vector<double> &values, const AxisEntity *valueAxis) =0;
+                        const std::vector<double> &values, const AxisEntity *valueAxis) = 0;
     // Get symbol metric.
     double symbolMetric() const;
     // Set symbol metric.
     void setSymbolMetric(double symbolMetric);
-
 };
 
 } // namespace Mildred
