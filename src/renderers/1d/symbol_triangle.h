@@ -10,10 +10,10 @@ namespace Mildred
  * TriangleSymbolRenderer1D manages the creation of entities for displaying 1D data as a simple triangle.
  */
 class TriangleSymbolRenderer1D : public SymbolRenderer1D
-    {
-        public:
-        TriangleSymbolRenderer1D(Qt3DCore::QEntity *rootEntity);
-        ~TriangleSymbolRenderer1D();
+{
+    public:
+    TriangleSymbolRenderer1D(Qt3DCore::QEntity *rootEntity);
+    ~TriangleSymbolRenderer1D();
 
     /*
      * Rendering
