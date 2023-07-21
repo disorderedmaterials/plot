@@ -48,18 +48,14 @@ void SquareSymbolRenderer1D::create(const ColourDefinition &colour, const std::v
         symbols_->addIndex(i++);
         symbols_->addVertex(centre + QVector3D(-w, -w, 0.0), colour_.colour(*vit));
         symbols_->addIndex(i++);
-        symbols_->addVertex(centre + QVector3D(0.0, -w, 0.0), colour_.colour(*vit));
-        symbols_->addIndex(i++);
 
         symbols_->addVertex(centre + QVector3D(w, -w, 0.0), colour_.colour(*vit));
         symbols_->addIndex(i++);
         symbols_->addVertex(centre + QVector3D(w, w, 0.0), colour_.colour(*vit));
         symbols_->addIndex(i++);
-        symbols_->addVertex(centre + QVector3D(0.0, w, 0.0), colour_.colour(*vit));
-        symbols_->addIndex(i++);
 
         // Close the square!
-        symbols_->addIndex(i - 6);
+        symbols_->addIndex(i - 4);
 
         // Add restart index, to cause line break.
         symbols_->addIndex(-1);
