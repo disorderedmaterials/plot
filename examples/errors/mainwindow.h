@@ -37,6 +37,7 @@ class MainWindow : public QMainWindow
     // Style
     Mildred::StyleFactory1D::ErrorBarStyle style_{Mildred::StyleFactory1D::ErrorBarStyle::Stick};
     Mildred::StyleFactory1D::SymbolStyle shapeStyle_{Mildred::StyleFactory1D::SymbolStyle::Triangle};
+
     /*
      * Data
      */

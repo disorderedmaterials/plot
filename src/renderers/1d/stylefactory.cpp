@@ -5,6 +5,7 @@
 #include "renderers/1d/line.h"
 #include "renderers/1d/none.h"
 #include "renderers/1d/symbol_none.h"
+#include "renderers/1d/symbol_square.h"
 #include "renderers/1d/symbol_triangle.h"
 #include <stdexcept>
 
@@ -39,6 +40,8 @@ std::shared_ptr<SymbolRenderer1D> createSymbolRenderer(SymbolStyle style, Qt3DCo
         return std::make_shared<NoSymbolRenderer1D>(rootEntity);
     if (style == SymbolStyle::Triangle)
         return std::make_shared<TriangleSymbolRenderer1D>(rootEntity);
+    if (style == SymbolStyle::Square)
+        return std::make_shared<SquareSymbolRenderer1D>(rootEntity);
 
     throw(std::runtime_error("DataRenderer1D::createSymbolRenderer() - Style not accounted for.\n"));
 }

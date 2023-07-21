@@ -7,6 +7,7 @@ add_library(
   stylefactory.cpp
   symbol_base.cpp
   symbol_triangle.cpp
+  symbol_square.cpp
   base.h
   line.h
   none.h
@@ -15,7 +16,8 @@ add_library(
   error_none.h
   stylefactory.h
   symbol_none.h
-  symbol_triangle.h)
+  symbol_triangle.h
+  symbol_square.h)
 
 target_include_directories(
   renderers1d
