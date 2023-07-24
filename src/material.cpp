@@ -71,6 +71,10 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
             shader3->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/monochrome.frag"))));
             break;
+        case (FragmentShaderType::LineStipple):
+            shader3->setFragmentShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_stipple.frag"))));
+            break;
         case (FragmentShaderType::Phong):
             shader3->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
