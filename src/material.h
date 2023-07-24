@@ -26,7 +26,8 @@ class RenderableMaterial : public Qt3DRender::QMaterial
     {
         Monochrome,
         Phong,
-        PerVertexPhong
+        PerVertexPhong,
+        LineStipple
     };
     explicit RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType vertexShader, GeometryShaderType geometryShader,
                                 FragmentShaderType fragmentShader);
