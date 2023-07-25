@@ -11,7 +11,7 @@ uniform float line_stipple_pattern;
 void main() {
     float step = 1.0 / line_stipple_factor;
     float pattern = mod(position.x * step, line_stipple_pattern);
-    if (pattern > 0.5) {
+    if (pattern > 0.5 || pattern > 0.5) {
         discard;
     }
     gl_Position = vec4(position, 1.0);
