@@ -62,6 +62,10 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
             shader3->setGeometryShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_tesselator.geom"))));
             break;
+        case (GeometryShaderType::LineStipple):
+            shader3->setGeometryShaderCode(
+                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_stipple.geom"))));
+            break;
         default:
             throw(std::runtime_error("Unhandled geometry shader type.\n"));
     }
@@ -70,10 +74,6 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
         case (FragmentShaderType::Monochrome):
             shader3->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/monochrome.frag"))));
-            break;
-        case (FragmentShaderType::LineStipple):
-            shader3->setFragmentShaderCode(
-                Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_stipple.frag"))));
             break;
         case (FragmentShaderType::Phong):
             shader3->setFragmentShaderCode(
