@@ -39,11 +39,13 @@ MainWindow::MainWindow() : QMainWindow()
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
     dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
     dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Square);
+    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Diamond);
 
     ui_.StyleCombo->addItem(QString("Stick"));
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
     ui_.SymbolCombo->addItem(QString("Triangle"));
     ui_.SymbolCombo->addItem(QString("Square"));
+    ui_.SymbolCombo->addItem(QString("Diamond"));
     ui_.SymbolCombo->addItem(QString("None"));
     ui_.WidthSpin->setValue(10.0);
     ui_.SymbolSizeSpin->setValue(12.0);
@@ -93,7 +95,7 @@ void MainWindow::on_ShowSymbolsCheck_selected(bool checked)
 void MainWindow::on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex)
 {
     shapeStyle_ =
-        shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::Square;
+        shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::Diamond;
     if (ui_.ShowSymbolsCheck->isChecked())
     {
         dataEntity_->setSymbolStyle(shapeStyle_);
