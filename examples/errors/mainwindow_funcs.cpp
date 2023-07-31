@@ -43,10 +43,10 @@ MainWindow::MainWindow() : QMainWindow()
 
     ui_.StyleCombo->addItem(QString("Stick"));
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
+    ui_.SymbolCombo->addItem(QString("None"));
     ui_.SymbolCombo->addItem(QString("Triangle"));
     ui_.SymbolCombo->addItem(QString("Square"));
     ui_.SymbolCombo->addItem(QString("Diamond"));
-    ui_.SymbolCombo->addItem(QString("None"));
     ui_.WidthSpin->setValue(10.0);
     ui_.SymbolSizeSpin->setValue(12.0);
 
