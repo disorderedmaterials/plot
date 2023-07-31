@@ -8,6 +8,7 @@ add_library(
   symbol_base.cpp
   symbol_triangle.cpp
   symbol_square.cpp
+  symbol_diamond.cpp
   base.h
   line.h
   none.h
@@ -17,7 +18,8 @@ add_library(
   stylefactory.h
   symbol_none.h
   symbol_triangle.h
-  symbol_square.h)
+  symbol_square.h
+  symbol_diamond.h)
 
 target_include_directories(
   renderers1d
