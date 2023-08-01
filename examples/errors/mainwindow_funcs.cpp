@@ -94,8 +94,14 @@ void MainWindow::on_ShowSymbolsCheck_toggled(bool checked)
 
 void MainWindow::on_SymbolCombo_currentIndexChanged(int shapeindex)
 {
-    shapeStyle_ =
-        shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::Diamond;
+    shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::None;
+    if (shapeindex == 1)
+        shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::Triangle;
+    else if (shapeindex == 2)
+        shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::Square;
+    else if (shapeindex == 3)
+        shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::Diamond;
+
     if (ui_.ShowSymbolsCheck->isChecked())
     {
         dataEntity_->setSymbolStyle(shapeStyle_);
