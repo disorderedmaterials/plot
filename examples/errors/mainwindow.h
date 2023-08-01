@@ -18,9 +18,9 @@ class MainWindow : public QMainWindow
     void on_UniformErrorRadio_clicked(bool checked);
     void on_RandomErrorRadio_clicked(bool checked);
     void on_ShowErrorBarsCheck_toggled(bool checked);
-    void on_ShowSymbolsCheck_selected(bool checked);
+    void on_ShowSymbolsCheck_toggled(bool checked);
     void on_StyleCombo_currentIndexChanged(int index);
-    void on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex);
+    void on_SymbolCombo_currentIndexChanged(int shapeindex);
 
     public slots:
     // Set error size

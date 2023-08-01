@@ -86,13 +86,13 @@ void MainWindow::on_StyleCombo_currentIndexChanged(int index)
 void MainWindow::setErrorBarSize(double size) { dataEntity_->setErrorBarMetric(size); }
 
 // UI For Symbols
-void MainWindow::on_ShowSymbolsCheck_selected(bool checked)
+void MainWindow::on_ShowSymbolsCheck_toggled(bool checked)
 {
     dataEntity_->setSymbolStyle(checked ? shapeStyle_ : Mildred::StyleFactory1D::SymbolStyle::None);
     dataEntity_->setSymbolMetric(ui_.SymbolSizeSpin->value());
 }
 
-void MainWindow::on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex)
+void MainWindow::on_SymbolCombo_currentIndexChanged(int shapeindex)
 {
     shapeStyle_ =
         shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::Diamond;
