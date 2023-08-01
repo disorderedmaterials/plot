@@ -37,9 +37,9 @@ MainWindow::MainWindow() : QMainWindow()
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
-    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
-    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Square);
-    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Diamond);
+    // dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
+    // dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Square);
+    // dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Diamond);
 
     ui_.StyleCombo->addItem(QString("Stick"));
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
