@@ -6,5 +6,6 @@
     <file>shaders/phongpervertex.frag</file>
     <file>shaders/monochrome.frag</file>
     <file>shaders/line_tesselator.geom</file>
+    <file>shaders/line_stipple.geom</file>
   </qresource>
 </RCC>
