@@ -20,7 +20,7 @@ class RenderableMaterial : public Qt3DRender::QMaterial
     {
         None,
         LineTesselator,
-        LineStipple,
+        LineStipple
     };
     // Fragment Shader Types
     enum class FragmentShaderType
