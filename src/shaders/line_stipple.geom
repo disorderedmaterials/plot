@@ -1,39 +1,79 @@
-#version 330 core
+#version 330
 
-layout (location = 0) in vec3 position;
-out vec4 color;
+layout(lines) in;
+layout(triangle_strip, max_vertices = 4) out;
 
+// Input Vertex Data
+in worldData
+{
+    vec3 position;
+    vec3 normal;
+    vec4 color;
+}
+vertices[];
 
-uniform float line_width;
-uniform float line_stipple_factor;
-uniform float line_stipple_pattern;
+// Output Fragment Data
+out fragData
+{
+    vec3 position;
+    vec3 normal;
+    vec4 color;
+}
+frag;
 
-// Set the uniforms
-glUniform1f(glGetUniformLocation(shader, "line_width"), 1.0f);
-glUniform1i(glGetUniformLocation(shader, "line_stipple_factor"), 1);
-glUniform1ui(glGetUniformLocation(shader, "line_stipple_pattern"), 0xFFFF);
+uniform vec2 viewportSize;
+uniform float lineWidth = 1.5;
 
-
-void main() {
-    float step = 1.0 / line_stipple_factor;
-    float pattern = mod(dot(position.xy, vec2(1.0, line_width)), line_stipple_pattern);
-    if (pattern > 0.5 || pattern > 0.5) {
-        color = vec4(0.0, 0.0, 0.0, 0.0);
-    } else {
-        color = vec4(1.0, 0.0, 0.0, 1.0);
-    }
-    gl_Position = vec4(position, 1.0);
-    EmitVertex();
-    EndPrimitive();
+// Copy clip distances for specified input vertex
+void applyClipping(int inVertexID)
+{
+    gl_ClipDistance[0] = gl_in[inVertexID].gl_ClipDistance[0];
+    gl_ClipDistance[1] = gl_in[inVertexID].gl_ClipDistance[1];
+    gl_ClipDistance[2] = gl_in[inVertexID].gl_ClipDistance[2];
+    gl_ClipDistance[3] = gl_in[inVertexID].gl_ClipDistance[3];
+    gl_ClipDistance[4] = gl_in[inVertexID].gl_ClipDistance[4];
+    gl_ClipDistance[5] = gl_in[inVertexID].gl_ClipDistance[5];
 }
 
-// Compile the shader
-GLuint shader = glCreateShader(GL_VERTEX_SHADER);
-glShaderSource(shader,1, &shader_source, NULL);
-glCompileShader(shader);
+void main()
+{
+    vec4 p1 = gl_in[0].gl_Position;
+    vec4 p2 = gl_in[1].gl_Position;
 
-// Bind the shader to the current OpenGl context
-glUseProgram(shader);
+    vec2 dir = normalize((p2.xy - p1.xy) * viewportSize);
+    vec2 offset = vec2(-dir.y, dir.x) * lineWidth / viewportSize;
 
-// Draw the line
-glDrawArrays(GL_LINE_STRIP, 0, 4);
+    // Emit the four corners of our two triangles
+    gl_Position = p1 + vec4(offset.xy * p1.w, 0.0, 0.0);
+    applyClipping(0);
+    frag.position = vec3(gl_Position);
+    frag.color = vertices[0].color;
+    frag.normal = vertices[1].normal;
+    EmitVertex();
+    gl_Position = p1 - vec4(offset.xy * p1.w, 0.0, 0.0);
+    applyClipping(0);
+    frag.position = vec3(gl_Position);
+    frag.color = vertices[0].color;
+    frag.normal = vertices[0].normal;
+    EmitVertex();
+    gl_Position = p2 + vec4(offset.xy * p2.w, 0.0, 0.0);
+    applyClipping(1);
+    frag.position = vec3(gl_Position);
+    frag.color = vertices[1].color;
+    frag.normal = vertices[1].normal;
+    EmitVertex();
+    gl_Position = p2 - vec4(offset.xy * p2.w, 0.0, 0.0);
+    applyClipping(1);
+    frag.position = vec3(gl_Position);
+    frag.color = vertices[1].color;
+    frag.normal = vertices[1].normal;
+
+    // To view line-stipple output, remove comment bars (//) from the following two lines
+    //gl_Position = p1 + vec4(offset.xy * p1.w, 0.0, 0.0);
+    //applyClipping(0);
+    
+    EmitVertex();
+
+    EndPrimitive();
+
+}
