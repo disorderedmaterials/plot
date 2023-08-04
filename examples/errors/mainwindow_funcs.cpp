@@ -37,14 +37,16 @@ MainWindow::MainWindow() : QMainWindow()
 
     dataEntity_ = ui_.TestingWidget->addData1D("Sin");
     dataEntity_->setData(xValues_, yValues_, uniformErrors_);
-    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
-    dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Square);
+    // dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Triangle);
+    // dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Square);
+    // dataEntity_->setSymbolStyle(Mildred::StyleFactory1D::SymbolStyle::Diamond);
 
     ui_.StyleCombo->addItem(QString("Stick"));
     ui_.StyleCombo->addItem(QString("T-Bar Stick"));
+    ui_.SymbolCombo->addItem(QString("None"));
     ui_.SymbolCombo->addItem(QString("Triangle"));
     ui_.SymbolCombo->addItem(QString("Square"));
-    ui_.SymbolCombo->addItem(QString("None"));
+    ui_.SymbolCombo->addItem(QString("Diamond"));
     ui_.WidthSpin->setValue(10.0);
     ui_.SymbolSizeSpin->setValue(12.0);
 
@@ -84,16 +86,22 @@ void MainWindow::on_StyleCombo_currentIndexChanged(int index)
 void MainWindow::setErrorBarSize(double size) { dataEntity_->setErrorBarMetric(size); }
 
 // UI For Symbols
-void MainWindow::on_ShowSymbolsCheck_selected(bool checked)
+void MainWindow::on_ShowSymbolsCheck_toggled(bool checked)
 {
     dataEntity_->setSymbolStyle(checked ? shapeStyle_ : Mildred::StyleFactory1D::SymbolStyle::None);
     dataEntity_->setSymbolMetric(ui_.SymbolSizeSpin->value());
 }
 
-void MainWindow::on_SymbolStyleCombo_currentShapeIndexChanged(int shapeindex)
+void MainWindow::on_SymbolCombo_currentIndexChanged(int shapeindex)
 {
-    shapeStyle_ =
-        shapeindex == 0 ? Mildred::StyleFactory1D::SymbolStyle::Triangle : Mildred::StyleFactory1D::SymbolStyle::Square;
+    shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::None;
+    if (shapeindex == 1)
+        shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::Triangle;
+    else if (shapeindex == 2)
+        shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::Square;
+    else if (shapeindex == 3)
+        shapeStyle_ = Mildred::StyleFactory1D::SymbolStyle::Diamond;
+
     if (ui_.ShowSymbolsCheck->isChecked())
     {
         dataEntity_->setSymbolStyle(shapeStyle_);

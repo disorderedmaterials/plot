@@ -29,6 +29,7 @@ enum class SymbolStyle
 {
     None,
     Circle,
+    Diamond,
     Square,
     Triangle
 };
