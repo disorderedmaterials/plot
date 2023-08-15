@@ -204,6 +204,56 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     return entity;
 }
 
+// Add new 2-dimensinal data entity for supplied data
+Data2DEntity *MildredWidget::addData2D(std::string_view tag)
+{
+    // Check for existing tag
+    auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
+    if (it != dataEntities_.end())
+    {
+        printf("Data with tag '%s' already exists, so can't add it again.\n", it->first.c_str());
+        throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
+    }
+
+    // Create a new entity
+    auto *entity = new Data2DEntity(xAxis_, yAxis_, zAxis_, dataEntityParent_);
+    connect(&metrics_, SIGNAL(metricsChanged()), entity, SLOT(updateRenderables()));
+    dataEntities_.emplace_back(tag, entity);
+
+    // Add a material
+    auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
+                                    RenderableMaterial::GeometryShaderType::LineTesselator,
+                                    RenderableMaterial::FragmentShaderType::PerVertexPhong);
+    entity->setDataMaterial(material);
+
+    return entity;
+}
+
+// Add new 3-dimensinal data entity for supplied data
+Data3DEntity *MildredWidget::addData3D(std::string_view tag)
+{
+    // Check for existing tag
+    auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
+    if (it != dataEntities_.end())
+    {
+        printf("Data with tag '%s' already exists, so can't add it again.\n", it->first.c_str());
+        throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
+    }
+
+    // Create a new entity
+    auto *entity = new Data3DEntity(xAxis_, yAxis_, zAxis_, dataEntityParent_);
+    connect(&metrics_, SIGNAL(metricsChanged()), entity, SLOT(updateRenderables()));
+    dataEntities_.emplace_back(tag, entity);
+
+    // Add a material
+    auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
+                                    RenderableMaterial::GeometryShaderType::LineTesselator,
+                                    RenderableMaterial::FragmentShaderType::PerVertexPhong);
+    entity->setDataMaterial(material);
+
+    return entity;
+}
+
 /*
  * Grouping
  */

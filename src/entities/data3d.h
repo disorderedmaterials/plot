@@ -1,12 +1,13 @@
 #pragma once
 
 #include "entities/data.h"
+#include "renderers/3d/stylefactory.h"
 
 namespace Mildred
 {
-//! Data2DEntity encapsulates entities representing a 3-dimensional dataset.
+//! Data3DEntity encapsulates entities representing a 3-dimensional dataset.
 /*!
- * Data2DEntity provides a general class to contain and display a single two-dimensional dataset.
+ * Data3DEntity provides a general class to contain and display a single two-dimensional dataset.
  *
  * Data passed to the class in the form of four std::vector<double> containing x, y, and z axis points and values. The vector
  * sizes of the axis values provided determines the expected size of the value points vector.
@@ -33,5 +34,22 @@ class Data3DEntity : public DataEntity
     void clearData();
     // Set display data
     void setData(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::vector<double> values);
+
+    /*
+     * Rendering
+     */
+    private:
+    // Axes to plot against
+    const AxisEntity *xAxis_{nullptr}, *yAxis_{nullptr}, *zAxis_{nullptr}, *valueAxis_{nullptr};
+    // Data style
+    StyleFactory3D::Style style_;
+    // Data Renderer
+    std::shared_ptr<DataRenderer3D> dataRenderer_{nullptr};
+    // Orientation
+    AxisEntity::AxisType abscissa_{AxisEntity::AxisType::Horizontal}, ordinate_{AxisEntity::AxisType::Vertical}, applicate_{AxisEntity::AxisType::Depth};
+
+    protected:
+    // Create renderables from current data
+    void create() override;
 };
 } // namespace Mildred
