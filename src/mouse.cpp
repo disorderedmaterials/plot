@@ -1,4 +1,4 @@
-#include "widget.h"
+#include "component.h"
 
 using namespace Mildred;
 
@@ -34,7 +34,7 @@ using namespace Mildred;
 void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 {
     // Mouse is over the widget, so grab focus (for keyboard events)
-    setFocus();
+//    setFocus();
 
     // Check previous position
     if (lastMousePosition_.isNull())

@@ -1,25 +1,30 @@
 # Meta-Objects
-set(mildred_MOC_HDRS widget.h)
+set(mildred_MOC_HDRS)
 qt6_wrap_cpp(mildred_MOC_SRCS ${mildred_MOC_HDRS})
 
 # Shader Resources
-set(shaders_RES_QRC shaders.qrc)
+set(shaders_RES_QRC )
 qt6_add_resources(shaders_RES ${shaders_RES_QRC})
 
-add_library(
+qt_add_qml_module(
   mildred
-  ${mildred_MOC_SRCS}
-  ${shaders_RES}
+  URI
+  com.projectdissolve
+  VERSION
+  1.0
+  SOURCES
+  shaders.qrc
+  component.cpp
+  component.h
   displaygroup.cpp
+  displaygroup.h
   framegraph.cpp
+  framegraph.h
   keyboard.cpp
   material.cpp
+  material.h
   mouse.cpp
   scenegraph.cpp
-  widget.cpp
-  framegraph.h
-  displaygroup.h
-  material.h
   version.h)
 
 include_directories(mildred PRIVATE ${PROJECT_SOURCE_DIR}/src)
@@ -35,7 +40,7 @@ target_link_libraries(
           Qt6::Widgets Qt6::Core Qt6::3DCore Qt6::3DRender Qt6::3DExtras
           OpenGL::GL)
 
-set_target_properties(mildred PROPERTIES PUBLIC_HEADER widget.h)
+set_target_properties(mildred PROPERTIES PUBLIC_HEADER component.h)
 
 install(TARGETS mildred)
 

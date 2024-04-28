@@ -7,7 +7,7 @@ using namespace Mildred;
  * Creates an empty LineEntity with the specified drawing @param primitiveType. This function creates the necessary buffers and
  * attributes in order to be able to generate a line primitive by providing the necessary vertices and indices piecewise.
  */
-LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
+LineEntity::LineEntity(Qt3DCore::QNode *parent, bool useColourAttribute, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
     : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this), vertexBuffer_(&geometry_),
       vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_), colourBuffer_(&geometry_),
       colourAttribute_(&geometry_)
@@ -36,11 +36,11 @@ LineEntity::LineEntity(Qt3DCore::QNode *parent, Qt3DRender::QGeometryRenderer::P
     colourAttribute_.setByteStride(4 * sizeof(float));
     colourAttribute_.setCount(0);
 
-    // Set up geometry and renderer
+    // Set up basic geometry and renderer
     geometry_.addAttribute(&vertexAttribute_);
     geometry_.addAttribute(&indexAttribute_);
-    geometry_.addAttribute(&colourAttribute_);
-
+    if (useColourAttribute)
+        geometry_.addAttribute(&colourAttribute_);
     geometryRenderer_.setGeometry(&geometry_);
     geometryRenderer_.setPrimitiveType(primitiveType);
 
@@ -131,6 +131,8 @@ void LineEntity::finalise()
     }
     vertexBuffer_.setData(vertexBytes);
     vertexAttribute_.setCount(cachedVertices_.size());
+
+    printf("NVerts = %i\n", cachedVertices_.size());
 
     // Convert index data into a QByteArray
     QByteArray indexBytes;

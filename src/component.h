@@ -10,6 +10,7 @@
 #include <QScopedPointer>
 #include <QTimer>
 #include <QWidget>
+#include <QtQml/QtQml>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DInput/QKeyEvent>
@@ -36,12 +37,13 @@ enum class CoordinateDisplayStyle
  * Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
  * in order to have ready access to key metrics, e.g. the pixel scaling along each cardinal axis direction.
  */
-class MildredWidget : public QWidget
+class MildredWidget : public Qt3DCore::QEntity
 {
     Q_OBJECT
+    QML_ELEMENT
 
     public:
-    MildredWidget(QWidget *parent = nullptr);
+    MildredWidget(Qt3DCore::QEntity *parent = nullptr);
     ~MildredWidget() = default;
 
     /*
@@ -49,24 +51,24 @@ class MildredWidget : public QWidget
      */
     private:
     // Qt3DWindow for our display
-    Qt3DExtras::Qt3DWindow *viewWindow_{nullptr};
+//    Qt3DExtras::Qt3DWindow *viewWindow_{nullptr};
     // Container widget for our Qt3DWindow
-    QWidget *viewContainer_{nullptr};
+//    QWidget *viewContainer_{nullptr};
     // Root entity containing framegraph and scenegraph
-    Qt3DCore::QEntityPtr rootEntity_;
+//    Qt3DCore::QEntityPtr rootEntity_;
     // Render settings
-    Qt3DRender::QRenderSettings *renderSettings_{nullptr};
+//    Qt3DRender::QRenderSettings *renderSettings_{nullptr};
     // Camera
-    Qt3DRender::QCamera *camera_{nullptr};
+//    Qt3DRender::QCamera *camera_{nullptr};
     // Rendering framegraph
-    MildredFrameGraph frameGraph_;
+//    MildredFrameGraph frameGraph_;
 
     /*
      * QWidget
      */
     protected:
     // Widget resized
-    void resizeEvent(QResizeEvent *event) override;
+    void resizeEvent(QResizeEvent *event);
 
     /*
      * Metrics
@@ -185,8 +187,11 @@ class MildredWidget : public QWidget
      * Keyboard Handling / Interaction
      */
     private slots:
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
+//    void keyPressEvent(QKeyEvent *event) override;
+//    void keyReleaseEvent(QKeyEvent *event) override;
+    // TEMPORARY FUNCTIONS
+    int height() const { return 600; };
+    int width() const { return 800; };
 
     /*
      * Display Data

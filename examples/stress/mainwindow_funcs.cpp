@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "widget.h"
+#include "component.h"
 #include <QGridLayout>
 #include <random>
 

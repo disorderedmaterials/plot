@@ -1,6 +1,6 @@
 #include "entities/axis.h"
 #include "material.h"
-#include "widget.h"
+#include "component.h"
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DRender/QPointLight>
 
@@ -30,18 +30,18 @@ using namespace Mildred;
  */
 void MildredWidget::createSceneGraph()
 {
-    auto *lightEntity = new Qt3DCore::QEntity(rootEntity_.data());
+//    auto *lightEntity = new Qt3DCore::QEntity(this);
+//
+//    auto *light = new Qt3DRender::QPointLight(lightEntity);
+//    light->setColor("white");
+//    light->setIntensity(1);
+//    lightEntity->addComponent(light);
+//
+//    auto *lightTransform = new Qt3DCore::QTransform(lightEntity);
+//    lightTransform->setTranslation(lightPosition_);
+//    lightEntity->addComponent(lightTransform);
 
-    auto *light = new Qt3DRender::QPointLight(lightEntity);
-    light->setColor("white");
-    light->setIntensity(1);
-    lightEntity->addComponent(light);
-
-    auto *lightTransform = new Qt3DCore::QTransform(lightEntity);
-    lightTransform->setTranslation(lightPosition_);
-    lightEntity->addComponent(lightTransform);
-
-    sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_.data());
+    sceneRootEntity_ = new Qt3DCore::QEntity(this);
     sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
     sceneRootEntity_->addComponent(sceneRootTransform_);
 
@@ -65,13 +65,12 @@ void MildredWidget::createSceneGraph()
     /*
      * Axes Leaf
      */
-
     auto *axesEntity = new Qt3DCore::QEntity(sceneObjectsEntity_);
-
     auto *xAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,
                                             RenderableMaterial::FragmentShaderType::Monochrome);
     xAxisBarMaterial->setAmbient(QColor(0, 0, 0, 255));
+
     auto *xAxisLabelMaterial =
         createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
@@ -80,6 +79,8 @@ void MildredWidget::createSceneGraph()
     xAxis_->setTitleText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     connect(xAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
+
+    return;
 
     auto *yAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,

@@ -14,10 +14,6 @@ endif()
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Make sure CMake won't try to generate rules for moc (we will do it ourselves)
-set(CMAKE_AUTOMOC OFF)
-set(CMAKE_AUTOUIC ON)
-
 # Set policy for automatic linkage of Qt libs to project
 cmake_policy(SET CMP0020 NEW)
 
@@ -35,14 +31,17 @@ find_package(
   COMPONENTS Core
              Gui
              Widgets
+             Qml
+             Quick3D
              3DCore
              3DExtras
              3DRender
              3DExtras
              REQUIRED)
 
-# Make sure CMake won't try to generate rules for moc (we will do it ourselves)
-set(CMAKE_AUTOMOC OFF)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 # Set policy for automatic linkage of Qt libs to project
 cmake_policy(SET CMP0020 NEW)

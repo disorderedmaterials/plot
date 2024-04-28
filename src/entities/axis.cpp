@@ -21,8 +21,8 @@ AxisEntity::AxisEntity(Qt3DCore::QNode *parent, AxisType type, const MildredMetr
 
     // Create entities
     axisBarEntity_ = new LineEntity(this);
-    ticksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
-    subTicksEntity_ = new LineEntity(this, Qt3DRender::QGeometryRenderer::Lines);
+    ticksEntity_ = new LineEntity(this, false, Qt3DRender::QGeometryRenderer::Lines);
+    subTicksEntity_ = new LineEntity(this, false, Qt3DRender::QGeometryRenderer::Lines);
     axisTitleEntity_ = new TextEntity(this, "Unnamed Axis");
     axisTitleEntity_->setAnchorPoint(MildredMetrics::AnchorPoint::TopMiddle);
 
@@ -615,6 +615,7 @@ void AxisEntity::recreate()
 
     // Plot basic axis line
     axisBarEntity_->addVertices({{0.0, 0.0, 0.0}, direction_ * float(axisScale_)});
+    printf("AxisEntity::recreate() -> %f\n", axisScale_);
     axisBarEntity_->setBasicIndices();
     axisBarEntity_->finalise();
 

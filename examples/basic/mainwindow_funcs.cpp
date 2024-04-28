@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "material.h"
 #include "ui_mainwindow.h"
-#include "widget.h"
+#include "component.h"
 #include <stdexcept>
 
 MainWindow::MainWindow() : QMainWindow()
