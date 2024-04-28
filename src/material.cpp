@@ -89,9 +89,9 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
     auto *techniqueGL31 = new Qt3DRender::QTechnique();
     techniqueGL31->addRenderPass(renderPass3);
     techniqueGL31->addFilterKey(filterKey);
-    techniqueGL31->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
-    techniqueGL31->graphicsApiFilter()->setMajorVersion(3);
-    techniqueGL31->graphicsApiFilter()->setMinorVersion(1);
+    techniqueGL31->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::RHI);
+    techniqueGL31->graphicsApiFilter()->setMajorVersion(1);
+    techniqueGL31->graphicsApiFilter()->setMinorVersion(0);
     techniqueGL31->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
 
     auto *effect = new Qt3DRender::QEffect(this);

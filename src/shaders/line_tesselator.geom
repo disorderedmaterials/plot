@@ -1,10 +1,10 @@
-#version 330
+#version 450 core
 
 layout(lines) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 // Input Vertex Data
-in worldData
+layout(location = 0) in worldData
 {
     vec3 position;
     vec3 normal;
@@ -13,7 +13,7 @@ in worldData
 vertices[];
 
 // Output Fragment Data
-out fragData
+layout(location = 0) out fragData
 {
     vec3 position;
     vec3 normal;
@@ -21,8 +21,10 @@ out fragData
 }
 frag;
 
-uniform vec2 viewportSize;
-uniform float lineWidth = 1.5;
+layout(binding = 0) uniform custom_uniforms {
+    vec2 viewportSize;
+    float lineWidth;
+};
 
 // Copy clip distances for specified input vertex
 void applyClipping(int inVertexID)

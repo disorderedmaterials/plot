@@ -1,12 +1,12 @@
-#version 150 core
+#version 450 core
 
 // Uniform variables per-primitive
 // -- Colour components
-uniform vec3 ambient;
+layout(binding = 0) uniform material_uniforms{ vec3 ambient; };
 
 // Output variables
-out vec4 fragColour;
+layout(location = 0) out vec4 fragColour;
 
 void main() {
-  fragColour = vec4(ambient, 1.0);
+  fragColour = vec4(1.0,0.0,0.0, 1.0);
 }
