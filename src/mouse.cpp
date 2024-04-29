@@ -34,7 +34,7 @@ using namespace Mildred;
 void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
 {
     // Mouse is over the widget, so grab focus (for keyboard events)
-//    setFocus();
+    //    setFocus();
 
     // Check previous position
     if (lastMousePosition_.isNull())
@@ -98,7 +98,8 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             {
                 // Anchor the text entity at the mouse cursor.
                 mouseCoordEntity_->setAnchorPosition({float(event->x()) - metrics_.displayVolumeOrigin().x(),
-                                                      viewportHeight_ - float(event->y()) - metrics_.displayVolumeOrigin().y(), 0});
+                                                      viewportHeight_ - float(event->y()) - metrics_.displayVolumeOrigin().y(),
+                                                      0});
             }
             else if (mouseCoordStyle_ == CoordinateDisplayStyle::None)
             {

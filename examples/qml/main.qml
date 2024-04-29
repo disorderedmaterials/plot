@@ -13,6 +13,10 @@ ApplicationWindow {
     visible: true
     width: 800
 
+    MildredWidget {
+        id: visualisationManager
+    }
+
     Scene3D {
         id: scene3D
         anchors.fill: parent
@@ -21,7 +25,7 @@ ApplicationWindow {
         signal resized()
         onWidthChanged: resized()
         onHeightChanged: resized()
-        onResized: () =>  { myRootEntity.setViewportSize(width, height);
+        onResized: () =>  { visualisationManager.setViewportSize(width, height);
             camera.lens.left = 0;
             camera.lens.right = width;
             camera.lens.top = height;
@@ -51,9 +55,9 @@ ApplicationWindow {
                     }
                 }
             }
-            MildredWidget {
-                id: myRootEntity
-            }
+            MildredEntity {
+                entity: visualisationManager.entity
+                }
         }
     }
 

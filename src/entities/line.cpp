@@ -7,7 +7,8 @@ using namespace Mildred;
  * Creates an empty LineEntity with the specified drawing @param primitiveType. This function creates the necessary buffers and
  * attributes in order to be able to generate a line primitive by providing the necessary vertices and indices piecewise.
  */
-LineEntity::LineEntity(Qt3DCore::QNode *parent, bool useColourAttribute, Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
+LineEntity::LineEntity(Qt3DCore::QNode *parent, bool useColourAttribute,
+                       Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType)
     : Qt3DCore::QEntity(parent), geometry_(this), geometryRenderer_(this), vertexBuffer_(&geometry_),
       vertexAttribute_(&geometry_), indexBuffer_(&geometry_), indexAttribute_(&geometry_), colourBuffer_(&geometry_),
       colourAttribute_(&geometry_)

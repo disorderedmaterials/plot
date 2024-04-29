@@ -1,6 +1,6 @@
+#include "component.h"
 #include "entities/axis.h"
 #include "material.h"
-#include "component.h"
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DRender/QPointLight>
 
@@ -30,7 +30,7 @@ using namespace Mildred;
  */
 void MildredWidget::createSceneGraph()
 {
-    auto *lightEntity = new Qt3DCore::QEntity(this);
+    auto *lightEntity = new Qt3DCore::QEntity(rootEntity_);
 
     auto *light = new Qt3DRender::QPointLight(lightEntity);
     light->setColor("white");
@@ -41,7 +41,7 @@ void MildredWidget::createSceneGraph()
     lightTransform->setTranslation(lightPosition_);
     lightEntity->addComponent(lightTransform);
 
-    sceneRootEntity_ = new Qt3DCore::QEntity(this);
+    sceneRootEntity_ = new Qt3DCore::QEntity(rootEntity_);
     sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
     sceneRootEntity_->addComponent(sceneRootTransform_);
 
@@ -141,6 +141,9 @@ QPoint MildredWidget::screen2DCentre() const
     return {int(viewportWidth_ / 2 + sceneObjectsTransform_->translation().x() + metrics_.displayVolumeExtent().x() / 2.0),
             int(viewportHeight_ / 2 + sceneObjectsTransform_->translation().y() + metrics_.displayVolumeExtent().y() / 2.0)};
 }
+
+//! Return the root entity
+Qt3DCore::QEntity *MildredWidget::rootEntity() { return rootEntity_; }
 
 //! Return x axis entity
 AxisEntity *MildredWidget::xAxis() { return xAxis_; }

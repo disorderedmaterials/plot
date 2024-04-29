@@ -10,13 +10,14 @@
 #include <QScopedPointer>
 #include <QTimer>
 #include <QWidget>
-#include <QtQml/QtQml>
 #include <Qt3DCore/QEntityPtr>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DInput/QKeyEvent>
 #include <Qt3DInput/QMouseEvent>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
+#include <QtQml/QtQml>
+#include <QtQuick/QQuickItem>
 
 namespace Mildred
 {
@@ -28,6 +29,30 @@ enum class CoordinateDisplayStyle
     FixedAnchor
 };
 
+class MildredEntity : public Qt3DCore::QEntity
+{
+    Q_OBJECT
+    QML_ELEMENT
+
+    private:
+    // Contained entity
+    Qt3DCore::QEntity *entity_{nullptr};
+
+    public:
+    Q_PROPERTY(Qt3DCore::QEntity *entity READ entity WRITE setEntity NOTIFY entityChanged)
+    // Return contained entity
+    Qt3DCore::QEntity *entity() const { return entity_; }
+    // Set contained entity
+    void setEntity(Qt3DCore::QEntity *entity)
+    {
+        entity_ = entity;
+        entity_->setParent(this);
+    }
+
+    signals:
+    void entityChanged();
+};
+
 //! The Mildred widget is the core class of Mildred.
 /*!
  * The Mildred widget is a standard QWidget displaying a Qt3D-based subwidget providing full 2D (flat) and 3D data
@@ -37,13 +62,14 @@ enum class CoordinateDisplayStyle
  * Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
  * in order to have ready access to key metrics, e.g. the pixel scaling along each cardinal axis direction.
  */
-class MildredWidget : public Qt3DCore::QEntity
+class MildredWidget : public QQuickItem
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QEntity *entity READ rootEntity FINAL)
     QML_ELEMENT
 
     public:
-    MildredWidget(Qt3DCore::QEntity *parent = nullptr);
+    MildredWidget();
     ~MildredWidget() = default;
 
     /*
@@ -79,15 +105,11 @@ class MildredWidget : public Qt3DCore::QEntity
     void setFlatView(bool flat);
 
     /*
-     * FrameGraph
-     */
-    private:
-    MildredFrameGraph framegraph_;
-
-    /*
      * SceneGraph
      */
     private:
+    // The root entity containing the entire scene and its data
+    Qt3DCore::QEntity *rootEntity_{nullptr};
     // Global light position
     QVector3D lightPosition_{0.0, 0.0, -100.0};
     // View rotation
@@ -119,6 +141,8 @@ class MildredWidget : public Qt3DCore::QEntity
     QPoint screen2DCentre() const;
 
     public:
+    // Return the root entity
+    Qt3DCore::QEntity *rootEntity();
     // Return x axis entity
     AxisEntity *xAxis();
     // Return y axis entity
@@ -169,8 +193,8 @@ class MildredWidget : public Qt3DCore::QEntity
      * Keyboard Handling / Interaction
      */
     private slots:
-//    void keyPressEvent(QKeyEvent *event) override;
-//    void keyReleaseEvent(QKeyEvent *event) override;
+    //    void keyPressEvent(QKeyEvent *event) override;
+    //    void keyReleaseEvent(QKeyEvent *event) override;
 
     /*
      * Display Data

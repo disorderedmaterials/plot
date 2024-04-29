@@ -1,13 +1,13 @@
 #include "component.h"
 #include "material.h"
 #include <QResizeEvent>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DInput/QKeyboardDevice>
 #include <Qt3DInput/QKeyboardHandler>
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QPointLight>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QSphereMesh>
 #include <stdexcept>
 
 // Initialise Qt resources
@@ -22,34 +22,18 @@ void initialiseQtResources()
 using namespace Mildred;
 
 //! Constructs a Mildred widget which is a child of \param parent.
-MildredWidget::MildredWidget(Qt3DCore::QEntity *parent) : Qt3DCore::QEntity(parent)
+MildredWidget::MildredWidget()
 {
+    // Create the root entity
+    rootEntity_ = new Qt3DCore::QEntity;
+
     // Initialise resources
     initialiseQtResources();
 
-    /*
-     * In order to get a suitable surface to draw on we must first create a full Qt3DWindow and then capture it in
-     * a container widget.
-     */
-//    viewWindow_ = new Qt3DExtras::Qt3DWindow();
-
-    // Create a container for the Qt3DWindow
-//    viewContainer_ = createWindowContainer(viewWindow_, this);
-
-    // Create our root entity
-//    rootEntity_ = Qt3DCore::QEntityPtr(new Qt3DCore::QEntity);
-
-    // Grab the QRenderSettings from the window
-//    renderSettings_ = viewWindow_->renderSettings();
-
     // TEST
     auto *material = new Qt3DExtras::QPhongMaterial;
-//    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
-//    sphereMesh->setRadius(1);
-//    addComponent(sphereMesh);
-//    addComponent(material);
 
-    auto *line = new LineEntity(this);
+    auto *line = new LineEntity(rootEntity_);
     line->addVertices({{0.0, 0.0, 0.0}, {20.0, 0.0, 0.0}});
     line->setBasicIndices();
     line->finalise();
@@ -63,26 +47,16 @@ MildredWidget::MildredWidget(Qt3DCore::QEntity *parent) : Qt3DCore::QEntity(pare
     viewportSizeParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewportSize"), QVector2D());
 
     // Add a mouse handler and connect it up
-    auto *mouseHandler = new Qt3DInput::QMouseHandler(this);
-    auto *mouseDevice = new Qt3DInput::QMouseDevice(this);
+    auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_);
+    auto *mouseDevice = new Qt3DInput::QMouseDevice(rootEntity_);
     mouseHandler->setSourceDevice(mouseDevice);
-    addComponent(mouseHandler);
+    rootEntity_->addComponent(mouseHandler);
     connect(mouseHandler, SIGNAL(positionChanged(Qt3DInput::QMouseEvent *)), this,
             SLOT(mousePositionChanged(Qt3DInput::QMouseEvent *)));
     connect(mouseHandler, SIGNAL(pressed(Qt3DInput::QMouseEvent *)), this, SLOT(mouseButtonPressed(Qt3DInput::QMouseEvent *)));
     connect(mouseHandler, SIGNAL(released(Qt3DInput::QMouseEvent *)), this,
             SLOT(mouseButtonReleased(Qt3DInput::QMouseEvent *)));
     connect(mouseHandler, SIGNAL(wheel(Qt3DInput::QWheelEvent *)), this, SLOT(mouseWheeled(Qt3DInput::QWheelEvent *)));
-
-    // Construct a camera
-//    camera_ = new Qt3DRender::QCamera(this);
-//    //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-//    camera_->lens()->setOrthographicProjection(0, viewportWidth_, 0, viewportHeight_, 0.1f, 1000.0f);
-//    camera_->setPosition(QVector3D(0, 0, 1.0f));
-//    camera_->setViewCenter(QVector3D(0, 0, -10.0));
-
-    // Create the framegraph
-//    frameGraph_.create(renderSettings_, viewWindow_, camera_);
 
     // Set up basic scenegraph
     createSceneGraph();
@@ -99,8 +73,8 @@ MildredWidget::MildredWidget(Qt3DCore::QEntity *parent) : Qt3DCore::QEntity(pare
 
 //! Set viewport size
 /*!
- * Resizing the viewport demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of the
- * available drawing surface is used for visualisation.
+ * Resizing the viewport demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of
+ * the available drawing surface is used for visualisation.
  */
 void MildredWidget::setViewportSize(int w, int h)
 {
@@ -110,14 +84,14 @@ void MildredWidget::setViewportSize(int w, int h)
     updateMetrics();
 
     // Move the scene root position to be the centre of the XY plane and a suitable distance away along -Z
-    sceneRootTransform_->setTranslation(QVector3D(viewportWidth_ / 2.0, viewportHeight_/2.0, -viewportWidth_ / 2.0));
+    sceneRootTransform_->setTranslation(QVector3D(viewportWidth_ / 2.0, viewportHeight_ / 2.0, -viewportWidth_ / 2.0));
 
     // Debug objects
     sceneBoundingCuboidTransform_->setScale3D(QVector3D(viewportWidth_, viewportHeight_, viewportWidth_));
 
     // Update parameters and transforms
     updateTransforms();
-//    updateShaderParameters();
+    //    updateShaderParameters();
 }
 
 //! Update metrics for current surface size
