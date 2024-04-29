@@ -38,17 +38,17 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
     filterKey->setName(QStringLiteral("renderingStyle"));
     filterKey->setValue(QStringLiteral("forward"));
 
-    // Set up GL 3.1 shader, render pass and technique
-    auto *shader3 = new Qt3DRender::QShaderProgram(this);
+    // Set up shader, render pass and technique
+    auto *shader = new Qt3DRender::QShaderProgram(this);
 
     switch (vertexShader)
     {
         case (VertexShaderType::Unclipped):
-            shader3->setVertexShaderCode(
+            shader->setVertexShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/unclipped.vert"))));
             break;
         case (VertexShaderType::ClippedToDataVolume):
-            shader3->setVertexShaderCode(
+            shader->setVertexShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/clipped.vert"))));
             break;
         default:
@@ -59,7 +59,7 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
         case (GeometryShaderType::None):
             break;
         case (GeometryShaderType::LineTesselator):
-            shader3->setGeometryShaderCode(
+            shader->setGeometryShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/line_tesselator.geom"))));
             break;
         default:
@@ -68,34 +68,34 @@ RenderableMaterial::RenderableMaterial(Qt3DCore::QNode *parent, VertexShaderType
     switch (fragmentShader)
     {
         case (FragmentShaderType::Monochrome):
-            shader3->setFragmentShaderCode(
+            shader->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/monochrome.frag"))));
             break;
         case (FragmentShaderType::Phong):
-            shader3->setFragmentShaderCode(
+            shader->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phong.frag"))));
             break;
         case (FragmentShaderType::PerVertexPhong):
-            shader3->setFragmentShaderCode(
+            shader->setFragmentShaderCode(
                 Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/shaders/phongpervertex.frag"))));
             break;
         default:
             throw(std::runtime_error("Unhandled fragment shader type.\n"));
     }
 
-    auto *renderPass3 = new Qt3DRender::QRenderPass(this);
-    renderPass3->setShaderProgram(shader3);
+    auto *renderPass = new Qt3DRender::QRenderPass(this);
+    renderPass->setShaderProgram(shader);
 
-    auto *techniqueGL31 = new Qt3DRender::QTechnique();
-    techniqueGL31->addRenderPass(renderPass3);
-    techniqueGL31->addFilterKey(filterKey);
-    techniqueGL31->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::RHI);
-    techniqueGL31->graphicsApiFilter()->setMajorVersion(1);
-    techniqueGL31->graphicsApiFilter()->setMinorVersion(0);
-    techniqueGL31->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
+    auto *technique = new Qt3DRender::QTechnique();
+    technique->addRenderPass(renderPass);
+    technique->addFilterKey(filterKey);
+    technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::RHI);
+    technique->graphicsApiFilter()->setMajorVersion(1);
+    technique->graphicsApiFilter()->setMinorVersion(0);
+    technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
 
     auto *effect = new Qt3DRender::QEffect(this);
-    effect->addTechnique(techniqueGL31);
+    effect->addTechnique(technique);
     setEffect(effect);
 }
 

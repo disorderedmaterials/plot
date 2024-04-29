@@ -133,9 +133,5 @@ void MildredMetrics::update(int width, int height, const AxisEntity *xAxis, cons
         displayVolumeExtent_ -= QVector3D(cuboid.xExtent(), 0.0, 0.0);
     }
 
-    printf("Display Volume Origin (px) = %f %f %f\n", displayVolumeOrigin_.x(), displayVolumeOrigin_.y(), displayVolumeOrigin_.z());
-    printf("Display Volume Extent (px) = %f %f %f\n", displayVolumeExtent_.x(), displayVolumeExtent_.y(), displayVolumeExtent_.z());
-
-
     emit(metricsChanged());
 }
