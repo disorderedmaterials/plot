@@ -73,11 +73,11 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
         // Ensure that mouse is within plot area.
         if ((event->x() >= metrics_.displayVolumeOrigin().x()) &&
             (event->x() <= (metrics_.displayVolumeExtent().x() + metrics_.displayVolumeOrigin().x())) &&
-            (height() - event->y() >= metrics_.displayVolumeOrigin().y()) &&
-            (height() - event->y() <= (metrics_.displayVolumeExtent().y() + metrics_.displayVolumeOrigin().y())))
+            (viewportHeight_ - event->y() >= metrics_.displayVolumeOrigin().y()) &&
+            (viewportHeight_ - event->y() <= (metrics_.displayVolumeExtent().y() + metrics_.displayVolumeOrigin().y())))
         {
             // Convert mouse position to 2D axes value.
-            auto coords = toAxes2D(QPoint(event->x(), height() - event->y()));
+            auto coords = toAxes2D(QPoint(event->x(), viewportHeight_ - event->y()));
 
             // Emit signal indicating that mouse coordinates have been changed.
             emit mouseCoordChanged(coords);
@@ -98,7 +98,7 @@ void MildredWidget::mousePositionChanged(Qt3DInput::QMouseEvent *event)
             {
                 // Anchor the text entity at the mouse cursor.
                 mouseCoordEntity_->setAnchorPosition({float(event->x()) - metrics_.displayVolumeOrigin().x(),
-                                                      height() - float(event->y()) - metrics_.displayVolumeOrigin().y(), 0});
+                                                      viewportHeight_ - float(event->y()) - metrics_.displayVolumeOrigin().y(), 0});
             }
             else if (mouseCoordStyle_ == CoordinateDisplayStyle::None)
             {
@@ -136,7 +136,7 @@ void MildredWidget::mouseWheeled(Qt3DInput::QWheelEvent *event)
 
         // Shift view centre towards current mouse position
         // -- Get the data-space delta between the centre coordinates of the 2D axes and the current mouse position
-        auto centreDelta = QPoint(event->x(), height() - event->y()) - screen2DCentre();
+        auto centreDelta = QPoint(event->x(), viewportHeight_ - event->y()) - screen2DCentre();
         xAxis_->shiftLimitsByPixels(centreDelta.x() / (sign * sensitivity));
         yAxis_->shiftLimitsByPixels(centreDelta.y() / (sign * sensitivity));
 

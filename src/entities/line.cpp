@@ -132,8 +132,6 @@ void LineEntity::finalise()
     vertexBuffer_.setData(vertexBytes);
     vertexAttribute_.setCount(cachedVertices_.size());
 
-    printf("NVerts = %i\n", cachedVertices_.size());
-
     // Convert index data into a QByteArray
     QByteArray indexBytes;
     indexBytes.resize(cachedIndices_.size() * sizeof(unsigned int));

@@ -615,7 +615,6 @@ void AxisEntity::recreate()
 
     // Plot basic axis line
     axisBarEntity_->addVertices({{0.0, 0.0, 0.0}, direction_ * float(axisScale_)});
-    printf("AxisEntity::recreate() -> %f\n", axisScale_);
     axisBarEntity_->setBasicIndices();
     axisBarEntity_->finalise();
 

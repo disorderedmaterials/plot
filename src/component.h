@@ -47,39 +47,21 @@ class MildredWidget : public Qt3DCore::QEntity
     ~MildredWidget() = default;
 
     /*
-     * Qt3D Objects
-     */
-    private:
-    // Qt3DWindow for our display
-//    Qt3DExtras::Qt3DWindow *viewWindow_{nullptr};
-    // Container widget for our Qt3DWindow
-//    QWidget *viewContainer_{nullptr};
-    // Root entity containing framegraph and scenegraph
-//    Qt3DCore::QEntityPtr rootEntity_;
-    // Render settings
-//    Qt3DRender::QRenderSettings *renderSettings_{nullptr};
-    // Camera
-//    Qt3DRender::QCamera *camera_{nullptr};
-    // Rendering framegraph
-//    MildredFrameGraph frameGraph_;
-
-    /*
-     * QWidget
-     */
-    protected:
-    // Widget resized
-    void resizeEvent(QResizeEvent *event);
-
-    /*
      * Metrics
      */
     private:
+    // Viewport size
+    int viewportWidth_{100}, viewportHeight_{100};
     // Display metrics
     MildredMetrics metrics_;
 
     private slots:
     // Update metrics for current surface size
     void updateMetrics();
+
+    public:
+    // Set viewport size
+    Q_INVOKABLE void setViewportSize(int w, int h);
 
     /*
      * Appearance
@@ -189,9 +171,6 @@ class MildredWidget : public Qt3DCore::QEntity
     private slots:
 //    void keyPressEvent(QKeyEvent *event) override;
 //    void keyReleaseEvent(QKeyEvent *event) override;
-    // TEMPORARY FUNCTIONS
-    int height() const { return 600; };
-    int width() const { return 800; };
 
     /*
      * Display Data

@@ -77,7 +77,7 @@ MildredWidget::MildredWidget(Qt3DCore::QEntity *parent) : Qt3DCore::QEntity(pare
     // Construct a camera
 //    camera_ = new Qt3DRender::QCamera(this);
 //    //    camera_->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-//    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, 1000.0f);
+//    camera_->lens()->setOrthographicProjection(0, viewportWidth_, 0, viewportHeight_, 0.1f, 1000.0f);
 //    camera_->setPosition(QVector3D(0, 0, 1.0f));
 //    camera_->setViewCenter(QVector3D(0, 0, -10.0));
 
@@ -87,55 +87,44 @@ MildredWidget::MildredWidget(Qt3DCore::QEntity *parent) : Qt3DCore::QEntity(pare
     // Set up basic scenegraph
     createSceneGraph();
 
-    // Set the main root entity
-//    viewWindow_->setRootEntity(rootEntity_.data());
-
     // Connect the metrics object and update
-//    connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
+    connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
 
     updateMetrics();
-}
-
-/*
- * QWidget
- */
-
-//! Handle QWidget resize events
-/*!
- * Resizing the widget demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of the
- * available drawing surface is used for visualisation.
- */
-void MildredWidget::resizeEvent(QResizeEvent *event)
-{
-    updateMetrics();
-
-    // Move the scene root position to be the centre of the XY plane and a suitable distance away
-    sceneRootTransform_->setTranslation(QVector3D(width() / 2.0, height() / 2.0, -width()));
-
-    // Reset projection for new viewport
-//    camera_->lens()->setOrthographicProjection(0, width(), 0, height(), 0.1f, width() * 2.0f);
-//    camera_->setAspectRatio(float(width()) / float(height()));
-
-    // Debug objects
-    sceneBoundingCuboidTransform_->setScale3D(QVector3D(width(), height(), width()));
-
-    // Update parameters and transforms
-    updateTransforms();
-    updateShaderParameters();
-
-    // Lastly, resize our view container
-//    viewContainer_->resize(this->size());
 }
 
 /*
  * Metrics
  */
 
+//! Set viewport size
+/*!
+ * Resizing the viewport demands that the metrics information held in @class MildredMetrics is updated, ensuring the whole of the
+ * available drawing surface is used for visualisation.
+ */
+void MildredWidget::setViewportSize(int w, int h)
+{
+    viewportWidth_ = w;
+    viewportHeight_ = h;
+
+    updateMetrics();
+
+    // Move the scene root position to be the centre of the XY plane and a suitable distance away along -Z
+    sceneRootTransform_->setTranslation(QVector3D(viewportWidth_ / 2.0, viewportHeight_/2.0, -viewportWidth_ / 2.0));
+
+    // Debug objects
+    sceneBoundingCuboidTransform_->setScale3D(QVector3D(viewportWidth_, viewportHeight_, viewportWidth_));
+
+    // Update parameters and transforms
+    updateTransforms();
+//    updateShaderParameters();
+}
+
 //! Update metrics for current surface size
 /*!
  *  Updates the internal @class MildredMetrics object.
  */
-void MildredWidget::updateMetrics() { metrics_.update(width(), height(), xAxis_, yAxis_); }
+void MildredWidget::updateMetrics() { metrics_.update(viewportWidth_, viewportHeight_, xAxis_, yAxis_); }
 
 /*
  * Appearance

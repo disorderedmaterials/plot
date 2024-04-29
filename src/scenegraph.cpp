@@ -30,16 +30,16 @@ using namespace Mildred;
  */
 void MildredWidget::createSceneGraph()
 {
-//    auto *lightEntity = new Qt3DCore::QEntity(this);
-//
-//    auto *light = new Qt3DRender::QPointLight(lightEntity);
-//    light->setColor("white");
-//    light->setIntensity(1);
-//    lightEntity->addComponent(light);
-//
-//    auto *lightTransform = new Qt3DCore::QTransform(lightEntity);
-//    lightTransform->setTranslation(lightPosition_);
-//    lightEntity->addComponent(lightTransform);
+    auto *lightEntity = new Qt3DCore::QEntity(this);
+
+    auto *light = new Qt3DRender::QPointLight(lightEntity);
+    light->setColor("white");
+    light->setIntensity(1);
+    lightEntity->addComponent(light);
+
+    auto *lightTransform = new Qt3DCore::QTransform(lightEntity);
+    lightTransform->setTranslation(lightPosition_);
+    lightEntity->addComponent(lightTransform);
 
     sceneRootEntity_ = new Qt3DCore::QEntity(this);
     sceneRootTransform_ = new Qt3DCore::QTransform(sceneRootEntity_);
@@ -51,7 +51,7 @@ void MildredWidget::createSceneGraph()
 
     // Debug
     sceneBoundingCuboidEntity_ = new Qt3DCore::QEntity(sceneRootEntity_);
-    sceneBoundingCuboidEntity_->setEnabled(false);
+//    sceneBoundingCuboidEntity_->setEnabled(false);
     auto *cuboidMesh = new Qt3DExtras::QCuboidMesh(sceneBoundingCuboidEntity_);
     sceneBoundingCuboidEntity_->addComponent(cuboidMesh);
     sceneBoundingCuboidTransform_ = new Qt3DCore::QTransform(sceneBoundingCuboidEntity_);
@@ -79,8 +79,6 @@ void MildredWidget::createSceneGraph()
     xAxis_->setTitleText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     connect(xAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
-
-    return;
 
     auto *yAxisBarMaterial = createMaterial(axesEntity, RenderableMaterial::VertexShaderType::Unclipped,
                                             RenderableMaterial::GeometryShaderType::LineTesselator,
@@ -133,15 +131,15 @@ void MildredWidget::createSceneGraph()
 //! Convert widget position to 2D (flat) coordinates
 QPointF MildredWidget::toAxes2D(QPoint pos) const
 {
-    return {xAxis_->fromScaled((pos.x() - width() / 2.0) - sceneObjectsTransform_->translation().x()),
-            yAxis_->fromScaled((pos.y() - height() / 2.0) - sceneObjectsTransform_->translation().y())};
+    return {xAxis_->fromScaled((pos.x() - viewportWidth_ / 2.0) - sceneObjectsTransform_->translation().x()),
+            yAxis_->fromScaled((pos.y() - viewportHeight_ / 2.0) - sceneObjectsTransform_->translation().y())};
 }
 
 //! Return screen coordinates at centre of 2D view
 QPoint MildredWidget::screen2DCentre() const
 {
-    return {int(width() / 2 + sceneObjectsTransform_->translation().x() + metrics_.displayVolumeExtent().x() / 2.0),
-            int(height() / 2 + sceneObjectsTransform_->translation().y() + metrics_.displayVolumeExtent().y() / 2.0)};
+    return {int(viewportWidth_ / 2 + sceneObjectsTransform_->translation().x() + metrics_.displayVolumeExtent().x() / 2.0),
+            int(viewportHeight_ / 2 + sceneObjectsTransform_->translation().y() + metrics_.displayVolumeExtent().y() / 2.0)};
 }
 
 //! Return x axis entity
@@ -163,7 +161,7 @@ void MildredWidget::updateTransforms()
 {
     if (sceneObjectsTransform_)
         sceneObjectsTransform_->setTranslation(metrics_.displayVolumeOrigin() -
-                                               QVector3D(width() / 2.0, height() / 2.0, -width() / 2.0));
+                                               QVector3D(viewportWidth_ / 2.0, viewportHeight_ / 2.0, -viewportWidth_ / 2.0));
     if (dataOriginTransform_)
         dataOriginTransform_->setTranslation(
             -(xAxis_->toScaled(xAxis_->minimum()) + yAxis_->toScaled(yAxis_->minimum()) + zAxis_->toScaled(zAxis_->minimum())));
@@ -184,7 +182,7 @@ void MildredWidget::updateShaderParameters()
                                             zAxis_->toScaled(zAxis_->minimum()));
     sceneDataTransformInverseParameter_->setValue(
         (sceneRootTransform_->matrix() * sceneObjectsTransform_->matrix() * dataOriginTransform_->matrix()).inverted());
-    viewportSizeParameter_->setValue(QVector2D(width(), height()));
+    viewportSizeParameter_->setValue(QVector2D(viewportWidth_, viewportHeight_));
 }
 
 //! Reset view

@@ -18,6 +18,17 @@ ApplicationWindow {
         anchors.fill: parent
         anchors.margins: 10
         focus: true
+        signal resized()
+        onWidthChanged: resized()
+        onHeightChanged: resized()
+        onResized: () =>  { myRootEntity.setViewportSize(width, height);
+            camera.lens.left = 0;
+            camera.lens.right = width;
+            camera.lens.top = height;
+            camera.lens.bottom = 0;
+            camera.lens.near = 0.1;
+            camera.lens.far = width * 2;
+        }
 
         entity: Entity {
             id: root3DEntity
@@ -33,10 +44,10 @@ ApplicationWindow {
                         farPlane: 1000.0
                         fieldOfView: 45
                         nearPlane: 0.1
-                        position: Qt.vector3d(0.0, 0.0, 100.0)
-                        projectionType: CameraLens.PerspectiveProjection
+                        position: Qt.vector3d(0.0, 0.0, 1.0)
+                        projectionType: CameraLens.OrthographicProjection
                         upVector: Qt.vector3d(0.0, 1.0, 0.0)
-                        viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
+                        viewCenter: Qt.vector3d(0.0, 0.0, -1.0)
                     }
                 }
             }
@@ -45,4 +56,6 @@ ApplicationWindow {
             }
         }
     }
+
+
 }
