@@ -9,8 +9,7 @@ layout(location = 0) in worldData
 }
 frag;
 
-// Uniform variables per-primitive
-layout(binding = 0) uniform per_primitive {
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
     // -- Colour components
     vec3 ambient;
     vec3 diffuse;

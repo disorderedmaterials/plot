@@ -21,7 +21,7 @@ layout(location = 0) out fragData
 }
 frag;
 
-layout(binding = 0) uniform custom_uniforms {
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
     vec2 viewportSize;
     float lineWidth;
 };

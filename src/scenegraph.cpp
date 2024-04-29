@@ -51,7 +51,7 @@ void MildredWidget::createSceneGraph()
 
     // Debug
     sceneBoundingCuboidEntity_ = new Qt3DCore::QEntity(sceneRootEntity_);
-//    sceneBoundingCuboidEntity_->setEnabled(false);
+    sceneBoundingCuboidEntity_->setEnabled(false);
     auto *cuboidMesh = new Qt3DExtras::QCuboidMesh(sceneBoundingCuboidEntity_);
     sceneBoundingCuboidEntity_->addComponent(cuboidMesh);
     sceneBoundingCuboidTransform_ = new Qt3DCore::QTransform(sceneBoundingCuboidEntity_);

@@ -1,12 +1,12 @@
 #version 450 core
 
-// Uniform variables per-primitive
-// -- Colour components
-layout(binding = 0) uniform material_uniforms{ vec3 ambient; };
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
+  vec3 ambient;
+};
 
 // Output variables
 layout(location = 0) out vec4 fragColour;
 
 void main() {
-  fragColour = vec4(1.0,0.0,0.0, 1.0);
+  fragColour = vec4(ambient, 1.0);
 }

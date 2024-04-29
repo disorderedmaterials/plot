@@ -37,7 +37,7 @@ ApplicationWindow {
 
                 activeFrameGraph: ForwardRenderer {
                     id: renderer
-                    clearColor: "#ffff4f"
+                    clearColor: "#ffffff"
 
                     camera: Camera {
                         id: camera
