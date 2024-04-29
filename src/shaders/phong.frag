@@ -1,7 +1,7 @@
-#version 150 core
+#version 450 core
 
 // Input variables
-in fragData
+layout(location = 0) in worldData
 {
     vec3 position;
     vec3 normal;
@@ -10,21 +10,23 @@ in fragData
 frag;
 
 // Uniform variables per-primitive
-// -- Colour components
-uniform vec3 ambient;
-uniform vec3 diffuse;
-uniform vec3 specular;
-// -- Reflection coefficients (0.0 - 1.0)
-uniform float ka;
-uniform float kd;
-uniform float ks;
-// -- Shininess coefficient (0.0 - 1.0)
-uniform float shininess;
-// -- Light position
-uniform vec3 lightPosition;
+layout(binding = 0) uniform per_primitive {
+    // -- Colour components
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    // -- Reflection coefficients (0.0 - 1.0)
+    float ka;
+    float kd;
+    float ks;
+    // -- Shininess coefficient (0.0 - 1.0)
+    float shininess;
+    // -- Light position
+    vec3 lightPosition;
+};
 
 // Output variables
-out vec4 fragColour;
+layout(location = 0) out vec4 fragColour;
 
 void main()
 {
