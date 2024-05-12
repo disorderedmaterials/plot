@@ -29,30 +29,6 @@ enum class CoordinateDisplayStyle
     FixedAnchor
 };
 
-class MildredEntity : public Qt3DCore::QEntity
-{
-    Q_OBJECT
-    QML_ELEMENT
-
-    private:
-    // Contained entity
-    Qt3DCore::QEntity *entity_{nullptr};
-
-    public:
-    Q_PROPERTY(Qt3DCore::QEntity *entity READ entity WRITE setEntity NOTIFY entityChanged)
-    // Return contained entity
-    Qt3DCore::QEntity *entity() const { return entity_; }
-    // Set contained entity
-    void setEntity(Qt3DCore::QEntity *entity)
-    {
-        entity_ = entity;
-        entity_->setParent(this);
-    }
-
-    signals:
-    void entityChanged();
-};
-
 //! The Mildred widget is the core class of Mildred.
 /*!
  * The Mildred widget is a standard QWidget displaying a Qt3D-based subwidget providing full 2D (flat) and 3D data
@@ -62,10 +38,9 @@ class MildredEntity : public Qt3DCore::QEntity
  * Look / feel of the display is controlled by a @class MildredMetrics object which most display classes retain a reference to
  * in order to have ready access to key metrics, e.g. the pixel scaling along each cardinal axis direction.
  */
-class MildredWidget : public QQuickItem
+class MildredWidget : public Qt3DCore::QEntity
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DCore::QEntity *entity READ rootEntity FINAL)
     QML_ELEMENT
 
     public:
@@ -108,8 +83,6 @@ class MildredWidget : public QQuickItem
      * SceneGraph
      */
     private:
-    // The root entity containing the entire scene and its data
-    Qt3DCore::QEntity *rootEntity_{nullptr};
     // Global light position
     QVector3D lightPosition_{0.0, 0.0, -100.0};
     // View rotation
@@ -141,8 +114,6 @@ class MildredWidget : public QQuickItem
     QPoint screen2DCentre() const;
 
     public:
-    // Return the root entity
-    Qt3DCore::QEntity *rootEntity();
     // Return x axis entity
     AxisEntity *xAxis();
     // Return y axis entity

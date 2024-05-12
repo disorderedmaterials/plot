@@ -24,16 +24,13 @@ using namespace Mildred;
 //! Constructs a Mildred widget which is a child of \param parent.
 MildredWidget::MildredWidget()
 {
-    // Create the root entity
-    rootEntity_ = new Qt3DCore::QEntity;
-
     // Initialise resources
     initialiseQtResources();
 
     // TEST
     auto *material = new Qt3DExtras::QPhongMaterial;
 
-    auto *line = new LineEntity(rootEntity_);
+    auto *line = new LineEntity(this);
     line->addVertices({{0.0, 0.0, 0.0}, {20.0, 0.0, 0.0}});
     line->setBasicIndices();
     line->finalise();
@@ -47,10 +44,10 @@ MildredWidget::MildredWidget()
     viewportSizeParameter_ = new Qt3DRender::QParameter(QStringLiteral("viewportSize"), QVector2D());
 
     // Add a mouse handler and connect it up
-    auto *mouseHandler = new Qt3DInput::QMouseHandler(rootEntity_);
-    auto *mouseDevice = new Qt3DInput::QMouseDevice(rootEntity_);
+    auto *mouseHandler = new Qt3DInput::QMouseHandler(this);
+    auto *mouseDevice = new Qt3DInput::QMouseDevice(this);
     mouseHandler->setSourceDevice(mouseDevice);
-    rootEntity_->addComponent(mouseHandler);
+    addComponent(mouseHandler);
     connect(mouseHandler, SIGNAL(positionChanged(Qt3DInput::QMouseEvent *)), this,
             SLOT(mousePositionChanged(Qt3DInput::QMouseEvent *)));
     connect(mouseHandler, SIGNAL(pressed(Qt3DInput::QMouseEvent *)), this, SLOT(mouseButtonPressed(Qt3DInput::QMouseEvent *)));

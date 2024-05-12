@@ -9,9 +9,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("./main.qml")));
 
-    auto *visMan = engine.findChild<Mildred::MildredWidget *>("visualisationManager");
-    if (visMan)
-        printf("FOUNDS ITS.\n");
+    //    engine.rootContext()->setContextProperty();
 
     // Create test data
     std::vector<double> sinX, sinValues;
