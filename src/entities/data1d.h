@@ -1,5 +1,6 @@
 #pragma once
 
+#include "data1DSource.h"
 #include "entities/data.h"
 #include "renderers/1d/stylefactory.h"
 
@@ -18,8 +19,8 @@ class AxisEntity;
 class Data1DEntity : public DataEntity
 {
     public:
-    Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent = nullptr,
-                 StyleFactory1D::Style style = StyleFactory1D::Style::Line,
+    Data1DEntity(const Data1DSource *sourceData, const AxisEntity *xAxis, const AxisEntity *valueAxis,
+                 Qt3DCore::QNode *parent = nullptr, StyleFactory1D::Style style = StyleFactory1D::Style::Line,
                  StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
     ~Data1DEntity() = default;
 
@@ -27,18 +28,14 @@ class Data1DEntity : public DataEntity
      * Data
      */
     protected:
-    // Axis values
-    std::vector<double> x_;
-    // Data values
-    std::vector<double> values_;
-    // Error values
-    std::vector<double> errors_;
+    // Source for data
+    const Data1DSource *sourceData_{nullptr};
+    // Local data obtained from source
+    Data1DSource data_;
 
     public:
-    // Clear all data
-    void clearData();
-    // Set display data
-    void setData(std::vector<double> x, std::vector<double> values, std::optional<std::vector<double>> errors = std::nullopt);
+    // Update from source data
+    bool updateFromSourceData();
 
     /*
      * Rendering

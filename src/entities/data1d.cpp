@@ -7,70 +7,58 @@ using namespace Mildred;
 /*!
  * Construct a new Data1DEntity storing a reference to the supplied @param metrics and with the given @param parent.
  */
-Data1DEntity::Data1DEntity(const AxisEntity *xAxis, const AxisEntity *valueAxis, Qt3DCore::QNode *parent,
-                           StyleFactory1D::Style style, StyleFactory1D::ErrorBarStyle errorStyle)
-    : DataEntity(parent), xAxis_(xAxis), valueAxis_(valueAxis), style_(style), errorStyle_(errorStyle)
+Data1DEntity::Data1DEntity(const Data1DSource *source, const AxisEntity *xAxis, const AxisEntity *valueAxis,
+                           Qt3DCore::QNode *parent, StyleFactory1D::Style style, StyleFactory1D::ErrorBarStyle errorStyle)
+    : DataEntity(parent), sourceData_(source), xAxis_(xAxis), valueAxis_(valueAxis), style_(style), errorStyle_(errorStyle)
 {
     dataRenderer_ = StyleFactory1D::createDataRenderer(style_, dataEntity_);
     errorRenderer_ = StyleFactory1D::createErrorRenderer(errorStyle_, errorEntity_);
     symbolRenderer_ = StyleFactory1D::createSymbolRenderer(symbolStyle_, symbolEntity_);
+
+    updateFromSourceData();
 }
 
 /*
  * Data
  */
 
-//! Clear all data vectors
-void Data1DEntity::clearData()
+//! Update from source data
+/*!
+ * Update our local data arrays from the specified source. Entities representing the data in the current style are immediately
+ * created.
+ */
+bool Data1DEntity::updateFromSourceData()
 {
-    x_.clear();
-    values_.clear();
-    errors_.clear();
+    assert(sourceData_);
+
+    // Update our local data from the source
+    if (!data_.updateFrom(*sourceData_))
+        return false;
+
+    // Clear and recalculate extrema
     extrema_.reset();
     logarithmicExtrema_.reset();
-}
 
-//! Set display data (1D)
-/*!
- * Set the supplied one-dimensional data (axis points @param x and @param values at those points). The data are copied to local
- * arrays and entities representing the data in the current style are immediately created.
- */
-void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, std::optional<std::vector<double>> errors)
-{
-    clearData();
-
-    // Check vector sizes
-    if (x.size() != values.size())
-        printf("Irregular vector sizes provided (%zu vs %zu) so data will be ignored.\n", x.size(), values.size());
-    else if (errors && x.size() != errors->size())
-        printf("Irregular vector sizes provided (%zu (x) vs %zu (y) vs %zu (errors)) so can't create entities.\n", x.size(),
-               values.size(), errors->size());
-    else
+    auto xit = data_.x().cbegin(), vit = data_.values().cbegin(), eit = data_.errors().cbegin();
+    auto hasErrors = !data_.errors().empty();
+    while (xit != data_.x().end())
     {
-        x_ = std::move(x);
-        values_ = std::move(values);
-        if (errors)
-            errors_ = std::move(*errors);
-    }
-
-    // Determine data extrema
-    auto xit = x_.cbegin(), vit = values_.cbegin(), eit = errors_.cbegin();
-    while (xit != x_.end())
-    {
-        if (errors_.empty())
-            updateExtrema(*xit, *vit, std::nullopt);
-        else
+        if (hasErrors)
         {
             updateExtrema(*xit, *vit + *eit, std::nullopt);
             updateExtrema(*xit, *vit - *eit, std::nullopt);
             ++eit;
         }
+        else
+            updateExtrema(*xit, *vit, std::nullopt);
 
         ++xit;
         ++vit;
     }
 
     create();
+
+    return true;
 }
 
 /*
@@ -81,11 +69,11 @@ void Data1DEntity::setData(std::vector<double> x, std::vector<double> values, st
 void Data1DEntity::create()
 {
     assert(dataRenderer_);
-    dataRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
+    dataRenderer_->create(colourDefinition(), data_.x(), xAxis_, data_.values(), valueAxis_);
     assert(errorRenderer_);
-    errorRenderer_->create(colourDefinition(), x_, xAxis_, values_, errors_, valueAxis_);
+    errorRenderer_->create(colourDefinition(), data_.x(), xAxis_, data_.values(), data_.errors(), valueAxis_);
     assert(symbolRenderer_);
-    symbolRenderer_->create(colourDefinition(), x_, xAxis_, values_, valueAxis_);
+    symbolRenderer_->create(colourDefinition(), data_.x(), xAxis_, data_.values(), valueAxis_);
 }
 
 //! Set the line style

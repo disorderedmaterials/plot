@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
         sinValues.push_back(sin(x));
         x += delta;
     }
-    auto *sinData = data.addData1D();
+    auto *sinData = data.addData1DSource();
     sinData->setData(sinX, sinValues);
 
     engine.rootContext()->setContextProperty("mildredData", &data);

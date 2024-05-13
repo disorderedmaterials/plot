@@ -20,14 +20,17 @@ class DataSource : public QObject
     ~DataSource() = default;
 
     /*
-     * Source 1D Data
+     * Sources
      */
     private:
-    std::vector<std::unique_ptr<Data1DSource>> data1D_;
+    // Defined 1D data sources
+    std::vector<std::unique_ptr<Data1DSource>> data1DSources_;
 
     public:
     // Create new data 1D source
-    Data1DSource *addData1D();
+    Data1DSource *addData1DSource();
+    // Return 1D data sources
+    const std::vector<std::unique_ptr<Data1DSource>> &data1DSources() const;
 
     /*
      * Grouping

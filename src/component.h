@@ -199,11 +199,11 @@ class MildredWidget : public Qt3DCore::QEntity
      * Display Entities
      */
     private:
-    // Data entities (with identifying tag)
-    std::vector<std::pair<std::string, DataEntity *>> dataEntities_;
+    // Data 1D entities
+    std::map<Data1DSource *, Data1DEntity *> data1DEntities_;
 
     public:
     // Create new data entity for supplied data
-    Data1DEntity *createData1DEntity(std::string_view tag);
+    Data1DEntity *createData1DEntity(Data1DSource *sourceData);
 };
 } // namespace Mildred

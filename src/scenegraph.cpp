@@ -206,7 +206,7 @@ void MildredWidget::resetView()
 void MildredWidget::showAllData()
 {
     Cuboid extrema, logarithmicExtrema;
-    for (auto &[name, entity] : dataEntities_)
+    for (auto &[name, entity] : data1DEntities_)
     {
         // Don't adjust extents for hidden data
         if (!entity->isEnabled())

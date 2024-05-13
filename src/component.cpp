@@ -161,6 +161,7 @@ RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, Ren
 //! Set the source data
 void MildredWidget::setSourceData(DataSource *data)
 {
+    printf("WHOOP - here is some source data %p\n", data);
     // Check for existing data
     if (sourceData_)
     {
@@ -169,11 +170,14 @@ void MildredWidget::setSourceData(DataSource *data)
     }
 
     sourceData_ = data;
-    if (sourceData_)
+    if (!sourceData_)
         return;
 
     // Create data entities for defined data
-    // TODO
+    for (auto &source1D : sourceData_->data1DSources())
+    {
+        createData1DEntity(source1D.get());
+    }
 
     // Connect up signals
     // TODO
@@ -188,20 +192,20 @@ DataSource *MildredWidget::sourceData() { return sourceData_; }
  */
 
 // Add new 1-dimensional data entity for supplied data
-Data1DEntity *MildredWidget::createData1DEntity(std::string_view tag)
+Data1DEntity *MildredWidget::createData1DEntity(Data1DSource *sourceData)
 {
-    // Check for existing tag
-    auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
-    if (it != dataEntities_.end())
+    // Check for existing entity
+    if (data1DEntities_.find(sourceData) != data1DEntities_.end())
     {
-        printf("Data with tag '%s' already exists, so can't add it again.\n", it->first.c_str());
+        printf("Entity for 1D source data '%s' already exists, so can't add it again.\n",
+               qPrintable(sourceData->displayName()));
         throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
     }
 
     // Create a new entity
-    auto *entity = new Data1DEntity(xAxis_, yAxis_, dataEntityParent_);
+    auto *entity = new Data1DEntity(sourceData, xAxis_, yAxis_, dataEntityParent_);
     connect(&metrics_, SIGNAL(metricsChanged()), entity, SLOT(updateRenderables()));
-    dataEntities_.emplace_back(tag, entity);
+    data1DEntities_[sourceData] = entity;
 
     // Add a material
     auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
