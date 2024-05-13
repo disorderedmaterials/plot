@@ -156,21 +156,21 @@ RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, Ren
 }
 
 /*
- * Display Data
+ * Source Data
  */
 
-//! Set the target display data
-void MildredWidget::setData(DataSource *data)
+//! Set the source data
+void MildredWidget::setSourceData(DataSource *data)
 {
     // Check for existing data
-    if (data_)
+    if (sourceData_)
     {
         // TODO Disconnect signals from object before we stop using it
         // TODO Clear all existing data entities
     }
 
-    data_ = data;
-    if (data_)
+    sourceData_ = data;
+    if (sourceData_)
         return;
 
     // Create data entities for defined data
@@ -180,6 +180,9 @@ void MildredWidget::setData(DataSource *data)
     // TODO
     //     connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
 }
+
+// Return current source data
+DataSource *MildredWidget::sourceData() { return sourceData_; }
 
 /*
  * Display Entities

@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
 
     // Create data source
     Mildred::DataSource data;
-
     std::vector<double> sinX, sinValues;
     const auto nPoints = 1000;
     const auto delta = 2.0 * M_PI / nPoints;

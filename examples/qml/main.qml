@@ -53,7 +53,7 @@ ApplicationWindow {
             }
             MildredWidget {
                 id: visualiser
-                data: mildredData
+                sourceData: mildredData ? mildredData : null
             }
         }
     }

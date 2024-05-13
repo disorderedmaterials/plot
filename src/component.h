@@ -1,6 +1,7 @@
 #pragma once
 
 #include "classes/metrics.h"
+#include "data.h"
 #include "entities/axis.h"
 #include "entities/data1d.h"
 #include "framegraph.h"
@@ -20,9 +21,6 @@
 
 namespace Mildred
 {
-// Forward Declarations
-class DataSource;
-
 // Coordinate Display
 enum class CoordinateDisplayStyle
 {
@@ -184,8 +182,18 @@ class MildredWidget : public Qt3DCore::QEntity
      * Source Data
      */
     private:
-    DataSource *data_{nullptr};
-    void setData(DataSource *data);
+    // Source data
+    DataSource *sourceData_{nullptr};
+
+    public:
+    Q_PROPERTY(DataSource *sourceData READ sourceData WRITE setSourceData NOTIFY sourceDataChanged)
+    // Set source data
+    void setSourceData(DataSource *data);
+    // Return source data
+    DataSource *sourceData();
+
+    signals:
+    void sourceDataChanged();
 
     /*
      * Display Entities
