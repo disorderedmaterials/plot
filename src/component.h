@@ -205,6 +205,5 @@ class MildredWidget : public Qt3DCore::QEntity
     public:
     // Create new data entity for supplied data
     Data1DEntity *createData1DEntity(std::string_view tag);
-
 };
 } // namespace Mildred

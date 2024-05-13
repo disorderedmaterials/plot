@@ -130,15 +130,14 @@ void MildredWidget::setFlatView(bool flat)
  * Materials
  */
 
-
 //! Create material for specified entity
 /*!
  * Create and attach a new RenderableMaterial to the specified @param parent, with the specified @param vertexShader, @param
  * geometryShader, and @param fragmentShader.
  */
 RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, RenderableMaterial::VertexShaderType vertexShader,
-                                                RenderableMaterial::GeometryShaderType geometryShader,
-                                                RenderableMaterial::FragmentShaderType fragmentShader)
+                                                  RenderableMaterial::GeometryShaderType geometryShader,
+                                                  RenderableMaterial::FragmentShaderType fragmentShader)
 {
     auto *material = new RenderableMaterial(parent, vertexShader, geometryShader, fragmentShader);
 

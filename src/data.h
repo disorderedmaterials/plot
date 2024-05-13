@@ -1,7 +1,7 @@
 #pragma once
 
-#include "displaygroup.h"
 #include "data1DSource.h"
+#include "displaygroup.h"
 #include <QObject>
 
 namespace Mildred
