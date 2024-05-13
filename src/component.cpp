@@ -166,16 +166,19 @@ void MildredWidget::setData(DataSource *data)
     if (data_)
     {
         // TODO Disconnect signals from object before we stop using it
+        // TODO Clear all existing data entities
     }
 
     data_ = data;
+    if (data_)
+        return;
+
+    // Create data entities for defined data
+    // TODO
 
     // Connect up signals
-    if (data_)
-    {
-        // TODO
-        //     connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
-    }
+    // TODO
+    //     connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
 }
 
 /*
