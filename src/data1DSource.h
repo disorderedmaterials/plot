@@ -14,7 +14,7 @@ namespace Mildred
 class Data1DSource
 {
     public:
-    Data1DSource(const QString &displayName = QString());
+    explicit Data1DSource(const QString &displayName = QString());
     ~Data1DSource() = default;
 
     /*
@@ -30,7 +30,7 @@ class Data1DSource
 
     public:
     // Return display name
-    const QString &displayName() const;
+    [[nodiscard]] const QString &displayName() const;
 
     /*
      * Local Data
@@ -47,11 +47,11 @@ class Data1DSource
     // Set local data
     void setData(std::vector<double> x, std::vector<double> values, std::optional<std::vector<double>> errors = std::nullopt);
     // Return axis values
-    const std::vector<double> &x() const;
+    [[nodiscard]] const std::vector<double> &x() const;
     // Return data values
-    const std::vector<double> &values() const;
+    [[nodiscard]] const std::vector<double> &values() const;
     // Return error values
-    const std::vector<double> &errors() const;
+    [[nodiscard]] const std::vector<double> &errors() const;
 
     /*
      * External Data

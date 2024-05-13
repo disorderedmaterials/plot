@@ -22,7 +22,7 @@ class Data1DEntity : public DataEntity
     Data1DEntity(const Data1DSource *sourceData, const AxisEntity *xAxis, const AxisEntity *valueAxis,
                  Qt3DCore::QNode *parent = nullptr, StyleFactory1D::Style style = StyleFactory1D::Style::Line,
                  StyleFactory1D::ErrorBarStyle errorStyle = StyleFactory1D::ErrorBarStyle::Stick);
-    ~Data1DEntity() = default;
+    ~Data1DEntity() override = default;
 
     /*
      * Data
@@ -66,13 +66,13 @@ class Data1DEntity : public DataEntity
     // Set error size
     void setErrorBarMetric(double metric);
     // Get error size
-    double errorBarMetric() const;
+    [[nodiscard]] double errorBarMetric() const;
     // Set symbol style
     void setSymbolStyle(StyleFactory1D::SymbolStyle style);
     // Set symbol size
     void setSymbolMetric(double metric);
     // Get symbol size
-    double symbolMetric() const;
+    [[nodiscard]] double symbolMetric() const;
 
     protected:
     // Create renderables from current data
