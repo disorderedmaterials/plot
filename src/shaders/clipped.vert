@@ -1,29 +1,34 @@
-#version 150 core
+#version 450 core
 
 // Input variables
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec4 vertexColor;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
+layout(location = 2) in vec4 vertexColor;
 
 // Output Vertex Data
-out worldData
+layout(location = 0) out worldData
 {
     vec3 position;
     vec3 normal;
     vec4 color;
-}
-world;
+} world;
 
-// Standard uniform variables per-primitive
-uniform mat4 modelMatrix;
-uniform mat3 modelNormalMatrix;
-uniform mat4 modelViewProjection;
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+    mat4 modelMatrix;
+    mat4 inverseModelMatrix;
+    mat4 modelViewMatrix;
+    mat3 modelNormalMatrix;
+    mat4 inverseModelViewMatrix;
+    mat4 modelViewProjection;
+    mat4 inverseModelViewProjectionMatrix;
+};
 
-// Custom uniforms
-uniform mat4 sceneDataTransformInverse;
-uniform mat4 sceneDataAxes;
-uniform vec3 sceneDataAxesExtents;
-uniform vec3 sceneDataAxesOrigin;
+layout(std140, binding = 2) uniform qt3d_custom_uniforms {
+    mat4 sceneDataTransformInverse;
+    mat4 sceneDataAxes;
+    vec3 sceneDataAxesExtents;
+    vec3 sceneDataAxesOrigin;
+};
 
 void main()
 {

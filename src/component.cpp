@@ -208,7 +208,7 @@ Data1DEntity *MildredWidget::createData1DEntity(Data1DSource *sourceData)
     data1DEntities_[sourceData] = entity;
 
     // Add a material
-    auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::Unclipped,
+    auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
                                     RenderableMaterial::GeometryShaderType::LineTesselator,
                                     RenderableMaterial::FragmentShaderType::PerVertexPhong);
     entity->setDataMaterial(material);

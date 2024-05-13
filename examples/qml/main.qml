@@ -51,6 +51,30 @@ ApplicationWindow {
                     }
                 }
             }
+            ClipPlane {
+                planeIndex: 0
+                normal: Qt.vector3d(0.0, 1.0, 0.0)
+            }
+            ClipPlane {
+                planeIndex: 1
+                normal: Qt.vector3d(0.0, 1.0, 0.0)
+            }
+            ClipPlane {
+                planeIndex: 2
+                normal: Qt.vector3d(0.0, 1.0, 0.0)
+            }
+            ClipPlane {
+                planeIndex: 3
+                normal: Qt.vector3d(0.0, 1.0, 0.0)
+            }
+            ClipPlane {
+                normal: Qt.vector3d(0.0, 1.0, 0.0)
+                planeIndex: 4
+            }
+            ClipPlane {
+                normal: Qt.vector3d(0.0, 1.0, 0.0)
+                planeIndex: 5
+            }
             MildredWidget {
                 id: visualiser
                 sourceData: mildredData ? mildredData : null
