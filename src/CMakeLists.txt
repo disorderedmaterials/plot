@@ -16,6 +16,10 @@ qt_add_qml_module(
   shaders.qrc
   component.cpp
   component.h
+  data.cpp
+  data.h
+  data1DSource.cpp
+  data1DSource.h
   displaygroup.cpp
   displaygroup.h
   framegraph.cpp

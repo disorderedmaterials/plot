@@ -127,8 +127,9 @@ void MildredWidget::setFlatView(bool flat)
 }
 
 /*
- * Display Data
+ * Materials
  */
+
 
 //! Create material for specified entity
 /*!
@@ -136,8 +137,8 @@ void MildredWidget::setFlatView(bool flat)
  * geometryShader, and @param fragmentShader.
  */
 RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, RenderableMaterial::VertexShaderType vertexShader,
-                                                  RenderableMaterial::GeometryShaderType geometryShader,
-                                                  RenderableMaterial::FragmentShaderType fragmentShader)
+                                                RenderableMaterial::GeometryShaderType geometryShader,
+                                                RenderableMaterial::FragmentShaderType fragmentShader)
 {
     auto *material = new RenderableMaterial(parent, vertexShader, geometryShader, fragmentShader);
 
@@ -154,8 +155,35 @@ RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, Ren
     return material;
 }
 
+/*
+ * Display Data
+ */
+
+//! Set the target display data
+void MildredWidget::setData(DataSource *data)
+{
+    // Check for existing data
+    if (data_)
+    {
+        // TODO Disconnect signals from object before we stop using it
+    }
+
+    data_ = data;
+
+    // Connect up signals
+    if (data_)
+    {
+        // TODO
+        //     connect(&metrics_, SIGNAL(metricsChanged()), this, SLOT(updateTransforms()));
+    }
+}
+
+/*
+ * Display Entities
+ */
+
 // Add new 1-dimensional data entity for supplied data
-Data1DEntity *MildredWidget::addData1D(std::string_view tag)
+Data1DEntity *MildredWidget::createData1DEntity(std::string_view tag)
 {
     // Check for existing tag
     auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
@@ -179,16 +207,4 @@ Data1DEntity *MildredWidget::addData1D(std::string_view tag)
     entity->setSymbolMaterial(material);
 
     return entity;
-}
-
-/*
- * Grouping
- */
-
-// Create new display group
-DisplayGroup *MildredWidget::addDisplayGroup()
-{
-    auto newGroup = displayGroups_.emplace_back(std::make_shared<DisplayGroup>());
-
-    return newGroup.get();
 }

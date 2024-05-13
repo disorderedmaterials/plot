@@ -1,4 +1,5 @@
 #include "component.h"
+#include "data.h"
 #include <QApplication>
 #include <QQmlApplicationEngine>
 
@@ -9,9 +10,9 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("./main.qml")));
 
-    //    engine.rootContext()->setContextProperty();
+    // Create data source
+    Mildred::DataSource data;
 
-    // Create test data
     std::vector<double> sinX, sinValues;
     const auto nPoints = 1000;
     const auto delta = 2.0 * M_PI / nPoints;
@@ -24,8 +25,10 @@ int main(int argc, char *argv[])
         sinValues.push_back(sin(x));
         x += delta;
     }
-    //    auto *sinData = ui_.TestingWidget->addData1D("sin");
-    //    sinData->setData(sinX, sinValues);
+    auto *sinData = data.addData1D();
+    sinData->setData(sinX, sinValues);
+
+    engine.rootContext()->setContextProperty("mildredData", &data);
 
     return app.exec();
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "classes/metrics.h"
-#include "displaygroup.h"
 #include "entities/axis.h"
 #include "entities/data1d.h"
 #include "framegraph.h"
@@ -21,6 +20,9 @@
 
 namespace Mildred
 {
+// Forward Declarations
+class DataSource;
+
 // Coordinate Display
 enum class CoordinateDisplayStyle
 {
@@ -138,6 +140,17 @@ class MildredWidget : public Qt3DCore::QEntity
     void setSceneCuboidEnabled(bool enabled);
 
     /*
+     * Materials
+     */
+    public:
+    // Create material for specified entity
+    RenderableMaterial *createMaterial(
+        Qt3DCore::QEntity *parent,
+        RenderableMaterial::VertexShaderType vertexShader = RenderableMaterial::VertexShaderType::ClippedToDataVolume,
+        RenderableMaterial::GeometryShaderType geometryShader = RenderableMaterial::GeometryShaderType::None,
+        RenderableMaterial::FragmentShaderType fragmentShader = RenderableMaterial::FragmentShaderType::Phong);
+
+    /*
      * Mouse Handling / Interaction
      */
     private:
@@ -168,33 +181,22 @@ class MildredWidget : public Qt3DCore::QEntity
     //    void keyReleaseEvent(QKeyEvent *event) override;
 
     /*
-     * Display Data
+     * Source Data
      */
     private:
-    // Associated data entities (with identifying tag)
-    std::vector<std::pair<std::string, DataEntity *>> dataEntities_;
-
-    private:
-    // Create material for specified entity
-    RenderableMaterial *createMaterial(
-        Qt3DCore::QEntity *parent,
-        RenderableMaterial::VertexShaderType vertexShader = RenderableMaterial::VertexShaderType::ClippedToDataVolume,
-        RenderableMaterial::GeometryShaderType geometryShader = RenderableMaterial::GeometryShaderType::None,
-        RenderableMaterial::FragmentShaderType fragmentShader = RenderableMaterial::FragmentShaderType::Phong);
-
-    public:
-    // Add new data entity for supplied data
-    Data1DEntity *addData1D(std::string_view tag);
+    DataSource *data_{nullptr};
+    void setData(DataSource *data);
 
     /*
-     * Grouping
+     * Display Entities
      */
     private:
-    // Defined display groups
-    std::vector<std::shared_ptr<DisplayGroup>> displayGroups_;
+    // Data entities (with identifying tag)
+    std::vector<std::pair<std::string, DataEntity *>> dataEntities_;
 
     public:
-    // Create new display group
-    DisplayGroup *addDisplayGroup();
+    // Create new data entity for supplied data
+    Data1DEntity *createData1DEntity(std::string_view tag);
+
 };
 } // namespace Mildred
