@@ -5,6 +5,7 @@ import Qt3D.Core
 import Qt3D.Extras
 import Qt3D.Logic
 import QtQuick.Scene3D
+import QtQuick.Controls
 import com.projectdissolve
 
 ApplicationWindow {

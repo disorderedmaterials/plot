@@ -1,14 +1,14 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     future.url = "github:NixOS/nixpkgs/nixos-unstable";
     outdated.url = "github:NixOS/nixpkgs/nixos-21.05";
-    qt-idaaas.url = "github:disorderedmaterials/qt-idaaas";
+    # qt-idaaas.url = "github:disorderedmaterials/qt-idaaas";
     nixGL-src.url = "github:guibou/nixGL";
     nixGL-src.flake = false;
   };
   outputs =
-    { self, nixpkgs, future, outdated, flake-utils, bundlers, qt-idaaas, nixGL-src }:
+    { self, nixpkgs, future, outdated, flake-utils, bundlers, nixGL-src }:
     let
 
       version = "0.1";
@@ -20,7 +20,9 @@
           libglvnd
           libglvnd.dev
           q.qtbase
+          q.qtbase.dev
           q.qt3d
+          q.qtquick3d
           q.qtsvg
           q.wrapQtAppsHook
         ];
@@ -33,7 +35,7 @@
       pkgs = import nixpkgs { inherit system; };
       next = import future { inherit system; };
       nixGL = import nixGL-src { inherit pkgs; };
-      qt = qt-idaaas.packages.${system};
+      qt = pkgs.qt6; # qt-idaaas.packages.${system};
     in
     {
       devShells.default = pkgs.stdenv.mkDerivation {
@@ -59,8 +61,10 @@
           export LIBVA_DRIVERS_PATH=${pkgs.lib.makeSearchPathOutput "out" "lib/dri" [pkgs.mesa.drivers]}
           export __EGL_VENDOR_LIBRARY_FILENAMES=${pkgs.mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json
           export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [pkgs.mesa.drivers]}:${pkgs.lib.makeSearchPathOutput "lib" "lib/vdpau" [pkgs.libvdpau]}:${pkgs.lib.makeLibraryPath [pkgs.libglvnd]}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-          export QT_PLUGIN_PATH="${qt-idaaas.packages.${system}.qt3d}/lib/qt-6/plugins:${qt-idaaas.packages.${system}.qtsvg}/lib/qt-6/plugins:$QT_PLUGIN_PATH"
+          export QT_PLUGIN_PATH="${qt.qt3d}/lib/qt-6/plugins:${qt.qtsvg}/lib/qt-6/plugins:$QT_PLUGIN_PATH"
         '';
+        QML_IMPORT_PATH = "${qt.qtdeclarative}/lib/qt-6/qml/:${qt.qt3d}/lib/qt-6/qml/";
+        QML2_IMPORT_PATH = "${qt.qtdeclarative}/lib/qt-6/qml/:${qt.qt3d}/lib/qt-6/qml/";
       };
 
       apps = {
