@@ -5,6 +5,13 @@ layout(location = 0) in vec3 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec4 vertexColor;
 
+out gl_PerVertex
+{
+    vec4 gl_Position;
+    float gl_PointSize;
+    float gl_ClipDistance[];
+};
+
 // Output Vertex Data
 layout(location = 0) out worldData
 {
@@ -46,14 +53,14 @@ void main()
 
     // Clip vertices to data volume
     // -- X axis
-    gl_ClipDistance[0] = dot(dataPosition, sceneDataAxes[0].xyzw);
-    gl_ClipDistance[1] = dot(dataPosition, vec4(-sceneDataAxes[0].xyz, sceneDataAxesExtents.x));
+    gl_ClipDistance[0] = -100;//dot(dataPosition, sceneDataAxes[0].xyzw);
+    gl_ClipDistance[1] = -100;//dot(dataPosition, vec4(-sceneDataAxes[0].xyz, sceneDataAxesExtents.x));
     // -- Y axis
-    gl_ClipDistance[2] = dot(dataPosition, sceneDataAxes[1].xyzw);
-    gl_ClipDistance[3] = dot(dataPosition, vec4(-sceneDataAxes[1].xyz, sceneDataAxesExtents.y));
+    gl_ClipDistance[2] = -100.0;//dot(dataPosition, sceneDataAxes[1].xyzw);
+    gl_ClipDistance[3] = 100.0;//dot(dataPosition, vec4(-sceneDataAxes[1].xyz, sceneDataAxesExtents.y));
     // -- Z axis
-    gl_ClipDistance[4] = dot(dataPosition, sceneDataAxes[2].xyzw);
-    gl_ClipDistance[5] = dot(dataPosition, vec4(-sceneDataAxes[2].xyz, sceneDataAxesExtents.z));
+    gl_ClipDistance[4] = -100;//dot(dataPosition, sceneDataAxes[2].xyzw);
+    gl_ClipDistance[5] = -100;//dot(dataPosition, vec4(-sceneDataAxes[2].xyz, sceneDataAxesExtents.z));
 
     // Output projected vertex position
     gl_Position = modelViewProjection * vertexPosition4;
