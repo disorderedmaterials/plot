@@ -75,7 +75,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
 # Add main library subdir
-add_subdirectory(src/)
+# add_subdirectory(src/)
+add_subdirectory(lib/)
 
 # Examples
 option(BUILD_EXAMPLES "Build example executables" ON)

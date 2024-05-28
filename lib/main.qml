@@ -2,13 +2,15 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick3D
 import QtQuick.Controls
-// import com.projectdissolve
+import com.projectdissolve
 
 ApplicationWindow {
     height: 600
     title: "Mildred QML Test"
     visible: true
     width: 800
+
+    LineGeometry {}
 
     Node {
          id: standAloneScene
@@ -17,11 +19,10 @@ ApplicationWindow {
             brightness: 1.0
             eulerRotation.x: -25
         }
-        Model { source: "#Cube" }
         Model {
-            source: LineGeometry {
-              id: basicLine
-            }
+            /* source: "#Cube" */
+            geometry: LineGeometry {}
+            scale: Qt.vector3d(100, 100, 100)
             materials: [
                 DefaultMaterial {
                     diffuseColor: Qt.rgba(0.8, 0.8, 0.8, 1.0)
@@ -34,10 +35,9 @@ ApplicationWindow {
            id: graphView
            anchors.fill: parent
 
-           camera: OrthographicCamera {
+           camera: PerspectiveCamera {
                    id: cameraOrthographicLeft
-                   x: -600
-                   eulerRotation.y: -90
+                   z: 600
            }
            importScene: standAloneScene
     }

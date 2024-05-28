@@ -63,8 +63,7 @@
           export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [pkgs.mesa.drivers]}:${pkgs.lib.makeSearchPathOutput "lib" "lib/vdpau" [pkgs.libvdpau]}:${pkgs.lib.makeLibraryPath [pkgs.libglvnd]}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
           export QT_PLUGIN_PATH="${qt.qt3d}/lib/qt-6/plugins:${qt.qtsvg}/lib/qt-6/plugins:$QT_PLUGIN_PATH"
         '';
-        QML_IMPORT_PATH = "${qt.qtdeclarative}/lib/qt-6/qml/:${qt.qt3d}/lib/qt-6/qml/";
-        QML2_IMPORT_PATH = "${qt.qtdeclarative}/lib/qt-6/qml/:${qt.qt3d}/lib/qt-6/qml/";
+        QML_IMPORT_PATH = "${qt.qtdeclarative}/lib/qt-6/qml/:${qt.qt3d}/lib/qt-6/qml/:${qt.qtquick3d}/lib/qt-6/qml/";
       };
 
       apps = {
