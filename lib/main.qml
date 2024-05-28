@@ -22,7 +22,7 @@ ApplicationWindow {
         Model {
             /* source: "#Cube" */
             geometry: LineGeometry {}
-            scale: Qt.vector3d(100, 100, 100)
+            scale: Qt.vector3d(200, 200, 200)
             materials: [
                 DefaultMaterial {
                     diffuseColor: Qt.rgba(0.8, 0.8, 0.8, 1.0)
