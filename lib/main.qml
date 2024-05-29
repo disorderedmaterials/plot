@@ -22,7 +22,7 @@ ApplicationWindow {
         Model {
             /* source: "#Cube" */
             geometry: LineGeometry {
-                thickness: 0.002
+                thickness: thickness.value
             }
             scale: Qt.vector3d(200, 200, 200)
             materials: [
@@ -36,13 +36,31 @@ ApplicationWindow {
     }
 
     View3D {
-           id: graphView
-           anchors.fill: parent
+        id: graphView
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: settingsPane.left
 
-           camera: PerspectiveCamera {
-                   id: cameraOrthographicLeft
-                   z: 600
-           }
-           importScene: standAloneScene
+        camera: PerspectiveCamera {
+            id: cameraOrthographicLeft
+            z: 600
+        }
+        importScene: standAloneScene
+    }
+    Pane {
+        id: settingsPane
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        width: 200
+        Label {
+            text: "Thickness"
+        }
+        Slider {
+            id: thickness
+            from: 0
+            to: 0.1
+        }
     }
 }
