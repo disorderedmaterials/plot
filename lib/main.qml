@@ -22,6 +22,7 @@ ApplicationWindow {
         Model {
             /* source: "#Cube" */
             geometry: LineGeometry {
+                id: plotLine
                 thickness: thickness.value
             }
             scale: Qt.vector3d(200, 200, 200)
@@ -54,13 +55,49 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         width: 200
-        Label {
-            text: "Thickness"
-        }
-        Slider {
-            id: thickness
-            from: 0
-            to: 0.1
+
+        Column {
+            Label {text: "Thickness"}
+            Slider {
+                id: thickness
+                from: 0.001
+                to: 0.1
+            }
+            Label {text: "Count"}
+            Slider {
+                id: count
+                from: 10
+                to: 1000
+                value: 20
+            }
+            Label {text: "Amplitude"}
+            Slider {
+                id: amplitude
+                from: 0
+                to: 5
+                value: 1
+            }
+            Label {text: "Frequency"}
+            Slider {
+                id: frequency
+                from: 0
+                to: 10
+                value: 3
+            }
+            Button {
+                text: "Bad Resolution"
+                onClicked: {
+                    var xs = []
+                    var ys = []
+                    for (var i=0; i<count.value; i++) {
+                        var x = -1.0 + 2 * i/count.value
+                        xs.push(x)
+                        ys.push(amplitude.value * Math.sin(frequency.value * Math.PI * x));
+                    }
+                    plotLine.xs = xs;
+                    plotLine.ys = ys;
+                }
+            }
         }
     }
 }

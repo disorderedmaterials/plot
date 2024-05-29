@@ -22,7 +22,6 @@ void LineGeometry::generateSines() {
 
 void LineGeometry::updateData()
 {
-    std::cout << "Updating Data " << thickness_ << " " << xs_.length() << std::endl;
     clear();
 
 
