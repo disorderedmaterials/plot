@@ -21,7 +21,9 @@ ApplicationWindow {
         }
         Model {
             /* source: "#Cube" */
-            geometry: LineGeometry {}
+            geometry: LineGeometry {
+                thickness: 0.002
+            }
             scale: Qt.vector3d(200, 200, 200)
             materials: [
                 PrincipledMaterial {

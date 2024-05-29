@@ -3,12 +3,15 @@
 
 LineGeometry::LineGeometry() { updateData(); }
 
+void LineGeometry::changeGeometry() {
+  updateData();
+}
+
 void LineGeometry::updateData()
 {
     clear();
 
     const int N = 200;
-    float thickness = 0.01;
 
     int stride = 3 * sizeof(float);
 
@@ -18,7 +21,7 @@ void LineGeometry::updateData()
     std::vector<float> xs(N), ys(N), angles(N);
     std::iota(xs.begin(), xs.end(), 0);
     std::transform(xs.begin(), xs.end(), xs.begin(), [](auto x) {return -1.0 + 2 * x / N;});
-    std::transform(xs.begin(), xs.end(), ys.begin(), [](auto x) {return 5 * sin(3 * M_PI * x);});
+    std::transform(xs.begin(), xs.end(), ys.begin(), [](auto x) {return sin(3 * M_PI * x);});
 
     // Calculate derivatives
     for (int i=1; i<N-1; ++i) {
@@ -29,24 +32,24 @@ void LineGeometry::updateData()
     angles[N-1] = M_PI/2;
 
     for (int i=0; i<N - 1; i++) {
-      *p++ = xs[i] + cos(angles[i]) * thickness;
-      *p++ = ys[i] + sin(angles[i]) * thickness;
+      *p++ = xs[i] + cos(angles[i]) * thickness_;
+      *p++ = ys[i] + sin(angles[i]) * thickness_;
       *p++ = 0.0f;
-      *p++ = xs[i] - cos(angles[i]) * thickness;
-      *p++ = ys[i] - sin(angles[i]) * thickness;
+      *p++ = xs[i] - cos(angles[i]) * thickness_;
+      *p++ = ys[i] - sin(angles[i]) * thickness_;
       *p++ = 0.0f;
-      *p++ = xs[i+1] - cos(angles[i+1]) * thickness;
-      *p++ = ys[i+1] - sin(angles[i+1]) * thickness;
+      *p++ = xs[i+1] - cos(angles[i+1]) * thickness_;
+      *p++ = ys[i+1] - sin(angles[i+1]) * thickness_;
       *p++ = 0.0f;
 
-      *p++ = xs[i+1] - cos(angles[i+1]) * thickness;
-      *p++ = ys[i+1] - sin(angles[i+1]) * thickness;
+      *p++ = xs[i+1] - cos(angles[i+1]) * thickness_;
+      *p++ = ys[i+1] - sin(angles[i+1]) * thickness_;
       *p++ = 0.0f;
-      *p++ = xs[i+1] + cos(angles[i+1]) * thickness;
-      *p++ = ys[i+1] + sin(angles[i+1]) * thickness;
+      *p++ = xs[i+1] + cos(angles[i+1]) * thickness_;
+      *p++ = ys[i+1] + sin(angles[i+1]) * thickness_;
       *p++ = 0.0f;
-      *p++ = xs[i] + cos(angles[i]) * thickness;
-      *p++ = ys[i] + sin(angles[i]) * thickness;
+      *p++ = xs[i] + cos(angles[i]) * thickness_;
+      *p++ = ys[i] + sin(angles[i]) * thickness_;
       *p++ = 0.0f;
     }
 
