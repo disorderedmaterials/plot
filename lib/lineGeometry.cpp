@@ -15,32 +15,39 @@ void LineGeometry::updateData()
     QByteArray vertexData(6 * N * stride, Qt::Initialization::Uninitialized);
     float *p = reinterpret_cast<float *>(vertexData.data());
 
-    std::vector<float> xs(N), ys(N);
+    std::vector<float> xs(N), ys(N), angles(N);
     std::iota(xs.begin(), xs.end(), 0);
     std::transform(xs.begin(), xs.end(), xs.begin(), [](auto x) {return -1.0 + 2 * x / N;});
-    std::transform(xs.begin(), xs.end(), ys.begin(), [](auto x) {return sin(3 * M_PI * x);});
+    std::transform(xs.begin(), xs.end(), ys.begin(), [](auto x) {return 5 * sin(3 * M_PI * x);});
+
+    // Calculate derivatives
+    for (int i=1; i<N-1; ++i) {
+      auto angle = atan2(ys[i+1] - ys[i-1], xs[i+1] - xs[i-1]);
+      angles[i] = angle + M_PI/2;
+    }
+    angles[0] = M_PI/2;
+    angles[N-1] = M_PI/2;
 
     for (int i=0; i<N - 1; i++) {
-      *p++ = xs[i];
-      *p++ = ys[i] + thickness;
+      *p++ = xs[i] + cos(angles[i]) * thickness;
+      *p++ = ys[i] + sin(angles[i]) * thickness;
       *p++ = 0.0f;
-      *p++ = xs[i];
-      *p++ = ys[i] - thickness;
+      *p++ = xs[i] - cos(angles[i]) * thickness;
+      *p++ = ys[i] - sin(angles[i]) * thickness;
       *p++ = 0.0f;
-      *p++ = xs[i+1];
-      *p++ = ys[i+1] - thickness;
-      *p++ = 0.0f;
-
-      *p++ = xs[i+1];
-      *p++ = ys[i+1] - thickness;
-      *p++ = 0.0f;
-      *p++ = xs[i+1];
-      *p++ = ys[i+1] + thickness;
-      *p++ = 0.0f;
-      *p++ = xs[i];
-      *p++ = ys[i] + thickness;
+      *p++ = xs[i+1] - cos(angles[i+1]) * thickness;
+      *p++ = ys[i+1] - sin(angles[i+1]) * thickness;
       *p++ = 0.0f;
 
+      *p++ = xs[i+1] - cos(angles[i+1]) * thickness;
+      *p++ = ys[i+1] - sin(angles[i+1]) * thickness;
+      *p++ = 0.0f;
+      *p++ = xs[i+1] + cos(angles[i+1]) * thickness;
+      *p++ = ys[i+1] + sin(angles[i+1]) * thickness;
+      *p++ = 0.0f;
+      *p++ = xs[i] + cos(angles[i]) * thickness;
+      *p++ = ys[i] + sin(angles[i]) * thickness;
+      *p++ = 0.0f;
     }
 
     setVertexData(vertexData);
