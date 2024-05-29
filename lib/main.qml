@@ -83,9 +83,11 @@ ApplicationWindow {
                 from: 0
                 to: 10
                 value: 3
+                onMoved: renderButton.onClicked()
             }
             Button {
-                text: "Bad Resolution"
+                id: renderButton
+                text: "render"
                 onClicked: {
                     var xs = []
                     var ys = []
