@@ -24,8 +24,10 @@ ApplicationWindow {
             geometry: LineGeometry {}
             scale: Qt.vector3d(200, 200, 200)
             materials: [
-                DefaultMaterial {
-                    diffuseColor: Qt.rgba(0.8, 0.8, 0.8, 1.0)
+                PrincipledMaterial {
+                    id: frame_material
+                    baseColor: "#ff0000"
+                    alphaMode: PrincipledMaterial.Opaque
                 }
             ]
         }

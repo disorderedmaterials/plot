@@ -1,4 +1,5 @@
 #include "lineGeometry.h"
+#include <algorithm>
 
 LineGeometry::LineGeometry() { updateData(); }
 
@@ -6,22 +7,47 @@ void LineGeometry::updateData()
 {
     clear();
 
+    const int N = 200;
+    float thickness = 0.01;
+
     int stride = 3 * sizeof(float);
 
-    QByteArray vertexData(4 * stride, Qt::Initialization::Uninitialized);
+    QByteArray vertexData(6 * N * stride, Qt::Initialization::Uninitialized);
     float *p = reinterpret_cast<float *>(vertexData.data());
 
-    // a triangle, front face = counter-clockwise
-    *p++ = -1.0f; *p++ = -1.0f; *p++ = 0.0f;
-    *p++ = 1.0f; *p++ = -1.0f; *p++ = 0.0f;
-    *p++ = 0.0f; *p++ = 1.0f; *p++ = 0.0f;
-    *p++ = -1.0f; *p++ = -1.0f; *p++ = 0.0f;
+    std::vector<float> xs(N), ys(N);
+    std::iota(xs.begin(), xs.end(), 0);
+    std::transform(xs.begin(), xs.end(), xs.begin(), [](auto x) {return -1.0 + 2 * x / N;});
+    std::transform(xs.begin(), xs.end(), ys.begin(), [](auto x) {return sin(3 * M_PI * x);});
+
+    for (int i=0; i<N - 1; i++) {
+      *p++ = xs[i];
+      *p++ = ys[i] + thickness;
+      *p++ = 0.0f;
+      *p++ = xs[i];
+      *p++ = ys[i] - thickness;
+      *p++ = 0.0f;
+      *p++ = xs[i+1];
+      *p++ = ys[i+1] - thickness;
+      *p++ = 0.0f;
+
+      *p++ = xs[i+1];
+      *p++ = ys[i+1] - thickness;
+      *p++ = 0.0f;
+      *p++ = xs[i+1];
+      *p++ = ys[i+1] + thickness;
+      *p++ = 0.0f;
+      *p++ = xs[i];
+      *p++ = ys[i] + thickness;
+      *p++ = 0.0f;
+
+    }
 
     setVertexData(vertexData);
     setStride(stride);
     setBounds(QVector3D(-1.0f, -1.0f, 0.0f), QVector3D(+1.0f, +1.0f, 0.0f));
 
-    setPrimitiveType(QQuick3DGeometry::PrimitiveType::LineStrip);
+    // setPrimitiveType(QQuick3DGeometry::PrimitiveType::TriangleStrip);
 
     addAttribute(QQuick3DGeometry::Attribute::PositionSemantic,
                  0,
