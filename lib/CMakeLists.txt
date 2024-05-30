@@ -3,6 +3,8 @@ qt_add_qml_module(
   URI com.projectdissolve
   VERSION 1.0
   SOURCES
+  axis.h
+  axis.cpp
   lineGeometry.cpp
   lineGeometry.h
   QML_FILES

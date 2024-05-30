@@ -44,6 +44,22 @@ ApplicationWindow {
             thickness: thickness.value
             color: colorDialog.selectedColor
         }
+
+        Model {
+            geometry: Axis {
+                id: xAxis
+                thickness: thickness.value
+                direction: false;
+            }
+            scale: Qt.vector3d(200, 200, 200)
+            materials: [
+                PrincipledMaterial {
+                    id: frame_material
+                    baseColor: "#00ff00"
+                    alphaMode: PrincipledMaterial.Opaque
+                }
+            ]
+        }
     }
 
 
@@ -106,6 +122,7 @@ ApplicationWindow {
             }
             ColorDialog {
                 id: colorDialog
+                selectedColor: "#ff00ff"
             }
             Button {
                 text: "Color"
