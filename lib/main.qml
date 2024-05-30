@@ -38,20 +38,10 @@ ApplicationWindow {
             brightness: 1.0
             eulerRotation.x: -25
         }
-        Model {
-            /* source: "#Cube" */
-            geometry: LineGeometry {
-                id: plotLine
-                thickness: thickness.value
-            }
-            scale: Qt.vector3d(200, 200, 200)
-            materials: [
-                PrincipledMaterial {
-                    id: frame_material
-                    baseColor: "#ff0000"
-                    alphaMode: PrincipledMaterial.Opaque
-                }
-            ]
+
+        LineModel {
+            id: plotLine
+            thickness: thickness.value
         }
     }
 

@@ -7,6 +7,7 @@ qt_add_qml_module(
   lineGeometry.h
   QML_FILES
   main.qml
+  LineModel.qml
 )
 
 target_include_directories(
