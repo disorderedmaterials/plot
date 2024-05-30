@@ -47,13 +47,17 @@ ApplicationWindow {
             thickness: thickness.value
             color: colorDialog.selectedColor
             scale: root.scale
+            xAxis: xAxis
+            yAxis: yAxis
         }
 
         AxisModel {
             axis: Axis {
                 id: xAxis
                 thickness: 0.01
-                direction: false;
+                direction: false
+                minimum: -5.0
+                maximum: 1.0
             }
             scale: root.scale
         }
@@ -63,6 +67,8 @@ ApplicationWindow {
                 id: yAxis
                 thickness: 0.01
                 direction: true;
+                minimum: -2.0
+                maximum: 2.0
             }
             scale: root.scale
         }

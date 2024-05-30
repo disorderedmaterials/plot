@@ -14,6 +14,7 @@ class Axis : public QQuick3DGeometry
 
 public:
     Axis();
+    std::vector<float> convert(QList<double> values);
 
 Q_SIGNALS:
   void dataChanged();

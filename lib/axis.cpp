@@ -69,3 +69,11 @@ void Axis::updateData()
 
   update();
 }
+
+std::vector<float> Axis::convert(QList<double> points) {
+  std::vector<float> result(points.length());
+
+  std::transform(points.begin(), points.end(), result.begin(), [this](const auto x){ return -1.0f + 2 * (x - minimum_) / (maximum_ - minimum_); });
+
+  return result;
+}

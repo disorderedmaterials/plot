@@ -7,6 +7,8 @@ Model {
     property double thickness
     property list<double> xs
     property list<double> ys
+    property Axis xAxis
+    property Axis yAxis
     property color color
 
     geometry: LineGeometry {
@@ -14,6 +16,8 @@ Model {
         thickness: root.thickness
         xs: root.xs
         ys: root.ys
+        xAxis: root.xAxis
+        yAxis: root.yAxis
     }
     materials: [
         PrincipledMaterial {
