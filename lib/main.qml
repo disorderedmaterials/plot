@@ -86,6 +86,7 @@ ApplicationWindow {
                 from: 10
                 to: 1000
                 value: 20
+                onMoved: renderButton.onClicked()
             }
             Label {text: "Amplitude"}
             Slider {
@@ -93,6 +94,7 @@ ApplicationWindow {
                 from: 0
                 to: 5
                 value: 1
+                onMoved: renderButton.onClicked()
             }
             Label {text: "Frequency"}
             Slider {
