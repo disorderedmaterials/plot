@@ -49,34 +49,22 @@ ApplicationWindow {
             scale: root.scale
         }
 
-        Model {
-            geometry: Axis {
+        AxisModel {
+            axis: Axis {
                 id: xAxis
-                thickness: thickness.value
+                thickness: 0.01
                 direction: false;
             }
             scale: root.scale
-            materials: [
-                PrincipledMaterial {
-                    baseColor: "#00ff00"
-                    alphaMode: PrincipledMaterial.Opaque
-                }
-            ]
         }
 
-        Model {
-            geometry: Axis {
+        AxisModel {
+            axis: Axis {
                 id: yAxis
-                thickness: thickness.value
+                thickness: 0.01
                 direction: true;
             }
             scale: root.scale
-            materials: [
-                PrincipledMaterial {
-                    baseColor: "#00ffff"
-                    alphaMode: PrincipledMaterial.Opaque
-                }
-            ]
         }
     }
 
