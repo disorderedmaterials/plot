@@ -4,10 +4,13 @@ import com.projectdissolve
 Model {
     id: root
     property double thickness
-    /* source: "#Cube" */
+    property list<double> xs
+    property list<double> ys
     geometry: LineGeometry {
         id: plotLine
         thickness: root.thickness
+        xs: root.xs
+        ys: root.ys
     }
     scale: Qt.vector3d(200, 200, 200)
     materials: [

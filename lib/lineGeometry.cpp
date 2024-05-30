@@ -26,7 +26,7 @@ void LineGeometry::updateData()
 
 
     const int N = xs_.length();
-    if (N < 2) return;
+    if (N < 2 || ys_.length() < 2) return;
     int stride = 3 * sizeof(float);
 
     QByteArray vertexData(6 * N * stride, Qt::Initialization::Uninitialized);
