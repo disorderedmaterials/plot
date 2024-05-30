@@ -1,8 +1,6 @@
 #include "lineGeometry.h"
 #include <algorithm>
 
-#include <iostream>
-
 LineGeometry::LineGeometry() {
   generateSines();
   updateData();
@@ -38,8 +36,8 @@ void LineGeometry::updateData()
       auto angle = atan2(ys_[i+1] - ys_[i-1], xs_[i+1] - xs_[i-1]);
       angles[i] = angle + M_PI/2;
     }
-    angles[0] = M_PI/2;
-    angles[N-1] = M_PI/2;
+    angles[0] = -M_PI/2;
+    angles[N-1] = -M_PI/2;
 
     for (int i=0; i<N - 1; i++) {
       *p++ = xs_[i] + cos(angles[i]) * thickness_;
