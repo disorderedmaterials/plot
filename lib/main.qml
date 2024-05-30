@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick3D
+import QtQuick3D.Helpers
 import QtQuick.Controls
 import com.projectdissolve
 
@@ -45,6 +46,7 @@ ApplicationWindow {
         }
     }
 
+
     View3D {
         id: graphView
         anchors.top: parent.top
@@ -57,6 +59,12 @@ ApplicationWindow {
             z: 600
         }
         importScene: standAloneScene
+
+        OrbitCameraController {
+            anchors.fill: parent
+            origin: standAloneScene
+            camera: cameraOrthographicLeft
+        }
     }
     Pane {
         id: settingsPane
