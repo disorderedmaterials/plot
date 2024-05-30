@@ -7,6 +7,9 @@ import QtQuick.Controls
 import com.projectdissolve
 
 ApplicationWindow {
+    id: root
+    property vector3d scale: Qt.vector3d(Math.min(graphView.width/2.5, graphView.height/2.5), Math.min(graphView.width/2.5, graphView.height/2.5), 200)
+
     height: 600
     title: "Mildred QML Test"
     visible: true
@@ -43,6 +46,7 @@ ApplicationWindow {
             id: plotLine
             thickness: thickness.value
             color: colorDialog.selectedColor
+            scale: root.scale
         }
 
         Model {
@@ -51,11 +55,25 @@ ApplicationWindow {
                 thickness: thickness.value
                 direction: false;
             }
-            scale: Qt.vector3d(200, 200, 200)
+            scale: root.scale
             materials: [
                 PrincipledMaterial {
-                    id: frame_material
                     baseColor: "#00ff00"
+                    alphaMode: PrincipledMaterial.Opaque
+                }
+            ]
+        }
+
+        Model {
+            geometry: Axis {
+                id: yAxis
+                thickness: thickness.value
+                direction: true;
+            }
+            scale: root.scale
+            materials: [
+                PrincipledMaterial {
+                    baseColor: "#00ffff"
                     alphaMode: PrincipledMaterial.Opaque
                 }
             ]
@@ -70,7 +88,7 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: settingsPane.left
 
-        camera: PerspectiveCamera {
+        camera: OrthographicCamera {
             id: cameraOrthographicLeft
             z: 600
         }
