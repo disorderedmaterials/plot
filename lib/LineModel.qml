@@ -1,3 +1,4 @@
+import QtQuick
 import QtQuick3D
 import com.projectdissolve
 
@@ -6,6 +7,7 @@ Model {
     property double thickness
     property list<double> xs
     property list<double> ys
+    property color color
     geometry: LineGeometry {
         id: plotLine
         thickness: root.thickness
@@ -16,7 +18,7 @@ Model {
     materials: [
         PrincipledMaterial {
             id: frame_material
-            baseColor: "#ff00ff"
+            baseColor: root.color
             alphaMode: PrincipledMaterial.Opaque
         }
     ]

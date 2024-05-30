@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
 import QtQuick3D
 import QtQuick3D.Helpers
 import QtQuick.Controls
@@ -10,8 +11,6 @@ ApplicationWindow {
     title: "Mildred QML Test"
     visible: true
     width: 800
-
-    LineGeometry {}
 
     Node {
          id: standAloneScene
@@ -43,6 +42,7 @@ ApplicationWindow {
         LineModel {
             id: plotLine
             thickness: thickness.value
+            color: colorDialog.selectedColor
         }
     }
 
@@ -103,6 +103,13 @@ ApplicationWindow {
                 to: 10
                 value: 3
                 onMoved: renderButton.onClicked()
+            }
+            ColorDialog {
+                id: colorDialog
+            }
+            Button {
+                text: "Color"
+                onClicked: colorDialog.open()
             }
             Button {
                 id: renderButton
