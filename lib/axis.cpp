@@ -15,6 +15,14 @@ AxisTickLabels* Axis::tickLabels() {
 double Axis::minimum() const { return minimum_; }
 double Axis::maximum() const { return maximum_; }
 
+int Axis::tickCount() const {
+  return tickLabels_.tickCount();
+}
+
+void Axis::setTickCount(const int count) {
+  tickLabels_.setTickCount(count);
+}
+
 void Axis::updateData()
 {
   clear();

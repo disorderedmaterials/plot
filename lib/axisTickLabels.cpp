@@ -2,16 +2,25 @@
 #include "axis.h"
 #include <iostream>
 
-AxisTickLabels::AxisTickLabels(Axis &parent) : parent_(parent), N(5) {
+AxisTickLabels::AxisTickLabels(Axis &parent) : parent_(parent), N_(5) {}
+
+int AxisTickLabels::tickCount() const {
+  return N_;
+}
+
+void AxisTickLabels::setTickCount(const int count) {
+  beginResetModel();
+  N_ = count;
+  endResetModel();
 }
 
 int AxisTickLabels::rowCount(const QModelIndex &parent) const {
-  return N;
+  return N_;
 }
 
 QVariant AxisTickLabels::data(const QModelIndex &index, int role) const {
   switch (role) {
-  case Qt::UserRole: return QString("%1").arg(parent_.minimum() + index.row()/((double) N - 1) * (parent_.maximum() - parent_.minimum()));
+  case Qt::UserRole: return QString("%1").arg(parent_.minimum() + index.row()/((double) N_ - 1) * (parent_.maximum() - parent_.minimum()));
   case (Qt::UserRole + 1): return index.row();
   case (Qt::UserRole + 2): return index.row();
   default: return index.row();

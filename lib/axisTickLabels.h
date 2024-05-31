@@ -14,8 +14,10 @@ class AxisTickLabels : public QAbstractListModel
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
+  int tickCount() const;
+  void setTickCount(const int count);
 
  private:
   Axis& parent_;
-  const int N;
+  int N_;
 };

@@ -13,6 +13,7 @@ class Axis : public QQuick3DGeometry
     Q_PROPERTY(double maximum MEMBER maximum_ NOTIFY dataChanged)
     Q_PROPERTY(bool direction MEMBER direction_ NOTIFY dataChanged)
     Q_PROPERTY(AxisTickLabels* tickLabels READ tickLabels NOTIFY dataChanged)
+    Q_PROPERTY(int tickCount READ tickCount WRITE setTickCount)
 
 public:
     Axis();
@@ -20,6 +21,8 @@ public:
     AxisTickLabels* tickLabels();
     double minimum() const;
     double maximum() const;
+    int tickCount() const;
+    void setTickCount(const int count);
 
 Q_SIGNALS:
   void dataChanged();
