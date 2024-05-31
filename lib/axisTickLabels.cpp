@@ -28,7 +28,6 @@ QVariant AxisTickLabels::data(const QModelIndex &index, int role) const {
 }
 
 QHash<int, QByteArray> AxisTickLabels::roleNames() const {
-  std::cout << "Role Names" << std::endl;
   QHash<int, QByteArray> roles;
   roles[Qt::UserRole] = "tickLabel";
   roles[Qt::UserRole + 1] = "tickX";
