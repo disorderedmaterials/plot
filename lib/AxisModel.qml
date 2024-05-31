@@ -22,9 +22,10 @@ Node {
 
     Repeater3D {
         id: rep
-        model: 7
-        Node{
-            position: axis.direction ? Qt.vector3d(-root.scl.x + 2 * index * root.scl.x / (rep.count - 1), -root.scl.y - 210, 0) : Qt.vector3d(-root.scl.x - 30.0, -root.scl.y - 180 + 2 * index * root.scl.y / (rep.count - 1), 0)
+        model: axis.tickLabels
+        delegate: Node{
+            position: axis.direction ? Qt.vector3d(-root.scl.x + 2 * tickX * root.scl.x/(rep.count - 1), -root.scl.y - 210, 0) : Qt.vector3d(-root.scl.x - 30, -root.scl.y -180 + 2 * tickY * root.scl.y/(rep.count - 1), 0)
+            /* position: axis.direction ? Qt.vector3d(-root.scl.x + 2 * index * root.scl.x / (rep.count - 1), -root.scl.y - 210, 0) : Qt.vector3d(-root.scl.x - 30.0, -root.scl.y - 180 + 2 * index * root.scl.y / (rep.count - 1), 0) */
             Item {
                 /* required property int index */
                 width: 400
@@ -37,7 +38,7 @@ Node {
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.pixelSize: 20
                     color: root.color
-                    text: index
+                    text: tickLabel
                 }
             }
         }

@@ -5,6 +5,8 @@ qt_add_qml_module(
   SOURCES
   axis.h
   axis.cpp
+  axisTickLabels.h
+  axisTickLabels.cpp
   lineGeometry.cpp
   lineGeometry.h
   QML_FILES

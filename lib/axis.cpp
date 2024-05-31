@@ -3,10 +3,17 @@
 
 #include <iostream>
 
-Axis::Axis() : minimum_(-1), maximum_(1), thickness_(0.001), direction_(false) {
+Axis::Axis() : minimum_(-1), maximum_(1), thickness_(0.001), direction_(false), tickLabels_(*this) {
   updateData();
   connect(this, &Axis::dataChanged, this, &Axis::updateData);
 }
+
+AxisTickLabels* Axis::tickLabels() {
+  return &tickLabels_;
+}
+
+double Axis::minimum() const { return minimum_; }
+double Axis::maximum() const { return maximum_; }
 
 void Axis::updateData()
 {

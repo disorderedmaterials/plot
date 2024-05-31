@@ -18,24 +18,6 @@ ApplicationWindow {
     Node {
          id: standAloneScene
 
-        Node {
-            position: Qt.vector3d(0, 0, 120)
-            Item {
-                width: 400
-                height: 400
-                anchors.centerIn: parent
-
-                Text {
-                    anchors.top: parent.top
-                    anchors.topMargin: 10
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.pixelSize: 20
-                    color: "#00e0e0"
-                    text: qsTr("Background Item")
-                }
-            }
-        }
-
          DirectionalLight {
             ambientColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
             brightness: 1.0
@@ -60,7 +42,7 @@ ApplicationWindow {
                 maximum: 1.0
             }
             scl: root.scale
-            color: "red"
+            color: "black"
         }
 
         AxisModel {
@@ -72,7 +54,7 @@ ApplicationWindow {
                 maximum: 1.0
             }
             scl: root.scale
-            color: "green"
+            color: "black"
         }
     }
 

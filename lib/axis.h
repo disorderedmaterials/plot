@@ -2,6 +2,7 @@
 
 #include <QVector3D>
 #include <QQuick3DGeometry>
+#include "axisTickLabels.h"
 
 class Axis : public QQuick3DGeometry
 {
@@ -11,10 +12,14 @@ class Axis : public QQuick3DGeometry
     Q_PROPERTY(double minimum MEMBER minimum_ NOTIFY dataChanged)
     Q_PROPERTY(double maximum MEMBER maximum_ NOTIFY dataChanged)
     Q_PROPERTY(bool direction MEMBER direction_ NOTIFY dataChanged)
+    Q_PROPERTY(AxisTickLabels* tickLabels READ tickLabels NOTIFY dataChanged)
 
 public:
     Axis();
     std::vector<float> convert(QList<double> values);
+    AxisTickLabels* tickLabels();
+    double minimum() const;
+    double maximum() const;
 
 Q_SIGNALS:
   void dataChanged();
@@ -23,4 +28,5 @@ private:
     void updateData();
     bool direction_;
     double minimum_, maximum_, thickness_;
+    AxisTickLabels tickLabels_;
 };
