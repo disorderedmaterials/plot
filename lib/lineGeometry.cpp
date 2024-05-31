@@ -32,8 +32,8 @@ void LineGeometry::updateData()
       auto angle = atan2(ys[i+1] - ys[i-1], xs[i+1] - xs[i-1]);
       angles[i] = angle + M_PI/2;
     }
-    angles[0] = -M_PI/2;
-    angles[N-1] = -M_PI/2;
+    angles[0] = M_PI/2 + atan2(ys[1] - ys[0], xs[0] - xs[0]);
+    angles[N-1] = M_PI/2 + atan2(ys[N-1] - ys[N-2], xs[N-1] - xs[N-2]);
 
     for (int i=0; i<N - 1; i++) {
       *p++ = xs[i] + cos(angles[i]) * thickness_;
