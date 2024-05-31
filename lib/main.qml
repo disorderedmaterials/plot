@@ -33,6 +33,16 @@ ApplicationWindow {
             yAxis: yAxis
         }
 
+        LineModel {
+            thickness: thickness.value
+            color: "#006f6f"
+            xs: [-1.0, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            ys: [1.0, 0.64, 0.36, 0.16, 0.04, 0, 0.04, 0.16, 0.36, 0.64, 1.0]
+            scale: root.scale
+            xAxis: xAxis
+            yAxis: yAxis
+        }
+
         AxisModel {
             axis: Axis {
                 id: xAxis
@@ -89,7 +99,7 @@ ApplicationWindow {
             Label {text: "Thickness"}
             Slider {
                 id: thickness
-                from: 0.001
+                from: 0.01
                 to: 0.1
             }
             Label {text: "Count"}
