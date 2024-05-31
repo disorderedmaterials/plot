@@ -2,16 +2,44 @@ import QtQuick
 import QtQuick3D
 import com.projectdissolve
 
-Model {
+Node {
     id: root
-    property Axis axis
+    required property Axis axis
+    required property vector3d scl
+    property color color
 
-    geometry: root.axis 
-    materials: [
-        PrincipledMaterial {
-            id: frame_material
-            baseColor: "black"
-            alphaMode: PrincipledMaterial.Opaque
+    Model {
+        geometry: root.axis 
+        materials: [
+            PrincipledMaterial {
+                id: frame_material
+                baseColor: root.color
+                alphaMode: PrincipledMaterial.Opaque
+            }
+        ]
+        scale: root.scl
+    }
+
+    Repeater3D {
+        id: rep
+        model: 7
+        Node{
+            position: axis.direction ? Qt.vector3d(-root.scl.x + 2 * index * root.scl.x / (rep.count - 1), -root.scl.y - 210, 0) : Qt.vector3d(-root.scl.x - 30.0, -root.scl.y - 180 + 2 * index * root.scl.y / (rep.count - 1), 0)
+            Item {
+                /* required property int index */
+                width: 400
+                height: 400
+                anchors.centerIn: parent
+
+                Text {
+                    anchors.top: parent.top
+                    anchors.topMargin: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.pixelSize: 20
+                    color: root.color
+                    text: index
+                }
+            }
         }
-    ]
+    }
 }

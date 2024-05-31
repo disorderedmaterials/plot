@@ -56,10 +56,11 @@ ApplicationWindow {
                 id: xAxis
                 thickness: 0.01
                 direction: false
-                minimum: -5.0
+                minimum: -1.0
                 maximum: 1.0
             }
-            scale: root.scale
+            scl: root.scale
+            color: "red"
         }
 
         AxisModel {
@@ -67,10 +68,11 @@ ApplicationWindow {
                 id: yAxis
                 thickness: 0.01
                 direction: true;
-                minimum: -2.0
-                maximum: 2.0
+                minimum: -1.0
+                maximum: 1.0
             }
-            scale: root.scale
+            scl: root.scale
+            color: "green"
         }
     }
 
