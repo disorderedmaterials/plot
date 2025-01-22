@@ -177,6 +177,9 @@ RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, Ren
     return material;
 }
 
+// Return total number of data entities displayed on the graph
+int MildredWidget::nDataEntities() const { return dataEntities_.size(); }
+
 // Add new 1-dimensional data entity for supplied data
 Data1DEntity *MildredWidget::addData1D(const QString &tag)
 {
