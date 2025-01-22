@@ -204,6 +204,8 @@ class MildredWidget : public QWidget
         RenderableMaterial::FragmentShaderType fragmentShader = RenderableMaterial::FragmentShaderType::Phong);
 
     public:
+    // Return total number of data entities displayed on the graph
+    int nDataEntities() const;
     // Add new data entity for supplied data
     Data1DEntity *addData1D(const QString &tag);
     // Remove data entity with the supplied data
