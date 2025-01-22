@@ -11,10 +11,10 @@ namespace Mildred
 namespace Version
 {
 // Return version
-std::string_view version() { return MILDREDVERSION; }
+QString version() { return MILDREDVERSION; }
 // Return short hash
-std::string_view shortHash() { return MILDREDSHORTHASH; }
+QString shortHash() { return MILDREDSHORTHASH; }
 // Return repo url
-std::string_view repoUrl() { return MILDREDREPO; }
+QString repoUrl() { return MILDREDREPO; }
 }; // namespace Version
 }; // namespace Mildred

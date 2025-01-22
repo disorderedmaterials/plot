@@ -178,13 +178,13 @@ RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, Ren
 }
 
 // Add new 1-dimensional data entity for supplied data
-Data1DEntity *MildredWidget::addData1D(std::string_view tag)
+Data1DEntity *MildredWidget::addData1D(const QString &tag)
 {
     // Check for existing tag
     auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
     if (it != dataEntities_.end())
     {
-        printf("Data with tag '%s' already exists, so can't add it again.\n", it->first.c_str());
+        qDebug() << QString("Data with tag '%1' already exists, so can't add it again.\n").arg(it->first);
         throw(std::runtime_error("Duplicate DataEntity tag created.\n"));
     }
 

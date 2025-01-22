@@ -39,7 +39,7 @@ MainWindow::MainWindow() : QMainWindow()
                        [a, b, c](const auto x) { return 5.0 + a * sin(x) + b * sin(2.0 * x) - c * sin(3.0 * x); });
 
         // Create a renderable and add it to the group
-        auto *renderable = ui_.TestingWidget->addData1D(std::string("Sines") + std::to_string(n));
+        auto *renderable = ui_.TestingWidget->addData1D(QString("Sines%1").arg(n));
         renderable->setData(xValues, y);
 
         renderable->colour().set({int(255 * dist(gen)), int(255 * dist(gen)), int(255 * dist(gen)), 255});
