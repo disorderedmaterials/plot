@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "material.h"
+#include <QRegularExpression>
 #include <QResizeEvent>
 #include <Qt3DInput/QKeyboardDevice>
 #include <Qt3DInput/QKeyboardHandler>
@@ -179,6 +180,14 @@ RenderableMaterial *MildredWidget::createMaterial(Qt3DCore::QEntity *parent, Ren
 
 // Return total number of data entities displayed on the graph
 int MildredWidget::nDataEntities() const { return dataEntities_.size(); }
+
+// Enable / disable any data entities with tags matching the regular expression provided
+void MildredWidget::setDataEnabled(const QRegularExpression &re, bool isEnabled)
+{
+    for (auto &[tag, entity] : dataEntities_)
+        if (re.match(tag).hasMatch())
+            entity->setEnabled(isEnabled);
+}
 
 // Add new 1-dimensional data entity for supplied data
 Data1DEntity *MildredWidget::addData1D(const QString &tag)
