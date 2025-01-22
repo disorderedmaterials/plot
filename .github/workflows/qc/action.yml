@@ -8,16 +8,14 @@ runs:
     shell: bash
     run: |
       set -ex
-      sudo apt-get update
-      sudo apt-get install --yes clang-format-13
       pip install cmake_format==0.6.9
 
   - name: C++ Formatting
     shell: bash
     run: |
       set -ex
-      clang-format-13 --version
-      find src/ examples/ -type f -regex '.*\.\(c\|cpp\|h\|hpp\|hui\)' -exec clang-format-13 -i {} +
+      clang-format-17 --version
+      find src/ examples/ -type f -regex '.*\.\(c\|cpp\|h\|hpp\|hui\)' -exec clang-format-17 -i {} +
       git diff
       git diff --quiet
 
