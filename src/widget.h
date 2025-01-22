@@ -193,7 +193,7 @@ class MildredWidget : public QWidget
      */
     private:
     // Associated data entities (with identifying tag)
-    std::vector<std::pair<std::string, DataEntity *>> dataEntities_;
+    std::vector<std::pair<QString, DataEntity *>> dataEntities_;
 
     private:
     // Create material for specified entity
@@ -205,7 +205,7 @@ class MildredWidget : public QWidget
 
     public:
     // Add new data entity for supplied data
-    Data1DEntity *addData1D(std::string_view tag);
+    Data1DEntity *addData1D(const QString &tag);
 
     /*
      * Grouping
