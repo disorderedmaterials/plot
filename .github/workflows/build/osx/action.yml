@@ -9,7 +9,7 @@ runs:
     shell: bash
     run: |
       set -ex
-      sudo pip3 install conan aqtinstall
+      sudo pip3 install conan==1.* aqtinstall --break-system-packages
       aqt install-qt --outputdir /tmp/qt mac desktop ${{ env.qtVersion }} -m qt3d
 
   - name: Build
@@ -34,7 +34,7 @@ runs:
       zip -9rv ../packages/Mildred-${{ env.mildredVersion }}-osx.zip Mildred-${{ env.mildredVersion }}-osx
 
   - name: Upload Raw Build Artifacts
-    uses: actions/upload-artifact@v3
+    uses: actions/upload-artifact@v4
     with:
-      name: packages
+      name: packages-osx-${{ runner.arch }}
       path: ${{ github.workspace }}/packages
