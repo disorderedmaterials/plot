@@ -47,7 +47,7 @@ runs:
       zip -9rv ../packages/Mildred-${{ env.mildredVersion }}-linux.zip Mildred-${{ env.mildredVersion }}-linux
 
   - name: Upload Package Artifacts
-    uses: actions/upload-artifact@v3
+    uses: actions/upload-artifact@v4
     with:
-      name: packages
+      name: packages-linux-${{ runner.arch }}
       path: ${{ github.workspace }}/packages
