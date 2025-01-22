@@ -204,6 +204,24 @@ Data1DEntity *MildredWidget::addData1D(const QString &tag)
     return entity;
 }
 
+// Remove data entity with the supplied data
+bool MildredWidget::removeData1D(const QString &tag)
+{
+    // Check for existing tag
+    auto it = std::find_if(dataEntities_.begin(), dataEntities_.end(), [tag](const auto &d) { return tag == d.first; });
+    if (it == dataEntities_.end())
+    {
+        qDebug() << QString("Data with tag '%1' does not exist, so it can't be removed from the plot.\n").arg(it->first);
+        return false;
+    }
+    auto &[entityTag, entity] = *it;
+
+    entity->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
+    dataEntities_.erase(it);
+
+    return true;
+}
+
 /*
  * Grouping
  */

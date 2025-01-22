@@ -206,6 +206,8 @@ class MildredWidget : public QWidget
     public:
     // Add new data entity for supplied data
     Data1DEntity *addData1D(const QString &tag);
+    // Remove data entity with the supplied data
+    bool removeData1D(const QString &tag);
 
     /*
      * Grouping
