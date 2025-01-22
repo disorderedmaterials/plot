@@ -9,7 +9,7 @@ runs:
     shell: bash
     run: |
       set -ex
-      sudo pip3 install conan aqtinstall
+      sudo pip3 install conan==1.* aqtinstall --break-system-packages
       aqt install-qt --outputdir /tmp/qt mac desktop ${{ env.qtVersion }} -m qt3d
 
   - name: Build
