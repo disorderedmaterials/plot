@@ -79,6 +79,8 @@ class DisplayGroup
     void setStockColour(StockColour colour);
     // Return stock colour
     StockColour stockColour() const;
+    // Return suitable stock colour for the integer index supplied
+    static StockColour stockColourForIndex(int index);
     // Set gradient to apply
     void setGradient(const ColourDefinition &gradient);
     // Return gradient to apply

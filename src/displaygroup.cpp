@@ -87,6 +87,9 @@ void DisplayGroup::setStockColour(StockColour colour)
 // Return stock colour
 DisplayGroup::StockColour DisplayGroup::stockColour() const { return stockColour_; }
 
+// Return suitable stock colour for the integer index supplied
+DisplayGroup::StockColour DisplayGroup::stockColourForIndex(int index) { return (StockColour)(index % nStockColours); }
+
 // Set gradient to apply
 void DisplayGroup::setGradient(const ColourDefinition &gradient)
 {
