@@ -228,6 +228,10 @@ bool MildredWidget::removeData1D(const QString &tag)
     }
     auto &[entityTag, entity] = *it;
 
+    // Remove the entity from any display groups
+    for (auto &[groupName, group] : displayGroups_)
+        group->removeTarget(entity);
+
     entity->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
     dataEntities_.erase(it);
 
