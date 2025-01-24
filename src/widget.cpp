@@ -238,10 +238,17 @@ bool MildredWidget::removeData1D(const QString &tag)
  * Grouping
  */
 
-// Create new display group
-DisplayGroup *MildredWidget::addDisplayGroup()
+// Create or retrieve a named display group
+DisplayGroup *MildredWidget::getDisplayGroup(const QString &name)
 {
-    auto newGroup = displayGroups_.emplace_back(std::make_shared<DisplayGroup>());
+    // Check for existing group
+    auto groupIt = displayGroups_.find(name);
+    if (groupIt == displayGroups_.end())
+    {
+        auto newGroup = std::make_shared<DisplayGroup>();
+        displayGroups_[name] = newGroup;
+        return newGroup.get();
+    }
 
-    return newGroup.get();
+    return groupIt->second.get();
 }

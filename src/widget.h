@@ -218,10 +218,10 @@ class MildredWidget : public QWidget
      */
     private:
     // Defined display groups
-    std::vector<std::shared_ptr<DisplayGroup>> displayGroups_;
+    std::map<QString, std::shared_ptr<DisplayGroup>> displayGroups_;
 
     public:
-    // Create new display group
-    DisplayGroup *addDisplayGroup();
+    // Create or retrieve a named display group
+    DisplayGroup *getDisplayGroup(const QString &name);
 };
 } // namespace Mildred

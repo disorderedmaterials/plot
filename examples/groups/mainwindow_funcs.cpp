@@ -24,7 +24,7 @@ MainWindow::MainWindow() : QMainWindow()
     std::uniform_real_distribution<> dist(0.0, 1.0);
 
     // Create a display group with some default policies
-    displayGroup_ = ui_.TestingWidget->addDisplayGroup();
+    displayGroup_ = ui_.TestingWidget->getDisplayGroup("NewGroup");
     displayGroup_->setSingleColour({255, 0, 200, 255});
 
     // Create the datasets
