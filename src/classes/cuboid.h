@@ -60,5 +60,7 @@ class Cuboid
     float zExtent() const;
     // Return vector of extents
     QVector3D extents() const;
+    // Return bounding box cuboid required for rotated original cuboid (in degrees, around z-axis)
+    Cuboid zRotatedBoundingCuboid(QVector3D rotationOrigin, double thetaZ) const;
 };
 } // namespace Mildred

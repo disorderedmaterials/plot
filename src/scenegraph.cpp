@@ -77,7 +77,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     xAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     xAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Horizontal, metrics_, xAxisBarMaterial, xAxisLabelMaterial);
-    xAxis_->setTitleText("X");
+    xAxis_->setLabelText("X");
     connect(xAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     connect(xAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
 
@@ -90,7 +90,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     yAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     yAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Vertical, metrics_, yAxisBarMaterial, yAxisLabelMaterial);
-    yAxis_->setTitleText("Y");
+    yAxis_->setLabelText("Y");
     connect(yAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     connect(yAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
 
@@ -103,7 +103,7 @@ void MildredWidget::createSceneGraph()
                        RenderableMaterial::GeometryShaderType::None, RenderableMaterial::FragmentShaderType::Monochrome);
     zAxisLabelMaterial->setAmbient(QColor(0, 0, 0, 255));
     zAxis_ = new AxisEntity(axesEntity, AxisEntity::AxisType::Depth, metrics_, zAxisBarMaterial, zAxisLabelMaterial);
-    zAxis_->setTitleText("Z");
+    zAxis_->setLabelText("Z");
     connect(zAxis_, SIGNAL(enabledChanged(bool)), this, SLOT(updateMetrics()));
     connect(zAxis_, SIGNAL(rangeChanged()), this, SLOT(updateMetrics()));
     zAxis_->setEnabled(false);
@@ -244,36 +244,69 @@ void MildredWidget::showAllData()
     updateMetrics();
 }
 
-//! Change the text of the x-axis title.
+//! Change the text of the x-axis label.
 /*!
- * Set the displayed text of the x-axis title to @param title. Metrics are updated after the change.
+ * Set the displayed text of the x-axis label to @param text. Metrics are updated after the change.
  */
-void MildredWidget::setXAxisTitle(const QString &title)
+void MildredWidget::setXAxisLabel(const QString &text)
 {
     assert(xAxis_);
-    xAxis_->setTitleText(title);
+    xAxis_->setLabelText(text);
     updateMetrics();
 }
 
-//! Change the text of the y-axis title.
+//! Change the text of the y-axis label.
 /*!
- * Set the displayed text of the y-axis title to @param title. Metrics are updated after the change.
+ * Set the displayed text of the y-axis title to @param text. Metrics are updated after the change.
  */
-void MildredWidget::setYAxisTitle(const QString &title)
+void MildredWidget::setYAxisLabel(const QString &text)
 {
     assert(yAxis_);
-    yAxis_->setTitleText(title);
+    yAxis_->setLabelText(text);
     updateMetrics();
 }
 
-//! Change the text of the z-axis title.
+//! Change the text of the z-axis label.
 /*!
- * Set the displayed text of the z-axis title to @param title. Metrics are updated after the change.
+ * Set the displayed text of the z-axis label to @param text. Metrics are updated after the change.
  */
-void MildredWidget::setZAxisTitle(const QString &title)
+void MildredWidget::setZAxisLabel(const QString &text)
 {
     assert(zAxis_);
-    zAxis_->setTitleText(title);
+    zAxis_->setLabelText(text);
+    updateMetrics();
+}
+
+//! Change the rotation of the x-axis label.
+/*!
+ * Set the rotation of the x-axis label about its anchor point to @param theta degrees. Metrics are updated after the change.
+ */
+void MildredWidget::setXAxisLabelRotation(double theta)
+{
+    assert(xAxis_);
+    xAxis_->setLabelRotation(theta);
+    updateMetrics();
+}
+
+//! Change the rotation of the y-axis label.
+/*!
+ * Set the rotation of the y-axis label about its anchor point to @param theta degrees. Metrics are updated after the change.
+ */
+void MildredWidget::setYAxisLabelRotation(double theta)
+{
+    assert(yAxis_);
+    yAxis_->setLabelRotation(theta);
+    updateMetrics();
+}
+
+//! Change the rotation of the z-axis label.
+/*!
+ * Set the rotation of the z-axis label about its anchor point to @param theta degrees. Metrics are updated after the change.
+ */
+void MildredWidget::setZAxisLabelRotation(double theta)
+{
+    assert(zAxis_);
+    zAxis_->setLabelRotation(theta);
     updateMetrics();
 }
 

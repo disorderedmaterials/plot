@@ -45,6 +45,7 @@ class LineEntity : public Qt3DCore::QEntity
     public:
     // Append vertices to cached data
     void addVertex(QVector3D v);
+    void addVertex(double x, double y, double z);
     void addVertex(QVector3D v, QColor colour);
     void addVertices(const std::vector<QVector3D> &vertices);
     // Append indices to cached data

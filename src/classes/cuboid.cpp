@@ -1,4 +1,5 @@
 #include "classes/cuboid.h"
+#include <QMatrix4x4>
 
 using namespace Mildred;
 
@@ -195,3 +196,32 @@ float Cuboid::zExtent() const
 
 //! Return vector of extents
 QVector3D Cuboid::extents() const { return {xExtent(), yExtent(), zExtent()}; }
+
+//! Return bounding box cuboid required for rotated original cuboid (in degrees, around z-axis)
+/*!
+ * Returns the bounding cuboid required to contain the original cuboid rotated @param rotation
+ * @return
+ */
+Cuboid Cuboid::zRotatedBoundingCuboid(QVector3D rotationOrigin, double thetaZ) const
+{
+    QMatrix4x4 m;
+    m.rotate(thetaZ, QVector3D{0.0, 0.0, 1.0});
+    std::array<QPointF, 4> corners;
+    corners[0] = QPointF(v1x_.value_or(0.0) - rotationOrigin.x(), v1y_.value_or(0.0) - rotationOrigin.y());
+    corners[1] = QPointF(v2x_.value_or(0.0) - rotationOrigin.x(), v1y_.value_or(0.0) - rotationOrigin.y());
+    corners[2] = QPointF(v1x_.value_or(0.0) - rotationOrigin.x(), v2y_.value_or(0.0) - rotationOrigin.y());
+    corners[3] = QPointF(v2x_.value_or(0.0) - rotationOrigin.x(), v2y_.value_or(0.0) - rotationOrigin.y());
+
+    Cuboid rotated;
+    for (const auto &p : corners)
+    {
+        auto newP = m.map(p);
+        rotated.expand(newP.x() + rotationOrigin.x(), newP.y() + rotationOrigin.y(), {});
+    }
+
+    // Set Z extents
+    rotated.v1z_ = v1z_;
+    rotated.v2z_ = v2z_;
+
+    return rotated;
+}
