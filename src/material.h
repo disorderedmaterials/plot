@@ -19,7 +19,8 @@ class RenderableMaterial : public Qt3DRender::QMaterial
     enum class GeometryShaderType
     {
         None,
-        LineTesselator
+        LineTesselator,
+        LineStipple
     };
     // Fragment Shader Types
     enum class FragmentShaderType

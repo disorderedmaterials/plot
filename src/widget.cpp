@@ -198,7 +198,7 @@ Data1DEntity *MildredWidget::addData1D(const QString &tag)
 
     // Add a material
     auto *material = createMaterial(entity, RenderableMaterial::VertexShaderType::ClippedToDataVolume,
-                                    RenderableMaterial::GeometryShaderType::LineTesselator,
+                                    RenderableMaterial::GeometryShaderType::LineStipple,
                                     RenderableMaterial::FragmentShaderType::PerVertexPhong);
     entity->setDataMaterial(material);
     entity->setErrorMaterial(material);
