@@ -81,6 +81,8 @@ class DataEntity : public Qt3DCore::QEntity
     ColourDefinition colourDefinition() const;
 
     public:
+    // Set translation in the positional transform
+    void setPositionalTranslation(const QVector3D &translation);
     // Return local colour definition for entity
     ColourDefinition &colour();
     const ColourDefinition &colour() const;

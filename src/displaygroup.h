@@ -2,6 +2,7 @@
 
 #include "entities/data.h"
 #include <QColor>
+#include <QIcon>
 
 namespace Mildred
 {
@@ -85,6 +86,44 @@ class DisplayGroup
     void setGradient(const ColourDefinition &gradient);
     // Return gradient to apply
     const ColourDefinition &gradient() const;
+    // Return icon representing current colour policy
+    QIcon colourPolicyIcon(QSize size);
+
+    /*
+     * Data Translation
+     */
+    public:
+    // Translation Policy
+    enum class TranslationPolicy
+    {
+        None,
+        Constant,
+        Incremental
+    };
+
+    private:
+    // Translation policy for the x and y axes
+    TranslationPolicy translationPolicyX_{TranslationPolicy::None}, translationPolicyY_{TranslationPolicy::None};
+    // Translation values for x and y axes
+    float translationX_{0.0}, translationY_{0.0};
+
+    public:
+    // Set translation policy for the X axis
+    void setTranslationPolicyX(TranslationPolicy policy);
+    // Return translation policy for the X axis
+    TranslationPolicy translationPolicyX() const;
+    // Set translation value for X axis
+    void setTranslationX(float translation);
+    // Return translation value for X axis
+    float translationX() const;
+    // Set translation policy for the Y axis
+    void setTranslationPolicyY(TranslationPolicy policy);
+    // Return translation policy for the Y axis
+    TranslationPolicy translationPolYcyX() const;
+    // Set translation value for Y axis
+    void setTranslationY(float translation);
+    // Return translation value for Y axis
+    float translationY() const;
 
     /*
      * Update

@@ -38,6 +38,9 @@ void DataEntity::updateExtrema(std::optional<double> x, std::optional<double> y,
  * Components
  */
 
+// Set translation in the positional transform
+void DataEntity::setPositionalTranslation(const QVector3D &translation) { positionalTransform_->setTranslation(translation); }
+
 // Return colour definition to use
 ColourDefinition DataEntity::colourDefinition() const { return colourOverride_.value_or(colour_); }
 

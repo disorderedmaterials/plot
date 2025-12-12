@@ -1,4 +1,5 @@
 #include "displaygroup.h"
+#include <QPainter>
 
 using namespace Mildred;
 
@@ -102,6 +103,93 @@ void DisplayGroup::setGradient(const ColourDefinition &gradient)
 // Return gradient to apply
 const ColourDefinition &DisplayGroup::gradient() const { return gradient_; }
 
+// Return icon representing current colour policy
+QIcon DisplayGroup::colourPolicyIcon(QSize size)
+{
+    QPixmap pixmap(size);
+    QRect rect(0, 0, size.width(), size.height());
+    QPainter painter(&pixmap);
+
+    switch (colourPolicy_)
+    {
+        case (ColourPolicy::None):
+            painter.setPen(QColor(0.0, 0.0, 0.0, 1.0));
+            painter.drawRect(rect);
+            painter.drawLine(0, 0, size.width(), size.height());
+            painter.drawLine(0, size.height(), size.width(), 0);
+            break;
+        case (ColourPolicy::Stock):
+            painter.fillRect(rect, StockColours[stockColour_]);
+            break;
+        case (ColourPolicy::Single):
+            painter.fillRect(rect, singleColour_);
+            break;
+        case (ColourPolicy::Varying):
+            // TODO
+            break;
+        case (ColourPolicy::Gradient):
+            // TODO
+            break;
+    }
+
+    painter.end();
+    return {pixmap};
+}
+
+/*
+ * Data Translation
+ */
+
+// Set translation policy for the X axis
+void DisplayGroup::setTranslationPolicyX(DisplayGroup::TranslationPolicy policy)
+{
+    if (translationPolicyX_ == policy)
+        return;
+
+    translationPolicyX_ = policy;
+
+    apply();
+}
+
+// Return translation policy for the X axis
+DisplayGroup::TranslationPolicy DisplayGroup::translationPolicyX() const { return translationPolicyX_; }
+
+// Set translation value for X axis
+void DisplayGroup::setTranslationX(float translation)
+{
+    translationX_ = translation;
+
+    apply();
+}
+
+// Return translation value for X axis
+float DisplayGroup::translationX() const { return translationX_; }
+
+// Set translation policy for the Y axis
+void DisplayGroup::setTranslationPolicyY(DisplayGroup::TranslationPolicy policy)
+{
+    if (translationPolicyY_ == policy)
+        return;
+
+    translationPolicyY_ = policy;
+
+    apply();
+}
+
+// Return translation policy for the Y axis
+DisplayGroup::TranslationPolicy DisplayGroup::translationPolYcyX() const { return translationPolicyY_; }
+
+// Set translation value for Y axis
+void DisplayGroup::setTranslationY(float translation)
+{
+    translationY_ = translation;
+
+    apply();
+}
+
+// Return translation value for Y axis
+float DisplayGroup::translationY() const { return translationY_; }
+
 /*
  * Update
  */
@@ -128,6 +216,32 @@ void DisplayGroup::applyToEntity(DataEntity *entity, int groupIndex)
             entity->setColourOverride(gradient_);
             break;
     }
+
+    // Translation
+    QVector3D translation;
+    switch (translationPolicyX_)
+    {
+        case (TranslationPolicy::None):
+            break;
+        case (TranslationPolicy::Constant):
+            translation.setX(translationX_);
+            break;
+        case (TranslationPolicy::Incremental):
+            translation.setX(translationX_ * groupIndex);
+            break;
+    }
+    switch (translationPolicyY_)
+    {
+        case (TranslationPolicy::None):
+            break;
+        case (TranslationPolicy::Constant):
+            translation.setX(translationY_);
+            break;
+        case (TranslationPolicy::Incremental):
+            translation.setX(translationY_ * groupIndex);
+            break;
+    }
+    entity->setPositionalTranslation(translation);
 }
 
 // Apply colours and transforms to all targeted entities
